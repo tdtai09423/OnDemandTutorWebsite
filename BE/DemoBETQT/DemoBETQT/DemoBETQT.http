@@ -1,6 +1,0 @@
-@DemoBETQT_HostAddress = http://localhost:5120
-
-GET {{DemoBETQT_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
