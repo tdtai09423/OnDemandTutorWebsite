@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "b6BIUpjWjpmz/jckpBE2yLJlJpQZUEsxvUTNKq/RmMg=",
+  "Source": "ODTDemoAPI",
+  "BasePath": "_content/ODTDemoAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "ODTDemoAPI\\wwwroot",
+      "Source": "ODTDemoAPI",
+      "ContentRoot": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\wwwroot\\",
+      "BasePath": "_content/ODTDemoAPI",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}
