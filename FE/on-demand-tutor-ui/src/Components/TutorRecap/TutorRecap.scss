@@ -81,28 +81,40 @@
 }
 
 .book-btn {
-    background-color: #ff4081;
-    color: white;
-    border: none;
+    background-color: #ff7aac;
+    color: black;
+    border: 2px solid black;
     padding: 8px 16px;
     border-radius: 4px;
     margin-right: 10px;
     font-size: 1rem;
+    font-weight: bold;
 }
 
 .book-btn:hover {
-    background-color: #e91e63;
+    opacity: 0.8;
+    background-color: #ff7aac;
+    color: black;
+    border: 2px solid black;
 }
 
 .message-btn {
     background-color: white;
     color: #000;
-    border: 1px solid #ced4da;
+    border: 2.5px solid #ced4da;
     padding: 8px 16px;
     border-radius: 4px;
     font-size: 1rem;
+    font-weight: bold;
 }
 
 .message-btn:hover {
-    background-color: #f8f9fa;
+    background-color: white;
+    color: black;
+}
+
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }

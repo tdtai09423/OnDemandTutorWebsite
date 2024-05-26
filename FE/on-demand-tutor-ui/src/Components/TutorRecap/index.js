@@ -1,4 +1,4 @@
-import { Button, Card, Row, Col, Image } from 'react-bootstrap';
+import { Button, Card, Row, Col, Image, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './TutorRecap.scss'
 import { Link } from 'react-router-dom'
@@ -39,8 +39,10 @@ function TutorRecap() {
                                 </div>
                             </Col>
                             <Col className="text-right">
-                                <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
-                                <Button variant="outline-secondary" className="message-btn">Send message</Button>
+                                <Container className="button-container">
+                                    <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
+                                    <Button variant="outline-secondary" className="message-btn">Send message</Button>
+                                </Container>
                             </Col>
                         </Row>
                     </Card.Body>
