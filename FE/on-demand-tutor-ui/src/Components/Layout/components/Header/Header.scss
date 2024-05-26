@@ -7,6 +7,35 @@
     }
 }
 
+.loginIcon {
+    background-color: none;
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginContent {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.navBarContent {
+    font-weight: bold;
+
+}
+
 .loginButton {
-    background-color: white;
+    color: black;
+    border: 2px solid #000;
+
+    &:hover {
+        color: white;
+        background-color: #ff7aac;
+    }
 }
