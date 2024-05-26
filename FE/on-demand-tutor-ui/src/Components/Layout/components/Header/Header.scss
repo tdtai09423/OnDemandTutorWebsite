@@ -1,0 +1,12 @@
+@import 'normalize.css';
+
+@media(max-width: 991px) {
+    .sidebar {
+        background-color: white;
+        backdrop-filter: blur(10px);
+    }
+}
+
+.loginButton {
+    background-color: white;
+}
