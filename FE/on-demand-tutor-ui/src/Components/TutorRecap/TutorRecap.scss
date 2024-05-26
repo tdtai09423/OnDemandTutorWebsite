@@ -42,14 +42,18 @@
     color: #6c757d;
 }
 
-.read-more {
-    color: #007bff;
-    text-decoration: none;
-    font-size: 14px;
+.tutor-description {
+    margin-bottom: 5px;
 }
 
-.read-more:hover {
+.read-more {
+    color: black;
     text-decoration: underline;
+    font-size: 15px;
+
+    &:hover {
+        color: #ff7aac;
+    }
 }
 
 .profile-footer {
@@ -89,6 +93,7 @@
     margin-right: 10px;
     font-size: 1rem;
     font-weight: bold;
+    width: 50%;
 }
 
 .book-btn:hover {
@@ -106,6 +111,7 @@
     border-radius: 4px;
     font-size: 1rem;
     font-weight: bold;
+    width: 50%;
 }
 
 .message-btn:hover {

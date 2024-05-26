@@ -28,7 +28,11 @@ function TutorRecap() {
                             </p>
                         </Card.Text>
                         <Card.Text>
-                            <strong>Improve your English skills with flexibility and expertise</strong> — Hello! I am Yao. I am Togolese, married and an experimental English Language Teacher for all the...
+                            <p className="tutor-description">
+                                <strong>
+                                    Improve your English skills with flexibility and expertise
+                                </strong> — Hello! I am Yao. I am Togolese, married and an experimental English Language Teacher for all the...
+                            </p>
                             <Link className="read-more" as={Link} to={"/tutor-detail"}>Read more</Link>
                         </Card.Text>
                         <Row className="profile-footer">
