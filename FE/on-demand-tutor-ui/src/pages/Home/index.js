@@ -1,4 +1,4 @@
-import TutorRecap from "../../Components/TutorRecap/TutorRecap";
+import TutorRecap from "../../Components/TutorRecap";
 
 function Home() {
     return (
