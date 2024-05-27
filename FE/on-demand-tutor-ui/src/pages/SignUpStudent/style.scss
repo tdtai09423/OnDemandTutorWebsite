@@ -1,0 +1,114 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 30%;
+
+    .tittle {
+        font-size: 32px;
+        font-weight: 700;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        padding-top: 30px;
+    }
+
+    .haveacc {
+        font-size: 15px;
+        font-weight: 250;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        padding-top: 10px;
+    }
+
+    .text {
+        font-size: 15px;
+        padding-bottom: 10px;
+        padding-top: 20px;
+    }
+
+    input {
+        padding: 10px 5px;
+        outline: none;
+        margin-bottom: 7px;
+        font-size: 17px;
+        font-weight: 350;
+        border-radius: 10px;
+        border: 2px solid #999595;
+
+        &:hover {
+            border: 2px solid
+        }
+    }
+
+    .ex-button {
+        padding: 10px;
+        border-radius: 10px;
+        outline: none;
+        border: none;
+        margin-top: 10px;
+        background-color: #ffffff;
+        border: 2px solid;
+
+        &:hover {
+            background-color: #dedede;
+        }
+    }
+
+    i {
+        padding: 3px;
+        font-size: 20px;
+
+    }
+
+    button {
+        background-color: #ff7aac;
+        outline: none;
+        text-align: center;
+        font-size: 19px;
+        font-weight: 500;
+        padding: 10px;
+        border-radius: 10px;
+        outline: none;
+        border: none;
+        margin-top: 10px;
+        border: 2px solid;
+
+        &:hover {
+            background-color: #f3aac6;
+        }
+    }
+
+    .forgot-password {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #000000;
+
+        &:hover {
+            color: #ff7aac;
+        }
+    }
+
+    .checkBox {
+        input {
+            transform: scale(1.5);
+            margin: 5px;
+        }
+
+        label {
+            font-weight: 500px;
+            font-size: 15px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+        }
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .login-container {
+        width: 45%;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .login-container {
+        width: 65%;
+    }
+}
