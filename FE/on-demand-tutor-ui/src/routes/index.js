@@ -4,7 +4,7 @@ import TutorDetail from "../pages/TutorDetail";
 import Login from "../pages/Login";
 import SignUpStudent from "../pages/SignUpStudent";
 import SignUpTutor from "../pages/SignUpTutor";
-import TutorProfile from "../pages/TutorProfile";
+import UserProfile from "../pages/UserProfile";
 
 
 //Public Route
@@ -15,7 +15,7 @@ const publicRoute = [
     { path: '/login', component: Login },
     { path: '/sign-up-student', component: SignUpStudent },
     { path: '/sign-up-tutor', component: SignUpTutor },
-    { path: '/tutor-profile', component: TutorProfile },
+    { path: '/user-profile', component: UserProfile },
 
 
 ];
