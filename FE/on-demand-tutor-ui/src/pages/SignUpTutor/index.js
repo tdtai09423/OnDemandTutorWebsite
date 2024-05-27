@@ -18,9 +18,13 @@ function SignUpTutor() {
 
                 <div className='text'>Password</div>
                 <input type='password' placeholder='Your password' className='form-control' />
-                <a className='forgot-password' href="forgot_password.html">Forgot Password?</a>
 
-                <button className='login-button' >Log in</button>
+                <div className='checkBox'>
+                    <input type="checkbox" id="rememberMe" name="rememberMe" defaultChecked />
+                    <label for="rememberMe" >Remember me</label>
+                </div>
+
+                <button >Sign Up</button>
             </div>
         </>
     )

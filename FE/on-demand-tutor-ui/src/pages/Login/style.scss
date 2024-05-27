@@ -14,14 +14,14 @@
 
     .text {
         font-size: 15px;
-        padding-bottom: 10px;
-        padding-top: 20px;
+        padding-bottom: 5px;
+        padding-top: 5px;
     }
 
     input {
-        padding: 10px 5px;
+        padding: 2px 2px;
         outline: none;
-        margin-bottom: 7px;
+        margin-bottom: 5px;
         font-size: 17px;
         font-weight: 350;
         border-radius: 10px;
@@ -52,8 +52,8 @@
 
     }
 
-    .login-button {
-        background-color: #ff7aac;
+    button {
+
         outline: none;
         text-align: center;
         font-size: 19px;
@@ -61,14 +61,20 @@
         padding: 10px;
         border-radius: 10px;
         outline: none;
-        border: none;
         margin-top: 10px;
         border: 2px solid;
 
-        &:hover {
-            background-color: #f3aac6;
+        &active {
+            background-color: #ff7aac;
+
+            &:hover {
+                background-color: #f3aac6;
+            }
         }
+
     }
+
+
 
     .forgot-password {
         margin-top: 10px;
@@ -77,6 +83,20 @@
 
         &:hover {
             color: #ff7aac;
+        }
+    }
+
+    .checkBox {
+        input {
+            transform: scale(1.5);
+            margin: 5px;
+        }
+
+        label {
+            font-weight: 500px;
+            font-size: 15px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
         }
     }
 }

@@ -58,7 +58,7 @@
 
     }
 
-    .login-button {
+    button {
         background-color: #ff7aac;
         outline: none;
         text-align: center;
@@ -83,6 +83,20 @@
 
         &:hover {
             color: #ff7aac;
+        }
+    }
+
+    .checkBox {
+        input {
+            transform: scale(1.5);
+            margin: 5px;
+        }
+
+        label {
+            font-weight: 500px;
+            font-size: 15px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
         }
     }
 }

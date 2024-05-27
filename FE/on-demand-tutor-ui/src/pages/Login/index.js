@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './style.scss'
 import { Link } from 'react-router-dom'
 function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     return (
         <>
             <div className='login-container col-3'>
@@ -15,13 +18,16 @@ function Login() {
                 <div className='text'>or</div>
 
                 <div className='text'>Email</div>
-                <input type='email' placeholder='Your email' className='form-control' />
+                <input type='email' placeholder='Your email' className='form-control' value={email} onChange={(event) => setEmail(event.target.value)} />
 
                 <div className='text'>Password</div>
-                <input type='password' placeholder='Your password' className='form-control' />
+                <input type='password' placeholder='Your password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
                 <a className='forgot-password' href="forgot_password.html">Forgot Password?</a>
-
-                <button className='login-button' >Log in</button>
+                <div className='checkBox'>
+                    <input type="checkbox" id="rememberMe" name="rememberMe" defaultChecked />
+                    <label for="rememberMe" >Remember me</label>
+                </div>
+                <button className={email && password ? "active" : ""}  >Log in</button>
             </div>
         </>
     )
