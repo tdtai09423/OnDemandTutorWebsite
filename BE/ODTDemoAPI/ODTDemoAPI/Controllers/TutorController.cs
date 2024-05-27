@@ -191,7 +191,7 @@ namespace ODTDemoAPI.Controllers
                                 .Include(t => t.Curricula)
                                 .Include(t => t.TutorNavigation) //include account
                                 .FirstOrDefault(t => t.TutorId == tutorId && t.CertiStatus == CertiStatus.Approved 
-                                                    && t.TutorNavigation.AccountStatus == true);
+                                                    && t.TutorNavigation.Status == true);
             return tutor;
         }
 
@@ -203,7 +203,7 @@ namespace ODTDemoAPI.Controllers
                                 .Include(t => t.TutorNavigation) //include account
                                 .FirstOrDefault(t => t.TutorEmail == email 
                                                     && (t.CertiStatus == CertiStatus.Approved || t.CertiStatus == CertiStatus.Pending) 
-                                                    && t.TutorNavigation.AccountStatus == true);
+                                                    && t.TutorNavigation.Status == true);
             return tutor;
         }
     }

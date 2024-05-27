@@ -66,7 +66,7 @@ namespace ODTDemoAPI.Controllers
             var learner = _context.Learners
                                 .Include(l => l.LearnerNavigation) //include account
                                 .FirstOrDefault(l => l.LearnerId == learnerId 
-                                                    && l.LearnerNavigation.AccountStatus == true);
+                                                    && l.LearnerNavigation.Status == true);
             return learner;
         }
 
@@ -75,7 +75,7 @@ namespace ODTDemoAPI.Controllers
             var learner = _context.Learners
                                 .Include(l => l.LearnerNavigation) //include account
                                 .FirstOrDefault(l => l.LearnerEmail == email
-                                                    && l.LearnerNavigation.AccountStatus == true);
+                                                    && l.LearnerNavigation.Status == true);
             return learner;
         }
     }

@@ -18,17 +18,19 @@ public partial class Tutor
 
     public string TutorEmail { get; set; } = null!;
 
+    public string Nationality { get; set; } = null!;
+
     public string TutorDescription { get; set; } = null!;
 
-    public string? MajorId { get; set; }
+    public string TutorPicture { get; set; } = null!;
 
     public CertiStatus CertiStatus { get; set; } = CertiStatus.Pending;
+
+    public string? MajorId { get; set; }
     [JsonIgnore]
     public virtual ICollection<Curriculum> Curricula { get; set; } = new List<Curriculum>();
     [JsonIgnore]
     public virtual Major? Major { get; set; }
- 
-    public virtual Account TutorNavigation { get; set; } = null!;
 
-    //public IFormFile Image { get; set; }
+    public virtual Account TutorNavigation { get; set; } = null!;
 }

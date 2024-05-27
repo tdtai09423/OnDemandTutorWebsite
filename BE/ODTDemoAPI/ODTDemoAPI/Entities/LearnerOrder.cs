@@ -8,13 +8,11 @@ public partial class LearnerOrder
 {
     public int OrderId { get; set; }
 
-    public string OrderType { get; set; } = null!;
-
     public DateTime OrderDate { get; set; }
 
     public string OrderStatus { get; set; } = null!;
 
-    public int Total { get; set; }
+    public double Total { get; set; }
 
     public int? CurriculumId { get; set; }
 

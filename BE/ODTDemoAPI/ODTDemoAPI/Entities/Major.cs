@@ -10,5 +10,5 @@ public partial class Major
 
     public string MajorName { get; set; } = null!;
     [JsonIgnore]
-    public virtual ICollection<Tutor> Tutors { get; set; } = new List<Tutor>(); 
+    public virtual ICollection<Tutor> Tutors { get; set; } = new List<Tutor>();
 }
