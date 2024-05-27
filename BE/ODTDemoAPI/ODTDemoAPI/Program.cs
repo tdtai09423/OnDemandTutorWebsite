@@ -24,6 +24,13 @@ namespace ODTDemoAPI
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("OnDemandTutor"));
             });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -37,7 +44,7 @@ namespace ODTDemoAPI
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseCors("AllowAll");
 
             app.MapControllers();
 
