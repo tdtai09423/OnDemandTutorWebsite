@@ -10,6 +10,7 @@
     "bootstrap-icons": "^1.11.3",
     "classnames": "^2.5.1",
     "normalize.css": "^8.0.1",
+    "rc-slider": "^10.6.2",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
     "react-bootstrap-icons": "^1.11.4",

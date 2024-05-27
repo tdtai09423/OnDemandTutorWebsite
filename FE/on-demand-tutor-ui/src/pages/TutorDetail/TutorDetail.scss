@@ -1,0 +1,143 @@
+@import 'normalize.css';
+
+.profile-card {
+    margin: 20px;
+    margin-top: 100px;
+    box-shadow: none;
+    border: none;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.flag {
+    margin-left: 8px;
+    font-size: 1.5rem;
+}
+
+.icon {
+    margin-right: 8px;
+}
+
+.language,
+.students,
+.speaks {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    color: #6c757d;
+}
+
+.tutor-description {
+    margin-bottom: 5px;
+}
+
+.read-more {
+    color: black;
+    text-decoration: underline;
+    font-size: 15px;
+
+    &:hover {
+        color: #ff7aac;
+    }
+}
+
+.profile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.price {
+    text-align: center;
+}
+
+.new-tutor {
+    display: block;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.duration {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.book-btn {
+    background-color: #ff7aac;
+    color: black;
+    border: 2px solid black;
+    padding: 8px 16px;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.book-btn:hover {
+    opacity: 0.8;
+    background-color: #ff7aac;
+    color: black;
+    border: 2px solid black;
+}
+
+.message-btn {
+    background-color: white;
+    color: #000;
+    border: 2.5px solid #ced4da;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100%;
+}
+
+.message-btn:hover {
+    background-color: white;
+    color: black;
+}
+
+.button-container {
+    display: block;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.information-tab {
+    border: none;
+}
+
+.information-tab-text {
+    color: #000;
+}
+
+.tutor-card {
+    position: absolute;
+    left: 30%;
+    top: 10px;
+}
