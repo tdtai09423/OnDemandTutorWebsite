@@ -1,9 +1,24 @@
-import React, { useState } from 'react'
-import './style.scss'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react';
+import './style.scss';
+import { Link } from 'react-router-dom';
+import loginAPI from '../../api/loginAPI';
+import { toast } from 'react-toastify';
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const handleLogIn = async () => {
+        if (!email || !password) {
+            toast.error("Missing email or password");
+            return;
+        }
+        let res = await loginAPI(email, password);
+        if (res && res.token) {
+            localStorage.setItem("token", res.token);
+            toast.success("Login okay!!!");
+        }
+
+    }
 
     return (
         <>
@@ -27,7 +42,9 @@ function Login() {
                     <input type="checkbox" id="rememberMe" name="rememberMe" defaultChecked />
                     <label for="rememberMe" >Remember me</label>
                 </div>
-                <button className={email && password ? "active" : ""}  >Log in</button>
+                <button className={email && password ? "active" : ""}
+                    onClick={() => handleLogIn()}
+                >Log in</button>
             </div>
         </>
     )

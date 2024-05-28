@@ -4,42 +4,40 @@ import './TutorRecap.scss'
 import { Link } from 'react-router-dom'
 import { Globe, PersonFill, ChatSquareDotsFill } from 'react-bootstrap-icons'
 
-function TutorRecap() {
+function TutorRecap({ tutorInfo }) {
     return (
         <Card className="profile-card">
-            <Row noGutters>
+            <Row noGutters style={{ margin: '10px' }}>
                 <Col md={3}>
-                    <Image src="path/to/profile.jpg" roundedCircle className="profile-pic" />
+                    <Image src={tutorInfo.image} className="profile-pic" />
                 </Col>
                 <Col md={9}>
                     <Card.Body>
                         <Card.Title>
-                            Yao Wowonyo D. <span className="flag">🇹🇬</span>
+                            {tutorInfo.name}
                         </Card.Title>
                         <Card.Text>
                             <p className="language">
-                                <Globe className="icon" /> English
+                                <Globe className="icon" />{tutorInfo.language}
                             </p>
                             <p className="students">
-                                <PersonFill className="icon" /> 2 active students · 2 lessons
+                                <PersonFill className="icon" /> {tutorInfo.activeStudents} active students · {tutorInfo.lessons} lessons
                             </p>
                             <p className="speaks">
-                                <ChatSquareDotsFill className="icon" /> Speaks English (Proficient), French (Proficient) +1
+                                <ChatSquareDotsFill className="icon" /> {tutorInfo.speaks}
                             </p>
                         </Card.Text>
                         <Card.Text>
                             <p className="tutor-description">
-                                <strong>
-                                    Improve your English skills with flexibility and expertise
-                                </strong> — Hello! I am Yao. I am Togolese, married and an experimental English Language Teacher for all the...
+                                {tutorInfo.description}
                             </p>
                             <Link className="read-more" as={Link} to={"/tutor-detail"}>Read more</Link>
                         </Card.Text>
                         <Row className="profile-footer">
                             <Col>
                                 <div className="price">
-                                    <span className="amount">₫509,424</span>
-                                    <span className="duration">50-min lesson</span>
+                                    <span className="amount">{tutorInfo.price}</span>
+                                    <span className="duration">{tutorInfo.duration}</span>
                                 </div>
                             </Col>
                             <Col className="text-right">

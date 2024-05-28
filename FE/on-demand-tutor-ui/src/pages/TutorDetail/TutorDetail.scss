@@ -1,18 +1,16 @@
 @import 'normalize.css';
 
-.profile-card {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 10px 10px;
-
-    &:hover {
-        border: 2px solid black;
-    }
+.profile-card-td {
+    margin: 20px;
+    margin-top: 100px;
+    box-shadow: none;
+    border: none;
 }
 
-.profile-pic {
-    width: 100%;
-    height: 200px;
-    margin: 10px;
+.profile-tutor {
+    width: 100px;
+    height: 100px;
+    margin: 20px;
 }
 
 .card-body {
@@ -66,7 +64,7 @@
 }
 
 .price {
-    text-align: right;
+    text-align: center;
 }
 
 .new-tutor {
@@ -95,7 +93,9 @@
     margin-right: 10px;
     font-size: 1rem;
     font-weight: bold;
-    width: 50%;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .book-btn:hover {
@@ -113,8 +113,14 @@
     border-radius: 4px;
     font-size: 1rem;
     font-weight: bold;
-    width: 50%;
+    width: 100%;
 }
+
+.my-list-btn {
+    margin-top: 10px;
+}
+
+
 
 .message-btn:hover {
     background-color: white;
@@ -122,7 +128,22 @@
 }
 
 .button-container {
-    display: flex;
+    display: block;
     justify-content: flex-end;
+    align-items: center;
     gap: 10px;
+}
+
+.information-tab {
+    border: none;
+}
+
+.information-tab-text {
+    color: #000;
+}
+
+.tutor-card {
+    position: absolute;
+    left: 30%;
+    top: 10px;
 }
