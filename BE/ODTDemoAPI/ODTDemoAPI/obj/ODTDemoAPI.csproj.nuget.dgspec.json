@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {}
+    "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {}
   },
   "projects": {
-    "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {
+    "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
+        "projectUniqueName": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
         "projectName": "ODTDemoAPI",
-        "projectPath": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
+        "projectPath": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
         "packagesPath": "C:\\Users\\issei\\.nuget\\packages\\",
-        "outputPath": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\obj\\",
+        "outputPath": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\issei\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -45,23 +45,27 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.5, )"
+              "version": "[8.0.6, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[8.0.5, )"
+              "version": "[8.0.6, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.5, )"
-            },
-            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
-              "target": "Package",
-              "version": "[8.0.2, )"
+              "version": "[8.0.6, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

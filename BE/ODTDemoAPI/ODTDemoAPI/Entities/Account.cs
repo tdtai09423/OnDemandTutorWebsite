@@ -24,19 +24,19 @@ public partial class Account
     [JsonIgnore]
     public virtual Tutor? Tutor { get; set; }
 
-    public void NavigateAccount()
+    public void NavigateAccount(string roleId)
     {
-        if(this.RoleId == "TUTOR")
+        if(roleId == "TUTOR")
         {
-            Learner = null;
-            Tutor = new Tutor();
+            this.Learner = null;
+            this.Tutor = new Tutor();
             Tutor.TutorId = this.Id;
         }
-        if(this.RoleId == "LEARNER")
+        if(roleId == "LEARNER")
         {
-            Tutor = null;
-            Learner = new Learner();
-            Learner.LearnerId = this.Id;
+            this.Tutor = null;
+            this.Learner = new Learner();
+            this.Learner.LearnerId = this.Id;
         }
     }
 }

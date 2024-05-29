@@ -50,7 +50,7 @@ public partial class OnDemandTutorContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FirstName).HasMaxLength(255);
             entity.Property(e => e.LastName).HasMaxLength(255);
-            entity.Property(e => e.Password).HasMaxLength(50);
+            entity.Property(e => e.Password).HasMaxLength(60);
             entity.Property(e => e.RoleId).HasMaxLength(10);
             entity.Property(e => e.Status).HasDefaultValue(true);
         });
