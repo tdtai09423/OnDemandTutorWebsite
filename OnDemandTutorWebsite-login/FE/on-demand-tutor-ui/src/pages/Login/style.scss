@@ -1,0 +1,114 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 30%;
+
+    .tittle {
+        font-size: 25px;
+        font-weight: 500px;
+        padding-top: 30px;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+    }
+
+    .text {
+        font-size: 15px;
+        padding-bottom: 5px;
+        padding-top: 5px;
+    }
+
+    input {
+        padding: 2px 2px;
+        outline: none;
+        margin-bottom: 5px;
+        font-size: 17px;
+        font-weight: 350;
+        border-radius: 10px;
+        border: 2px solid #999595;
+
+        &:hover {
+            border: 2px solid
+        }
+    }
+
+    .ex-button {
+        padding: 10px;
+        border-radius: 10px;
+        outline: none;
+        border: none;
+        margin-top: 10px;
+        background-color: #ffffff;
+        border: 2px solid;
+
+        &:hover {
+            background-color: #dedede;
+        }
+    }
+
+    i {
+        padding: 3px;
+        font-size: 20px;
+
+    }
+
+    button {
+
+        outline: none;
+        text-align: center;
+        font-size: 19px;
+        font-weight: 500;
+        padding: 10px;
+        border-radius: 10px;
+        outline: none;
+        margin-top: 10px;
+        border: 2px solid;
+
+        &active {
+            background-color: #ff7aac;
+
+            &:hover {
+                background-color: #f3aac6;
+            }
+        }
+
+    }
+
+
+
+    .forgot-password {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #000000;
+
+        &:hover {
+            color: #ff7aac;
+        }
+    }
+
+    .checkBox {
+        input {
+            transform: scale(1.5);
+            margin: 5px;
+        }
+
+        label {
+            font-weight: 500px;
+            font-size: 15px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+        }
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .login-container {
+        width: 45%;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .login-container {
+        width: 65%;
+    }
+}
