@@ -22,7 +22,7 @@ function Header() {
                     >
 
                         <Nav.Link as={Link} to={"/"}><span className="navBarContent">Find tutor</span></Nav.Link>
-                        <Nav.Link as={Link} to={"/"}><span className="navBarContent">Become a tutor</span></Nav.Link>
+                        <Nav.Link as={Link} to={"/sign-up-tutor"}><span className="navBarContent">Become a tutor</span></Nav.Link>
                         <NavDropdown title={<span className="navBarContent">Do Something Here</span>} id="navbarScrollingDropdown">
                             <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
                             <NavDropdown.Item href="#action4">

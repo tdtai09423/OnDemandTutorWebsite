@@ -31,8 +31,8 @@ function FilterBar() {
                     <Dropdown align="end" className="w-100">
                         <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
                             <div className="dropdown-text">
-                                <span className="dropdown-tittle">I want to learn:</span>
-                                <span className="dropdown-choice">English</span>
+                                <span className="dropdown-tittle">Country of birth:</span>
+                                <span className="dropdown-choice">Any Country</span>
                             </div>
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="dropdown-menu">
@@ -54,27 +54,14 @@ function FilterBar() {
                             <Dropdown.Item href="#">English</Dropdown.Item>
                             <Dropdown.Item href="#">Spanish</Dropdown.Item>
                             <Dropdown.Item href="#">French</Dropdown.Item>
-                            {/* Add more languages as needed */}
                         </Dropdown.Menu>
                     </Dropdown>
                 </Col>
             </Row>
             <Row className="filter-bar-row">
                 <Col md={2} className="d-flex justify-content-between">
-                    <Dropdown align="start">
-                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-specialties" className="dropdown-toggle-multi-line rounded-2">
-                            Specialties
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className="dropdown-menu">
-                            <Dropdown.Item href="#">Option 1</Dropdown.Item>
-                            <Dropdown.Item href="#">Option 2</Dropdown.Item>
-                            <Dropdown.Item href="#">Option 3</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Col>
-                <Col md={2} className="d-flex justify-content-between">
-                    <Dropdown align="start">
-                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-also-speaks" className="dropdown-toggle-multi-line rounded-2">
+                    <Dropdown align="end" className="w-100">
+                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
                             Also speaks
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="dropdown-menu">
@@ -85,8 +72,8 @@ function FilterBar() {
                     </Dropdown>
                 </Col>
                 <Col md={2} className="d-flex justify-content-between">
-                    <Dropdown align="start">
-                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-native-speaker" className="dropdown-toggle-multi-line rounded-2">
+                    <Dropdown align="end" className="w-100">
+                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
                             Native speaker
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="dropdown-menu">
@@ -94,6 +81,8 @@ function FilterBar() {
                             <Dropdown.Item href="#">No</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
+                </Col>
+                <Col md={2} className="d-flex justify-content-between">
                 </Col>
                 <Col md={2} className="d-flex justify-content-between">
                     <Dropdown align="end">

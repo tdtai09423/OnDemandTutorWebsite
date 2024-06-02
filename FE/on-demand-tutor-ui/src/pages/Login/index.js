@@ -27,7 +27,7 @@ function Login() {
         <>
             <div className='login-container col-3'>
                 <div className='tittle'>Log in</div>
-                <div className='text'><Link className="forgot-password" as={Link} to={"/sign-up-student"}>Sign up as a student</Link>
+                <div className='text'><Link className="forgot-password" as={Link} to={"/sign-up-student"}>Sign up as a student </Link>
                     or <Link className="forgot-password" as={Link} to={"/sign-up-tutor"}> Sign up as a tutor</Link>
                 </div>
                 <button className='ex-button'><i className="fa-brands fa-google"></i>  Continue with Google</button>

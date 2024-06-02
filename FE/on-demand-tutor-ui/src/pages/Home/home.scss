@@ -2,3 +2,58 @@
     height: auto;
     padding: 10px 5em;
 }
+
+.banner-btn {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    width: 40%;
+}
+
+.banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    width: 100%;
+    margin: 0;
+    background-color: white;
+}
+
+.image-container {
+    width: 600px;
+    margin-top: 20px;
+    position: relative;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+}
+
+.image-container .banner-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.2;
+}
+
+.image-container .banner-image:nth-child(2) {
+    transform: translateX(6px);
+}
+
+.image-container .banner-image:nth-child(3) {
+    transform: translateX(20px);
+}
+
+.image-container .banner-image:nth-child(4) {
+    transform: translateX(30px);
+}
