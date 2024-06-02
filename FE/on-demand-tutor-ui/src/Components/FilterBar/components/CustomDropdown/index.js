@@ -22,7 +22,7 @@ function CustomDropdown() {
             <Dropdown.Menu className="p-3" style={{ width: '300px' }}>
                 <div>
                     <p className="text-center">
-                        ₫{priceRange[0].toLocaleString()} – ₫{priceRange[1].toLocaleString()}+
+                        ₫{priceRange[0].toLocaleString()} – ₫{priceRange[1].toLocaleString()}
                     </p>
                     <Slider
                         range

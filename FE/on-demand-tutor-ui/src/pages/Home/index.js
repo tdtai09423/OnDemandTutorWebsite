@@ -32,7 +32,10 @@ function Home() {
                     <button className="banner-btn">Get started</button>
                 </div>
                 <div className="col-lg-6 image-container">
-                    <Image className="main-img" src="https://static.preply.com/static/ssr/_next/static/images/hero-23-0802150dbe518540999c5757ad16d400.jpg" />
+                    <Image className="main-img"
+                        src="https://static.preply.com/static/ssr/_next/static/images/hero-23-0802150dbe518540999c5757ad16d400.jpg"
+                        style={{ zIndex: '5', position: 'relative' }}
+                    />
                     <Image className="banner-image" src="https://static.preply.com/static/ssr/_next/static/images/hero-23-0802150dbe518540999c5757ad16d400.jpg" />
                     <Image className="banner-image" src="https://static.preply.com/static/ssr/_next/static/images/hero-23-0802150dbe518540999c5757ad16d400.jpg" />
                     <Image className="banner-image" src="https://static.preply.com/static/ssr/_next/static/images/hero-23-0802150dbe518540999c5757ad16d400.jpg" />

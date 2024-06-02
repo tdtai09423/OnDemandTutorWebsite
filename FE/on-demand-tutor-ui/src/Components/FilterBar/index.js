@@ -86,7 +86,7 @@ function FilterBar() {
                 </Col>
                 <Col md={2} className="d-flex justify-content-between">
                     <Dropdown align="end">
-                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-sort-by" className="dropdown-toggle-multi-line rounded-2">
+                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-sort-by" className="w-100 dropdown-toggle-multi-line rounded-2">
                             Sort by: Our top picks
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="dropdown-menu">
