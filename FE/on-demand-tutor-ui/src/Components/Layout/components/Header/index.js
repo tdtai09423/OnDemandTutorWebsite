@@ -37,7 +37,7 @@ function Header() {
                             <span className="navBarContent">Contact us</span>
                         </Nav.Link>
                     </Nav>
-                    <Button className="loginButton text-black border border-2 border-dark" variant="outline-success" as={Link} to={"/following"}>
+                    <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
                         <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
                         <span className="loginContent">Log In</span>
                     </Button>

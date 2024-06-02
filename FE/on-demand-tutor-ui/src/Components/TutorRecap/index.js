@@ -43,7 +43,7 @@ function TutorRecap({ tutor }) {
                             </Col>
                             <Col className="text-right">
                                 <Container className="button-container">
-                                    <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId}>Book trial lesson</Button>
+                                    <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail?tutorId=" + tutor}>Book trial lesson</Button>
                                     <Button variant="outline-secondary" className="message-btn">Send message</Button>
                                 </Container>
                             </Col>

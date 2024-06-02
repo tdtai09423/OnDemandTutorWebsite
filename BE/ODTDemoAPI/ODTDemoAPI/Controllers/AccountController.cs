@@ -4,8 +4,13 @@ using ODTDemoAPI.Entities;
 using ODTDemoAPI.OperationModel;
 using BCrypt;
 using Microsoft.EntityFrameworkCore;
-using ODTDemoAPI.AuthOperation;
+using ODTDemoAPI.Services;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Runtime.CompilerServices;
+using System.Security;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -21,8 +26,46 @@ namespace ODTDemoAPI.Controllers
             _authService = authService;
         }
 
+        [HttpGet("login-google")]
+        public IActionResult LoginByGoogle()
+        {
+            try
+            {
+                var redirectUrl = Url.Action("ResponseWithGoogle", "Account");
+                var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+                return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("signin-google")]
+        public async Task<IActionResult> ResponseWithGoogle()
+        {
+            try
+            {
+                var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                if (!result.Succeeded)
+                {
+                    return BadRequest();
+                }
+                var claims = result.Principal.Identities.SingleOrDefault()?.Claims.Select(c => new
+                {
+                    c.Type,
+                    c.Value
+                });
+                return Ok(claims);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("tutor-register")]
-        public async Task<IActionResult> RegisterTutor([FromBody] RegisterTutorModel registerTutorModel)
+        public async Task<IActionResult> RegisterTutor([FromForm] RegisterTutorModel registerTutorModel)
         {
             try
             {
@@ -52,14 +95,35 @@ namespace ODTDemoAPI.Controllers
                         account.Tutor.TutorEmail = account.Email;
                         account.Tutor.Nationality = registerTutorModel.Nationality;
                         account.Tutor.TutorDescription = registerTutorModel.TutorDescription;
-                        //tính năng upload picture chưa đc phát triển, tạm thời bỏ qua ahihi
                         account.Tutor.CertiStatus = CertiStatus.Pending;
                         account.Tutor.MajorId = registerTutorModel.MajorId;
+                        
                         TutorCerti tutorCerti = new()
                         {
                             TutorId = account.Tutor.TutorId,
                             TutorCertificate = registerTutorModel.CertificateLink
                         };
+
+                        if (registerTutorModel.TutorImage.Length > 0)
+                        {
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", registerTutorModel.TutorImage.FileName);
+                            using (var stream = System.IO.File.Create(path))
+                            {
+                                await registerTutorModel.TutorImage.CopyToAsync(stream);
+                            }
+                            account.Tutor.TutorPicture = "/images/" + account.Tutor.TutorId + "_" + account.FirstName + account.LastName;
+
+                            _context.Tutors.Add(account.Tutor);
+                            _context.SaveChanges();
+
+                            return Ok(account.Tutor);
+                        }
+                        else
+                        {
+                            _context.Accounts.Remove(account);
+                            await _context.SaveChangesAsync();
+                            return BadRequest("YOU MUST UPLOAD YOUR PHOTO WHEN REGISTERING AS A TUTOR!!");
+                        }
                     }
 
                     if (FindTutorByEmail(registerTutorModel.Email) == null && account.Tutor != null)
@@ -83,7 +147,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("learner-register")]
-        public async Task<IActionResult> RegisterLearner([FromBody] RegisterLearnerModel registerLearnerModel)
+        public async Task<IActionResult> RegisterLearner([FromForm] RegisterLearnerModel registerLearnerModel)
         {
             try
             {
@@ -111,8 +175,30 @@ namespace ODTDemoAPI.Controllers
                     {
                         account.Learner.LearnerAge = registerLearnerModel.LearnerAge;
                         account.Learner.LearnerEmail = account.Email;
-                        //tính năng upload hình ở đây cũng chưa phái triển ahihi
                         account.Learner.MembershipId = null;
+                        if (registerLearnerModel.LearnerImage == null)
+                        {
+                            account.Learner.LearnerPicture = "";
+                        }
+                        
+                        else if(registerLearnerModel.LearnerImage.Length > 0)
+                        {
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", registerLearnerModel.LearnerImage.FileName);
+                            using(var stream = System.IO.File.Create(path))
+                            {
+                                await registerLearnerModel.LearnerImage.CopyToAsync(stream);
+                            }
+                            account.Learner.LearnerPicture = "/images/" + registerLearnerModel.LearnerImage.FileName;
+                        }
+                        
+                        else
+                        {
+                            account.Learner.LearnerPicture = "";
+                        }
+
+                        _context.Learners.Add(account.Learner);
+                        await _context.SaveChangesAsync();
+                        return Ok(account.Learner);
                     }
 
                     if(FindLearnerByEmail(registerLearnerModel.Email) == null && account.Learner != null)
@@ -147,6 +233,10 @@ namespace ODTDemoAPI.Controllers
                 if(account == null || !BCrypt.Net.BCrypt.Verify(loginModel.Password, account.Password))
                 {
                     return Unauthorized(new { message = "Invalid credentials"});
+                }
+                if(account.Status == false)
+                {
+                    return BadRequest("Your account is inactivated. Contact Hotline một chín không không một không không biết for advisory.");
                 }
                 var token = _authService.GenerateToken(account);
 
@@ -229,6 +319,38 @@ namespace ODTDemoAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        //tính năng only for admin
+        [HttpPost("avtivate-account")]
+        public async Task<IActionResult> OperateAccountStatus(string email)
+        {
+            try
+            {
+                if(FindLearnerByEmail(email) == null || FindTutorByEmail(email) == null)
+                {
+                    return BadRequest("Not found!");
+                }
+                if(FindTutorByEmail(email) != null)
+                {
+                    FindAccountByEmail(email).Status = false;
+                }
+                if (FindLearnerByEmail(email) != null)
+                {
+                    FindAccountByEmail(email).Status = false;
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private Account? FindAccountByEmail(string email)
+        {
+            var account = _context.Accounts.SingleOrDefault(a => a.Email == email);
+            return account;
         }
 
         private Tutor? FindTutorByEmail(string email)

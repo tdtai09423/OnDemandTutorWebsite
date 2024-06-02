@@ -645,3 +645,7 @@ D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\refint\ODTDemoAPI.dll
 D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ODTDemoAPI.pdb
 D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ODTDemoAPI.genruntimeconfig.cache
 D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ref\ODTDemoAPI.dll
+D:\ODTTest\ODTDemoAPI\ODTDemoAPI\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+D:\ODTTest\ODTDemoAPI\ODTDemoAPI\bin\Debug\net8.0\MailKit.dll
+D:\ODTTest\ODTDemoAPI\ODTDemoAPI\bin\Debug\net8.0\MimeKit.dll
+D:\ODTTest\ODTDemoAPI\ODTDemoAPI\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
