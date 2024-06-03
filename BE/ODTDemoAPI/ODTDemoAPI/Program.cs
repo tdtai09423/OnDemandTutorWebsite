@@ -7,6 +7,7 @@ using ODTDemoAPI.Entities;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ODTDemoAPI.OperationModel;
 
 namespace ODTDemoAPI
 {
@@ -25,6 +26,8 @@ namespace ODTDemoAPI
             });
 
             builder.Services.AddMemoryCache();
+
+            builder.Services.AddHostedService<EmailVerificationCleanupService>();
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
@@ -45,8 +48,8 @@ namespace ODTDemoAPI
             {
                 IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
 
-                options.ClientId = googleAuthNSection["ClientId"];
-                options.ClientSecret = googleAuthNSection["ClientSecret"];
+                options.ClientId = googleAuthNSection["ClientId"]!;
+                options.ClientSecret = googleAuthNSection["ClientSecret"]!;
                 options.CallbackPath = "/login-google";
             });
 
@@ -118,6 +121,9 @@ namespace ODTDemoAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHttpsRedirection();
+
             app.UseSession();
             app.UseCors("AllowAll");
 

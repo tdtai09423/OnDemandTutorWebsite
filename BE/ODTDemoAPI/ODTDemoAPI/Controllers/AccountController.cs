@@ -64,6 +64,7 @@ namespace ODTDemoAPI.Controllers
                     c.Value
                 });
 
+                //gọi tên và email từ claim có được sau khi login google
                 var givenName = claims?.FirstOrDefault(c => c.Type == ClaimTypes.GivenName)?.Value;
                 var surname = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value;
                 var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
@@ -81,8 +82,9 @@ namespace ODTDemoAPI.Controllers
                 }
                 else
                 {
-                    HttpContext.Session.SetString("GivenName", givenName);
-                    HttpContext.Session.SetString("Surname", surname);
+                    //lưu tên và email để lấy sử dụng cho việc nhập thông tin
+                    HttpContext.Session.SetString("GivenName", givenName!);
+                    HttpContext.Session.SetString("Surname", surname!);
                     HttpContext.Session.SetString("Email", email);
                 }
 
@@ -106,9 +108,9 @@ namespace ODTDemoAPI.Controllers
 
                 var account = new Account
                 {
-                    FirstName = HttpContext.Session.GetString("GivenName"),
-                    LastName = HttpContext.Session.GetString("Surname"),
-                    Email = HttpContext.Session.GetString("Email"),
+                    FirstName = HttpContext.Session.GetString("GivenName")!,
+                    LastName = HttpContext.Session.GetString("Surname")!,
+                    Email = HttpContext.Session.GetString("Email")!,
                     Password = BCrypt.Net.BCrypt.HashPassword("NoPassword", BCrypt.Net.BCrypt.GenerateSalt()),
                     RoleId = "LEARNER",
                     Status = true,
@@ -124,7 +126,7 @@ namespace ODTDemoAPI.Controllers
                 if (account.Learner != null)
                 {
                     account.Learner.LearnerAge = model.Age;
-                    account.Learner.LearnerEmail = account.Email;
+                    account.Learner.LearnerEmail = account.Email!;
                     account.Learner.MembershipId = null;
                     if (model.Picture == null)
                     {
@@ -148,16 +150,16 @@ namespace ODTDemoAPI.Controllers
 
                     _context.Learners.Add(account.Learner);
                     await _context.SaveChangesAsync();
-                    return Ok(account.Learner);
+                    return Ok(new { learner = account.Learner });
                 }
 
-                if (FindLearnerByEmail(account.Email) == null && account.Learner != null)
+                if (FindLearnerByEmail(account.Email!) == null && account.Learner != null)
                 {
                     await _context.Learners.AddAsync(account.Learner);
                 }
 
                 await _context.SaveChangesAsync();
-                return Ok(new { message = "Learner registered successfully." });
+                return BadRequest(new { message = "Failed to register." });
 
             }
             catch (Exception ex)
@@ -178,11 +180,11 @@ namespace ODTDemoAPI.Controllers
 
                 var email = HttpContext.Session.GetString("Email");
 
-                if (FindTutorByEmail(email) == null)
+                if (FindTutorByEmail(email!) == null)
                 {
-                    var account = FindAccountByEmail(email);
+                    var account = FindAccountByEmail(email!);
 
-                    account.RoleId = "TUTOR";
+                    account!.RoleId = "TUTOR";
 
                     await _context.SaveChangesAsync();
 
@@ -215,7 +217,7 @@ namespace ODTDemoAPI.Controllers
                             _context.Tutors.Add(account.Tutor);
                             _context.SaveChanges();
 
-                            return RedirectToAction("SendVerificationCode", "Account", new { tutor = account.Tutor });
+                            return Ok(new { tutor = account.Tutor });
                         }
                         else
                         {
@@ -225,14 +227,14 @@ namespace ODTDemoAPI.Controllers
                         }
                     }
 
-                    if (FindTutorByEmail(email) == null && account.Tutor != null)
+                    if (FindTutorByEmail(email!) == null && account.Tutor != null)
                     {
                         await _context.Tutors.AddAsync(account.Tutor);
                     }
 
                     await _context.SaveChangesAsync();
 
-                    return Ok(new { message = "Tutor registered successfully" });
+                    return BadRequest(new { message = "Failed to register." });
                 }
                 else
                 {
@@ -367,7 +369,7 @@ namespace ODTDemoAPI.Controllers
                             _context.Tutors.Add(account.Tutor);
                             _context.SaveChanges();
 
-                            return Ok(account.Tutor);
+                            return Ok(new { tutor = account.Tutor });
                         }
                         else
                         {
@@ -451,7 +453,7 @@ namespace ODTDemoAPI.Controllers
 
                         _context.Learners.Add(account.Learner);
                         await _context.SaveChangesAsync();
-                        return Ok(account.Learner);
+                        return Ok(new { learner = account.Learner });
                     }
 
                     if (FindLearnerByEmail(registerLearnerModel.Email) == null && account.Learner != null)
@@ -583,7 +585,7 @@ namespace ODTDemoAPI.Controllers
 
         //tính năng only for admin
         [HttpPost("avtivate-account")]
-        public async Task<IActionResult> OperateAccountStatus(string email)
+        public IActionResult OperateAccountStatus(string email)
         {
             try
             {
@@ -593,13 +595,229 @@ namespace ODTDemoAPI.Controllers
                 }
                 if (FindTutorByEmail(email) != null)
                 {
-                    FindAccountByEmail(email).Status = false;
+                    FindAccountByEmail(email)!.Status = false;
                 }
                 if (FindLearnerByEmail(email) != null)
                 {
-                    FindAccountByEmail(email).Status = false;
+                    FindAccountByEmail(email)!.Status = false;
                 }
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("update-learner")]
+        public async Task<IActionResult> UpdateUserInfo(UpdateUserModel model)
+        {
+            try
+            {
+                var email = User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value;
+                if(email == null)
+                {
+                    return Unauthorized(new { message = "You are logging out or your session is out. Please check your login status."});
+                }
+
+                var findAccount = FindAccountByEmail(email!);
+                bool isLearner = findAccount!.RoleId == "LEARNER";
+
+                var account = _context.Accounts.Include(a => isLearner ? (object?) a.Learner : a.Tutor).FirstOrDefault(a => a.Email == email);
+
+                if(account == null)
+                {
+                    return NotFound("Account not found!");
+                }
+
+                if(!string.IsNullOrEmpty(model.FirstName))
+                {
+                    account.FirstName = model.FirstName;
+                }
+
+                if(!string.IsNullOrEmpty(model.LastName))
+                {
+                    account.LastName = model.LastName;
+                }
+
+                if(model.PasswordModel != null)
+                {
+                    if(!BCrypt.Net.BCrypt.Verify(model.PasswordModel.CurrentPassword, account.Password))
+                    {
+                        return BadRequest(new { message = "Current password is incorrect." });
+                    }
+
+                    if(model.PasswordModel.Password != model.PasswordModel.ConfirmPassword)
+                    {
+                        return BadRequest(new { message = "New password and confirm password do not match." });
+                    }
+
+                    account.Password = BCrypt.Net.BCrypt.HashPassword(model.PasswordModel.Password);
+                }
+
+                if(isLearner)
+                {
+                    var learner = account.Learner;
+                    var learnerModel = model as UpdateLearnerModel;
+
+                    if(learnerModel!.Age.HasValue)
+                    {
+                        learner!.LearnerAge = learnerModel.Age.Value;
+                    }
+
+                    if(learnerModel!.Image!.Length > 0 || learnerModel!.Image != null)
+                    {
+                        var oldImagePath = learner!.LearnerPicture;
+                        var newImagePath = await SaveImageAsync(learnerModel.Image);
+                        learner.LearnerPicture = newImagePath;
+
+                        if(!string.IsNullOrEmpty(oldImagePath))
+                        {
+                            DeleteOldImage(oldImagePath);
+                        }
+                    }
+                }
+                else
+                {
+                    var tutor = account.Tutor;
+                    var tutorModel = model as UpdateTutorModel;
+
+                    if(tutorModel!.Age.HasValue)
+                    {
+                        tutor!.TutorAge = tutorModel.Age.Value;
+                    }
+
+                    if(!string.IsNullOrEmpty(tutorModel!.Nationality))
+                    {
+                        tutor!.Nationality = tutorModel.Nationality;
+                    }
+
+                    if(!string.IsNullOrEmpty(tutorModel!.Description))
+                    {
+                        tutor!.TutorDescription = tutorModel.Description;
+                    }
+
+                    if(tutorModel.Image != null)
+                    {
+                        var oldImagePath = tutor!.TutorPicture;
+                        var newImagePath = await SaveImageAsync(tutorModel.Image);
+                        tutor!.TutorPicture = newImagePath;
+
+                        if (!string.IsNullOrEmpty(oldImagePath))
+                        {
+                            DeleteOldImage(oldImagePath);
+                        }
+                    }
+                }
+
+                if(!string.IsNullOrEmpty(model.Email) && model.Email != email)
+                {
+                    if(IsValidEmail(model.Email))
+                    {
+                        await SendVerificationCode(model.Email);
+                        HttpContext.Items["NewEmail"] = model.Email;
+                        HttpContext.Items["CurrentEmail"] = email;
+                        account.IsEmailVerified = false;
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Invalid email format" });
+                    }
+                }
+
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "User update successfully!", account });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private async Task<string> SaveImageAsync(IFormFile image)
+        {
+            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", image.FileName);
+            using(var stream = System.IO.File.Create(imagePath))
+            {
+                await image.CopyToAsync(stream);
+            }
+            return imagePath;
+        }
+
+        private void DeleteOldImage(string path)
+        {
+            if(System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
+        }
+
+        [HttpPost("forgot-password")]
+        public IActionResult HandleForgotPassword(string email)
+        {
+            try
+            {
+                var account = FindAccountByEmail(email);
+                if(account == null)
+                {
+                    return NotFound(new { message = "Not found account" });
+                }
+                return Ok(new { message = "Verification code has been sent to you."});//chuyển hướng đến action SendVerificationCode
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //xác thực mã xác thực để reset password
+        [HttpGet("reset-password")]
+        public IActionResult VerifyResetPasswordCode(string email, string code)
+        {
+            try
+            {
+                var storedCode = _memoryCache.Get<string>($"{email}_verificationCode");
+
+                if (storedCode == null)
+                {
+                    return BadRequest("Code is expired.");
+                }
+                if (storedCode != code)
+                {
+                    return BadRequest("Wrong code!");
+                }
+
+                _memoryCache.Remove($"{email}_verificationCode");
+                return Ok(new { message = "Verify code successfully!" });//chuyển hướng đến action ResetPassword
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword(string newPassword, string confirmPassword)
+        {
+            try
+            {
+                if(newPassword != confirmPassword)
+                {
+                    return BadRequest("Password and confirm password do not match.");
+                }
+
+                var email = User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value;
+                if (email == null)
+                {
+                    return Unauthorized(new { message = "You are logging out or your session is out. Please check your login status." });
+                }
+
+                var account = FindAccountByEmail(email!);
+
+                account!.Password = BCrypt.Net.BCrypt.HashPassword(newPassword, BCrypt.Net.BCrypt.GenerateSalt());
+                return Ok(new { message = "Your password has been changed." });
             }
             catch (Exception ex)
             {
