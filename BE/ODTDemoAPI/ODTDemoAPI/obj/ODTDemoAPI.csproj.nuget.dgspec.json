@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {}
+    "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {}
   },
   "projects": {
-    "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {
+    "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
+        "projectUniqueName": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
         "projectName": "ODTDemoAPI",
-        "projectPath": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
+        "projectPath": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
         "packagesPath": "C:\\Users\\issei\\.nuget\\packages\\",
-        "outputPath": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\obj\\",
+        "outputPath": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\issei\\AppData\\Roaming\\NuGet\\NuGet.Config",
