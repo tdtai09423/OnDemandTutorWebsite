@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\entities\\ondemandtutorcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\entities\\ondemandtutorcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\controllers\\tutorcerticontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\controllers\\tutorcerticontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -39,14 +51,6 @@
       "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\operationmodel\\googletutormodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\entities\\ondemandtutorcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\entities\\ondemandtutorcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\controllers\\sectioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\controllers\\sectioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -57,10 +61,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\entities\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -116,11 +116,11 @@
         },
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 17,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "ReviewRatingController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
@@ -128,12 +128,11 @@
               "RelativeToolTip": "ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
               "ViewState": "AQIAABAAAAAAAAAAAAAQwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T15:54:40.839Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-03T15:54:40.839Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "MajorController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\MajorController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\MajorController.cs",
@@ -141,12 +140,11 @@
               "RelativeToolTip": "ODTDemoAPI\\Controllers\\MajorController.cs",
               "ViewState": "AQIAAHIAAAAAAAAAAAAowAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T15:54:00.413Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-03T15:54:00.413Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "LearnerController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\LearnerController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\LearnerController.cs",
@@ -154,12 +152,11 @@
               "RelativeToolTip": "ODTDemoAPI\\Controllers\\LearnerController.cs",
               "ViewState": "AQIAADsAAAAAAAAAAAAgwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T15:53:50.18Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-03T15:53:50.18Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "TutorCertiController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\TutorCertiController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\TutorCertiController.cs",
@@ -172,7 +169,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "GoogleTutorModel.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\GoogleTutorModel.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\GoogleTutorModel.cs",
@@ -184,7 +181,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "RegisterLearnerModel.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
@@ -196,7 +193,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "GoogleLoginInputModel.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\GoogleLoginInputModel.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\GoogleLoginInputModel.cs",
@@ -208,7 +205,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "AuthService.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Services\\AuthService.cs",
@@ -256,7 +253,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "EmailService.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Services\\EmailService.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Services\\EmailService.cs",
@@ -268,7 +265,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "SectionController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\SectionController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\SectionController.cs",
@@ -292,7 +289,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "TutorController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\TutorController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\TutorController.cs",
@@ -300,8 +297,7 @@
               "RelativeToolTip": "ODTDemoAPI\\Controllers\\TutorController.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-01T06:56:22.909Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-01T06:56:22.909Z"
             },
             {
               "$type": "Document",
@@ -317,31 +313,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Program.cs",
               "ToolTip": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
               "RelativeToolTip": "ODTDemoAPI\\Program.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAQwB8AAAA8AAAA",
+              "ViewState": "AQIAAEwAAAAAAAAAAAAQwB8AAAA8AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-31T18:21:08.83Z"
+              "WhenOpened": "2024-05-31T18:21:08.83Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 0,
               "Title": "OnDemandTutorContext.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
               "ToolTip": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
               "RelativeToolTip": "ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
-              "ViewState": "AQIAACoAAAAAAAAAAAAcwDQAAAA+AAAA",
+              "ViewState": "AQIAACQAAAAAAAAAAAAiwDQAAAA+AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-30T18:28:20.793Z"
+              "WhenOpened": "2024-05-30T18:28:20.793Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\appsettings.json",
               "RelativeDocumentMoniker": "ODTDemoAPI\\appsettings.json",
@@ -349,11 +347,12 @@
               "RelativeToolTip": "ODTDemoAPI\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-05-30T17:11:47.683Z"
+              "WhenOpened": "2024-05-30T17:11:47.683Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "AccountController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\AccountController.cs",
@@ -361,8 +360,7 @@
               "RelativeToolTip": "ODTDemoAPI\\Controllers\\AccountController.cs",
               "ViewState": "AQIAAIwBAAAAAAAAAAAowM0BAAA2AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T17:48:05.043Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-28T17:48:05.043Z"
             }
           ]
         }
