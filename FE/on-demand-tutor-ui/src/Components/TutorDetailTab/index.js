@@ -13,6 +13,7 @@ import tutorAPI from '../../api/tutorAPI';
 import majorAPI from '../../api/majorAPI';
 import sectionAPI from '../../api/sectionAPI';
 import reviewRatingAPI from '../../api/ReviewRatingAPI';
+import LearnerReview from './component/learnerReview/learnerReview';
 
 
 function TutorDetailTab({ tutorId }) {
@@ -25,25 +26,27 @@ function TutorDetailTab({ tutorId }) {
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
     const [certi, setCerti] = useState([]);
+    const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
-        console.log(tutorId);
         const fetchTutors = async () => {
             try {
                 const tutor = await tutorAPI.get(tutorId);
                 const price = await sectionAPI.get(tutorId);
-                const rating = await reviewRatingAPI.get(tutorId);
+                const rating = await reviewRatingAPI.getRating(tutorId);
+                const reviews = await reviewRatingAPI.getReview(tutorId);
                 const certi = await tutorAPI.getCerti(tutorId);
                 setTutor(tutor.data);
                 setPrice(price.data);
                 setRating(rating.data);
                 setCerti(certi.data.$values);
+                setReviews(reviews.data.$values);
                 const majorID = tutor.data.majorId;
                 const major = await majorAPI.get(majorID);
                 setMajor(major.data);
-                console.log(certi.data.$values);
                 setFirstName(tutor.data.tutorNavigation.firstName);
                 setLastName(tutor.data.tutorNavigation.lastName);
+
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
@@ -144,10 +147,18 @@ function TutorDetailTab({ tutorId }) {
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
                     <ScheduleTab />
                 </Tab>
+                <Tab eventKey="review" title={<span className="information-tab-text">Review</span>} className="information-tab">
+                    {reviews.map((review) => (
+                        <div key={review.$id}>
+                            <hr />
+                            <LearnerReview id={review.learnerId} />{review.review}
+                        </div>
+                    ))}
+                </Tab>
                 <Tab eventKey="resume" title={<span className="information-tab-text">Resume</span>} className="information-tab">
                     <ul>
                         {certi.map((certi) => (
-                            <li>{certi.tutorCertificate}</li>
+                            <li key={certi.$id}>{certi.tutorCertificate}</li>
                         ))}
                     </ul>
                 </Tab>

@@ -3,8 +3,8 @@ import { CaretRightFill, CaretLeftFill } from 'react-bootstrap-icons'
 
 function ScheduleTab() {
     return (
-        <div class="container">
-            <div class="">
+        <div className="container">
+            <div className="">
                 <Button className="loginButton text-black border border-2 border-dark" variant="">
                     <CaretLeftFill className="schedule-icon"></CaretLeftFill>
                 </Button>
@@ -12,10 +12,10 @@ function ScheduleTab() {
                     <CaretRightFill className="schedule-icon"></CaretRightFill>
                 </Button>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="schedule-table">
-                        <table class="table bg-white">
+            <div className="row">
+                <div className="col-md-12">
+                    <div className="schedule-table">
+                        <table className="table bg-white">
                             <thead>
                                 <tr>
                                     <th>Monday</th>
@@ -24,64 +24,64 @@ function ScheduleTab() {
                                     <th>Thursday</th>
                                     <th>Friday</th>
                                     <th>Saturday</th>
-                                    <th class="last">Sunday</th>
+                                    <th className="last">Sunday</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="active">
-                                        <div class="hover">
+                                    <td className="active">
+                                        <div className="hover">
                                             <p>08:00</p>
                                         </div>
-                                        <div class="hover">
+                                        <div className="hover">
                                             <p>10:00</p>
                                         </div>
                                     </td>
-                                    <td class="active">
-                                        <div class="hover">
+                                    <td className="active">
+                                        <div className="hover">
                                             <p>08:00</p>
                                         </div>
-                                        <div class="hover">
+                                        <div className="hover">
                                             <p>10:00</p>
                                         </div>
                                     </td>
-                                    <td class="active">
-                                        <div class="hover">
+                                    <td className="active">
+                                        <div className="hover">
                                             <p>08:00</p>
                                         </div>
-                                        <div class="hover">
+                                        <div className="hover">
                                             <p>10:00</p>
                                         </div>
                                     </td>
-                                    <td class="active">
-                                        <div class="hover">
+                                    <td className="active">
+                                        <div className="hover">
                                             <p>08:00</p>
                                         </div>
-                                        <div class="hover">
+                                        <div className="hover">
                                             <p>10:00</p>
                                         </div>
                                     </td>
-                                    <td class="active">
-                                        <div class="hover">
+                                    <td className="active">
+                                        <div className="hover">
                                             <p>08:00</p>
                                         </div>
-                                        <div class="hover">
+                                        <div className="hover">
                                             <p>10:00</p>
                                         </div>
                                     </td>
-                                    <td class="active">
-                                        <div class="hover">
+                                    <td className="active">
+                                        <div className="hover">
                                             <p>08:00</p>
                                         </div>
-                                        <div class="hover">
+                                        <div className="hover">
                                             <p>10:00</p>
                                         </div>
                                     </td>
-                                    <td class="active">
-                                        <div class="hover">
+                                    <td className="active">
+                                        <div className="hover">
                                             <p>08:00</p>
                                         </div>
-                                        <div class="hover">
+                                        <div className="hover">
                                             <p>10:00</p>
                                         </div>
                                     </td>
