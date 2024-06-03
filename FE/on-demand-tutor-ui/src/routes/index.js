@@ -7,6 +7,7 @@ import SignUpTutor from "../pages/SignUpTutor";
 import TutorProfile from "../pages/TutorProfile";
 import SendReport from "../pages/SendReport";
 import Policy from "../pages/Policy";
+import AdminDashBoard from "../pages/AdminDashBoard";
 
 //Public Route
 const publicRoute = [
@@ -19,6 +20,7 @@ const publicRoute = [
     { path: '/tutor-profile', component: TutorProfile },
     { path: '/send-report', component: SendReport, layout: null },
     { path: '/policy', component: Policy, layout: null },
+    { path: '/admin-dash-board', component: AdminDashBoard, layout: null },
 
 
 ];
