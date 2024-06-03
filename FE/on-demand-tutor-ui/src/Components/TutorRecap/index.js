@@ -2,13 +2,33 @@ import { Button, Card, Row, Col, Image, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './TutorRecap.scss'
 import { Link } from 'react-router-dom'
-import { Globe, PersonFill, ChatSquareDotsFill } from 'react-bootstrap-icons'
+import { Globe, PersonFill, ChatSquareDotsFill, StarFill } from 'react-bootstrap-icons'
+import { useState, useEffect } from 'react';
+import sectionAPI from '../../api/sectionAPI';
+import reviewRatingAPI from '../../api/ReviewRatingAPI';
 
 function TutorRecap({ tutor }) {
 
     const firstName = tutor.tutorNavigation.firstName;
     const lastName = tutor.tutorNavigation.lastName;
     console.log();
+
+    const [price, setPrice] = useState();
+    const [rating, setRating] = useState();
+
+    useEffect(() => {
+        const fetchTutors = async () => {
+            try {
+                const price = await sectionAPI.get(tutor.tutorId);
+                const rating = await reviewRatingAPI.get(tutor.tutorId);
+                setPrice(price.data);
+                setRating(rating.data);
+            } catch (error) {
+                console.error("Error fetching tutors:", error);
+            }
+        };
+        fetchTutors();
+    }, []);
 
     return (
         <Card className="profile-card">
@@ -50,7 +70,16 @@ function TutorRecap({ tutor }) {
                         </Row>
 
                         <Row className="profile-footer">
-                            <Col md={6}>
+                            <Col md={3}>
+                                <div className='d-flex'>
+                                    <h2 style={{ marginRight: '15px' }}>{rating}</h2><span><StarFill style={{ fontSize: '40px' }}></StarFill></span>
+                                </div>
+
+                            </Col>
+                            <Col md={3}>
+                                <div className='d-block'>
+                                    <h3><strong>₫</strong>{price}</h3><div>50-min lesson</div>
+                                </div>
 
                             </Col>
                             <Col className="text-right" md={6}>
