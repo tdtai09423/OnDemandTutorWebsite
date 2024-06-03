@@ -10,13 +10,12 @@ import { useState } from 'react';
 import ScheduleTab from '../../pages/TutorDetail/components/ScheduleTab';
 
 
-function TutorDetailTab({ tutorParam }) {
+function TutorDetailTab({ tutorParam, tutorCeri }) {
 
     const [key, setKey] = useState('about');
-    //const tutorFirstName = tutorParam.tutorNavigation.firstName;
-    //const tutorLastName = tutorParam.tutorNavigation.LastName;
 
-    console.log(tutorParam);
+    console.log(tutorParam.tutorNavigation);
+    console.log(tutorCeri);
 
     return (
         <Container className="profile-card-detail">
@@ -30,22 +29,19 @@ function TutorDetailTab({ tutorParam }) {
                     <Row>
                         <Col md={6}>
                             <Card.Body>
-
-
                                 <Card.Title>
-                                    {tutorParam.firstName} {tutorParam.lastName}
-                                    {/* + {" "} + {tutorParam.tutorNavigation.lastName} */}
-                                    <span className="flag">🇹🇬</span>
+                                    {tutorParam.tutorNavigation.firstName} {}
+                                    <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutorParam.nationality}</span>
                                 </Card.Title>
                                 <Card.Text>
                                     <p className="language">
-                                        <Globe className="icon" /> English
+                                        <Globe className="icon" /> {tutorParam.majorId}
                                     </p>
                                     <p className="students">
                                         <PersonFill className="icon" /> 2 active students · 2 lessons
                                     </p>
                                     <p className="speaks">
-                                        <ChatSquareDotsFill className="icon" /> Speaks English (Proficient), French (Proficient) +1
+                                        <ChatSquareDotsFill className="icon" /> {tutorParam.tutorEmail}
                                     </p>
                                 </Card.Text>
 
@@ -77,17 +73,13 @@ function TutorDetailTab({ tutorParam }) {
                 variant="underline"
             >
                 <Tab eventKey="about" title={<span className="information-tab-text">About</span>} className="information-tab">
-                    {tutorParam.description}
+                    {tutorParam.tutorDescription}
                 </Tab>
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
                     <ScheduleTab />
                 </Tab>
                 <Tab eventKey="resume" title={<span className="information-tab-text">Resume</span>} className="information-tab">
-                    <ul>
-                        {tutorParam.certificated.map((certificate, index) => (
-                            <li key={index}>{certificate}</li>
-                        ))}
-                    </ul>
+                    {tutorParam.resume}
                 </Tab>
             </Tabs>
         </Container>
