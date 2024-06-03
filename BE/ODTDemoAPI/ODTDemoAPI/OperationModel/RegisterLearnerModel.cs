@@ -7,6 +7,6 @@ namespace ODTDemoAPI.OperationModel
         [Required]
         public int LearnerAge { get; set; }
 
-        public string? LearnPicture { get; set; }
+        public IFormFile? LearnerImage { get; set; }
     }
 }

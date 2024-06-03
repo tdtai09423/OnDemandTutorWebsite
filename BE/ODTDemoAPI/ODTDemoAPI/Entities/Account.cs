@@ -19,6 +19,10 @@ public partial class Account
     public string RoleId { get; set; } = null!;
 
     public bool Status { get; set; }
+
+    public bool IsEmailVerified { get; set; }
+
+    public DateTime CreatedDate { get; set; }
     [JsonIgnore]
     public virtual Learner? Learner { get; set; }
     [JsonIgnore]

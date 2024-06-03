@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import './style.scss'
-import { Link, useNavigate } from 'react-router-dom'
-import SignUpStudentAPI from '../../api/signUpStudent';
+import './style.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import SignUpStudentAPI from '../../api/signUpStudentAPI';
 import { toast } from 'react-toastify';
 function SignUpStudent() {
     const [firstName, setFirstName]= useState("");
@@ -30,12 +30,16 @@ function SignUpStudent() {
     }
    
     const handleSignUp = async () => {
+        const formData = new FormData();
         console.log("handleSignUp");
-        console.log(firstName,lastName,email, password,confirmPassword,learnerAge,learnerPicture.name);
+        formData.append('file', learnerPicture);
+
+        console.log(learnerAge,formData,firstName,lastName,email, password,confirmPassword);
         try {
-            let res = await SignUpStudentAPI(firstName,lastName,email, password,confirmPassword,learnerAge,learnerPicture);
-            if (res && res.Ok) {
-                toast.success(res.Ok.message);
+            let res = await SignUpStudentAPI(learnerAge,formData,firstName,lastName,email, password,confirmPassword);
+            if (res) {
+                console.log(res);
+                toast.success("sign up successful!");
                 navigate("/login");
             } 
         } catch (error) {

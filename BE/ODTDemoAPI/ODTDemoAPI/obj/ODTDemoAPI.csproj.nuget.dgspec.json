@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {}
+    "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {}
   },
   "projects": {
-    "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {
+    "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
+        "projectUniqueName": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
         "projectName": "ODTDemoAPI",
-        "projectPath": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
+        "projectPath": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.csproj",
         "packagesPath": "C:\\Users\\issei\\.nuget\\packages\\",
-        "outputPath": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\obj\\",
+        "outputPath": "D:\\OnDemandTutor\\ODTDemoAPI\\ODTDemoAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\issei\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -48,6 +48,14 @@
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.6.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.Google": {
+              "target": "Package",
+              "version": "[8.0.6, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

@@ -17,6 +17,7 @@ function Login() {
         try {
             let res = await loginAPI(email, password, rememberMe);
             if (res && res.data.token) {
+                console.log(res.data.token);
                 localStorage.setItem("token", res.data.token);
                 toast.success("Login successful!");
                 navigate("/");
@@ -36,8 +37,6 @@ function Login() {
                     or <Link className="forgot-password" as={Link} to={"/sign-up-tutor"}> Sign up as a tutor</Link>
                 </div>
                 <button className='ex-button'><i className="fa-brands fa-google"></i>  Continue with Google</button>
-                <button className='ex-button'><i className="fa-brands fa-facebook"></i>  Continue with Facebook</button>
-                <button className='ex-button'><i className="fa-brands fa-apple"></i> Continue with Apple</button>
                 <div className='text'>or</div>
 
                 <div className='text'>Email</div>
