@@ -5,16 +5,18 @@ import './TutorDetailTab.scss'
 import { Link } from 'react-router-dom'
 import { Globe, PersonFill, ChatSquareDotsFill } from 'react-bootstrap-icons'
 import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs'; 
+import Tabs from 'react-bootstrap/Tabs';
 import { useState } from 'react';
+import ScheduleTab from '../../pages/TutorDetail/components/ScheduleTab';
+
 
 function TutorDetailTab({ tutorParam }) {
 
     const [key, setKey] = useState('about');
-    const tutorFirstName = tutorParam.tutorNavigation.firstName;
-    const tutorLastName = tutorParam.tutorNavigation.LastName;
+    //const tutorFirstName = tutorParam.tutorNavigation.firstName;
+    //const tutorLastName = tutorParam.tutorNavigation.LastName;
 
-    console.log(tutorParam.tutorNavigation);
+    console.log(tutorParam);
 
     return (
         <Container className="profile-card-detail">
@@ -31,9 +33,9 @@ function TutorDetailTab({ tutorParam }) {
 
 
                                 <Card.Title>
-                                    {tutorFirstName}
-                                     {/* + {" "} + {tutorParam.tutorNavigation.lastName} */}
-                                     <span className="flag">🇹🇬</span>
+                                    {tutorParam.firstName} {tutorParam.lastName}
+                                    {/* + {" "} + {tutorParam.tutorNavigation.lastName} */}
+                                    <span className="flag">🇹🇬</span>
                                 </Card.Title>
                                 <Card.Text>
                                     <p className="language">
@@ -75,13 +77,17 @@ function TutorDetailTab({ tutorParam }) {
                 variant="underline"
             >
                 <Tab eventKey="about" title={<span className="information-tab-text">About</span>} className="information-tab">
-                    Tab content for about
+                    {tutorParam.description}
                 </Tab>
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
-                    Tab content for schedule
+                    <ScheduleTab />
                 </Tab>
                 <Tab eventKey="resume" title={<span className="information-tab-text">Resume</span>} className="information-tab">
-                    Tab content for resume
+                    <ul>
+                        {tutorParam.certificated.map((certificate, index) => (
+                            <li key={index}>{certificate}</li>
+                        ))}
+                    </ul>
                 </Tab>
             </Tabs>
         </Container>

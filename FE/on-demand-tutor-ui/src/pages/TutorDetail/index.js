@@ -6,25 +6,37 @@ import tutorAPI from '../../api/tutorAPI';
 import TutorDetailTab from '../../Components/TutorDetailTab';// Import Bootstrap components
 
 function TutorDetail() {
-    
+
     const [tutor, setTutor] = useState({});
 
+    // useEffect(() => {
+    //     const fetchTutors = async () => {
+    //         try {
+    //             const tutor = await tutorAPI.get(1);
+    //             setTutor(tutor.data);
+    //             console.log(tutor.data);
+    //         } catch (error) {
+    //             console.error("Error fetching tutors:", error);
+    //         }
+    //     };
+    //     fetchTutors();
+    // }, []);
     useEffect(() => {
-        const fetchTutors = async () => {
-            try {
-                const tutor = await tutorAPI.get(1);
-                setTutor(tutor.data);
-                console.log(tutor.data);
-            } catch (error) {
-                console.error("Error fetching tutors:", error);
-            }
-        };
-        fetchTutors();
+        setTutor({
+            firstName: "John",
+            lastName: "Doe",
+            email: '',
+            description: "Hello",
+            certificated: ["Certificate1", "Certificate2", "Certificate3"]
+
+        })
     }, []);
 
     return (
 
-        <TutorDetailTab tutorParam={tutor}/>
+        <TutorDetailTab
+            tutorParam={tutor}
+        />
     );
 };
 
