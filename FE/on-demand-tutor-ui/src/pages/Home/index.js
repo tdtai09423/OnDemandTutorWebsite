@@ -13,7 +13,7 @@ function Home() {
             try {
                 const tutorList = await tutorAPI.getAll();
                 setTutors(tutorList.data.$values);
-                console.log(tutorList.data.$values);
+                console.log(tutorList);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }

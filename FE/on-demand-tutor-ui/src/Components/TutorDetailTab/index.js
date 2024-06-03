@@ -8,14 +8,32 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import { useState } from 'react';
 import ScheduleTab from '../../pages/TutorDetail/components/ScheduleTab';
+import { useEffect } from 'react';
+import tutorAPI from '../../api/tutorAPI';
 
 
-function TutorDetailTab({ tutorParam, tutorCeri }) {
+function TutorDetailTab({ tutorId }) {
 
     const [key, setKey] = useState('about');
+    const [tutor, setTutor] = useState({});
 
-    console.log(tutorParam.tutorNavigation);
-    console.log(tutorCeri);
+    useEffect(() => {
+        console.log(tutorId);
+        const fetchTutors = async () => {
+            try {
+                const tutor = await tutorAPI.get(tutorId);
+                //const certi = await tutorAPI.getCerti(tutorId);
+                setTutor(tutor.data);
+                console.log(tutor.data);
+            } catch (error) {
+                console.error("Error fetching tutors:", error);
+            }
+        };
+        fetchTutors();
+    }, []);
+
+
+    //console.log(tutorCeri);
 
     return (
         <Container className="profile-card-detail">
@@ -30,18 +48,18 @@ function TutorDetailTab({ tutorParam, tutorCeri }) {
                         <Col md={6}>
                             <Card.Body>
                                 <Card.Title>
-                                    {tutorParam.tutorNavigation.firstName} {}
-                                    <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutorParam.nationality}</span>
+                                    {tutor.tutorNavigation.firstName} { }
+                                    <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutor.nationality}</span>
                                 </Card.Title>
                                 <Card.Text>
                                     <p className="language">
-                                        <Globe className="icon" /> {tutorParam.majorId}
+                                        <Globe className="icon" /> {tutor.majorId}
                                     </p>
                                     <p className="students">
                                         <PersonFill className="icon" /> 2 active students · 2 lessons
                                     </p>
                                     <p className="speaks">
-                                        <ChatSquareDotsFill className="icon" /> {tutorParam.tutorEmail}
+                                        <ChatSquareDotsFill className="icon" /> {tutor.tutorEmail}
                                     </p>
                                 </Card.Text>
 
@@ -73,13 +91,13 @@ function TutorDetailTab({ tutorParam, tutorCeri }) {
                 variant="underline"
             >
                 <Tab eventKey="about" title={<span className="information-tab-text">About</span>} className="information-tab">
-                    {tutorParam.tutorDescription}
+                    {tutor.tutorDescription}
                 </Tab>
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
                     <ScheduleTab />
                 </Tab>
                 <Tab eventKey="resume" title={<span className="information-tab-text">Resume</span>} className="information-tab">
-                    {tutorParam.resume}
+                    {tutor.resume}
                 </Tab>
             </Tabs>
         </Container>

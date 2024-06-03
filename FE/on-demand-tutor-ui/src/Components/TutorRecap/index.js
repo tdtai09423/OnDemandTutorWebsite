@@ -50,10 +50,10 @@ function TutorRecap({ tutor }) {
                         </Row>
 
                         <Row className="profile-footer">
-                            <Col md={4}>
-                                
+                            <Col md={6}>
+
                             </Col>
-                            <Col className="text-right" md={8}>
+                            <Col className="text-right" md={6}>
                                 <Container className="button-container">
                                     <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
                                     <Button variant="outline-secondary" className="message-btn">Send message</Button>
