@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './style.scss';
 import { Link, useNavigate } from 'react-router-dom';
-import SignUpStudentAPI from '../../api/signUpStudentAPI';
+import SignUpStudentAPI from '../../api/signUpStudent';
 import { toast } from 'react-toastify';
 function SignUpStudent() {
     const [firstName, setFirstName]= useState("");
@@ -30,21 +30,40 @@ function SignUpStudent() {
     }
    
     const handleSignUp = async () => {
-        const formData = new FormData();
-        console.log("handleSignUp");
-        formData.append('file', learnerPicture);
+        // const formData = new FormData();
+        // console.log("handleSignUp");
+        // formData.append('file', learnerPicture);
 
-        console.log(learnerAge,formData,firstName,lastName,email, password,confirmPassword);
+        // console.log(learnerAge,formData,firstName,lastName,email, password,confirmPassword);
+        // try {
+        //     let res = await SignUpStudentAPI(learnerAge,formData,firstName,lastName,email, password,confirmPassword);
+        //     if (res) {
+        //         console.log(res);
+        //         toast.success("sign up successful!");
+        //         navigate("/login");
+        //     } 
+        // } catch (error) {
+        //     // Handle errors from the API call here
+        //     toast.error("An error occurred during login.");
+        //     console.error("Sign up error:", error);
+        // }
+        const formData = new FormData();
+        formData.append('file', learnerPicture);
+        formData.append('firstName', firstName);
+        formData.append('lastName', lastName);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('confirmPassword', confirmPassword);
+        formData.append('learnerAge', learnerAge);
+
         try {
-            let res = await SignUpStudentAPI(learnerAge,formData,firstName,lastName,email, password,confirmPassword);
+            let res = await SignUpStudentAPI(formData);
             if (res) {
-                console.log(res);
-                toast.success("sign up successful!");
+                toast.success("Sign up successful!");
                 navigate("/login");
             } 
         } catch (error) {
-            // Handle errors from the API call here
-            toast.error("An error occurred during login.");
+            toast.error("An error occurred during sign up.");
             console.error("Sign up error:", error);
         }
     }
