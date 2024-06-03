@@ -11,7 +11,7 @@ function TutorRecap({ tutor }) {
 
     const firstName = tutor.tutorNavigation.firstName;
     const lastName = tutor.tutorNavigation.lastName;
-    console.log();
+    console.log(tutor);
 
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
@@ -34,7 +34,7 @@ function TutorRecap({ tutor }) {
         <Card className="profile-card">
             <Row noGutters>
                 <Col md={3}>
-                    <Image src={tutor.image} className="profile-pic" />
+                    <Image src={tutor.tutorPicture} className="profile-pic" />
                 </Col>
                 <Col md={9}>
                     <Card.Body>
@@ -74,7 +74,6 @@ function TutorRecap({ tutor }) {
                                 <div className='d-flex'>
                                     <h2 style={{ marginRight: '15px' }}>{rating}</h2><span><StarFill style={{ fontSize: '40px' }}></StarFill></span>
                                 </div>
-
                             </Col>
                             <Col md={3}>
                                 <div className='d-block'>
