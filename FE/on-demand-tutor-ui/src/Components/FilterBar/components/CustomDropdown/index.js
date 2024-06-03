@@ -4,7 +4,7 @@ import './CustomDropdown.scss';
 import Slider from 'rc-slider';// Custom styles for the range slider
 
 function CustomDropdown() {
-    const [priceRange, setPriceRange] = useState([20377, 1018850]);
+    const [priceRange, setPriceRange] = useState([0, 1000000]);
 
     const handlePriceChange = (value) => {
         setPriceRange(value);
@@ -22,12 +22,12 @@ function CustomDropdown() {
             <Dropdown.Menu className="p-3" style={{ width: '300px' }}>
                 <div>
                     <p className="text-center">
-                        ₫{priceRange[0].toLocaleString()} – ₫{priceRange[1].toLocaleString()}+
+                        ₫{priceRange[0].toLocaleString()} – ₫{priceRange[1].toLocaleString()}
                     </p>
                     <Slider
                         range
-                        min={20377}
-                        max={1018850}
+                        min={0}
+                        max={1000000}
                         defaultValue={priceRange}
                         onChange={handlePriceChange}
                     />

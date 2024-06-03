@@ -14,7 +14,7 @@ namespace ODTDemoAPI.OperationModel
         public string TutorDescription { get; set; } = null!;
 
         [Required]
-        public string TutorPicture { get; set; } = null!;
+        public IFormFile TutorImage { get; set; } = null!;
 
         [Required]
         public string MajorId { get; set; } = null!;
