@@ -645,3 +645,6 @@ D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\refint\ODTDemoAPI.dll
 D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ODTDemoAPI.pdb
 D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ODTDemoAPI.genruntimeconfig.cache
 D:\ODTTest\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ref\ODTDemoAPI.dll
+C:\FPT\sms5\OnDemandTutorWebsite\BE\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ODTDemoAPI.dll
+C:\FPT\sms5\OnDemandTutorWebsite\BE\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\refint\ODTDemoAPI.dll
+C:\FPT\sms5\OnDemandTutorWebsite\BE\ODTDemoAPI\ODTDemoAPI\obj\Debug\net8.0\ODTDemoAPI.pdb

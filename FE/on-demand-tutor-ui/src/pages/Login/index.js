@@ -1,26 +1,31 @@
 import React, { useState } from 'react';
 import './style.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 import loginAPI from '../../api/loginAPI';
 import { toast } from 'react-toastify';
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [rememberMe, setRememberMe] = useState(false);
+    const navigate = useNavigate();
+    const handleRememberMeChange = (event) => {
+        setRememberMe(event.target.checked);
+    };
     const handleLogIn = async () => {
         console.log("handleLogin");
-        if (!email || !password) {
-            toast.error("Missing email or password");
-            console.log("login failed");
-            return;
+        console.log(email, password, rememberMe);
+        try {
+            let res = await loginAPI(email, password, rememberMe);
+            if (res && res.data.token) {
+                localStorage.setItem("token", res.data.token);
+                toast.success("Login successful!");
+                navigate("/");
+            }
+        } catch (error) {
+            // Handle errors from the API call here
+            toast.error("An error occurred during login.");
+            console.error("Login error:", error);
         }
-        let res = await loginAPI(email, password);
-        if (res && res.data.token) {
-            localStorage.setItem("token", res.data.token);
-            console.log("login succed");
-            toast.success("Login okay!!!");
-        }
-
     }
 
     return (
@@ -41,10 +46,10 @@ function Login() {
                 <div className='text'>Password</div>
                 <input type='password' placeholder='Your password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
                 <a className='forgot-password' href="forgot_password.html">Forgot Password?</a>
-                {/* <div className='checkBox'>
-                    <input type="checkbox" id="rememberMe" name="rememberMe" defaultChecked />
+                <div className='checkBox'>
+                    <input type="checkbox" id="rememberMe" name="rememberMe"  checked={rememberMe} onChange={handleRememberMeChange} />
                     <label for="rememberMe" >Remember me</label>
-                </div> */}
+                </div>
                 <button className={email && password ? "active" : ""}
                     onClick={() => handleLogIn()}
                 >Log in</button>

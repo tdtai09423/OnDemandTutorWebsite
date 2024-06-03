@@ -1,54 +1,62 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\ODTTest\\ODTDemoAPI\\",
+  "WorkspaceRootPath": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\controllers\\reviewratingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\controllers\\reviewratingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\ODTDemoAPI.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\authoperation\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\authoperation\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Properties\\launchSettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Properties\\launchSettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\ReviewRatingController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Controllers\\ReviewRatingController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\controllers\\securecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\controllers\\securecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\SecureController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Controllers\\SecureController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\operationmodel\\loginmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\operationmodel\\loginmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\OnDemandTutorContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Entities\\OnDemandTutorContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\AuthOperation\\AuthService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\AuthOperation\\AuthService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\entities\\ondemandtutorcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\entities\\ondemandtutorcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\TutorCerti.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Entities\\TutorCerti.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\operationmodel\\registermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\operationmodel\\registermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\entities\\tutorcerti.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\entities\\tutorcerti.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Controllers\\AccountController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\entities\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\entities\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\LoginModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\OperationModel\\LoginModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\odttest\\odtdemoapi\\odtdemoapi\\operationmodel\\registerlearnermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\operationmodel\\registerlearnermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\OperationModel\\RegisterModel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\Account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Entities\\Account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:ODTDemoAPI\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -60,6 +68,10 @@
           "DockedWidth": 200,
           "SelectedChildIndex": 6,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -82,159 +94,176 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SecureController.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\SecureController.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\SecureController.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\SecureController.cs",
-              "RelativeToolTip": "ODTDemoAPI\\Controllers\\SecureController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-29T05:23:10.477Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ReviewRatingController.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
-              "RelativeToolTip": "ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
-              "ViewState": "AQIAADIAAAAAAAAAAAAgwEMAAABDAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-29T05:19:56.386Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "OnDemandTutorContext.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
-              "RelativeToolTip": "ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
-              "ViewState": "AQIAAEMAAAAAAAAAAAAqwDQAAAA7AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T21:00:09.473Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AuthService.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\AuthOperation\\AuthService.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\AuthOperation\\AuthService.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\AuthOperation\\AuthService.cs",
-              "RelativeToolTip": "ODTDemoAPI\\AuthOperation\\AuthService.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAABMAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T20:40:13.633Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\appsettings.json",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\appsettings.json",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\appsettings.json",
-              "RelativeToolTip": "ODTDemoAPI\\appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAABqAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-05-28T20:35:46.331Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "TutorCerti.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Entities\\TutorCerti.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\TutorCerti.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Entities\\TutorCerti.cs",
-              "RelativeToolTip": "ODTDemoAPI\\Entities\\TutorCerti.cs",
+              "Title": "ODTDemoAPI.http",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.http",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\ODTDemoAPI.http",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\ODTDemoAPI.http",
+              "RelativeToolTip": "ODTDemoAPI\\ODTDemoAPI.http",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T19:58:13.44Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "RegisterLearnerModel.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
-              "RelativeToolTip": "ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T19:25:05.846Z",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2024-06-02T09:17:18.81Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\AccountController.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "ODTDemoAPI\\Controllers\\AccountController.cs",
-              "ViewState": "AQIAAL0AAAAAAAAAAAAowMkAAABEAAAA",
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Properties\\launchSettings.json",
+              "RelativeToolTip": "ODTDemoAPI\\Properties\\launchSettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAATAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-06-02T09:16:20.648Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SecureController.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\SecureController.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\SecureController.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\SecureController.cs",
+              "RelativeToolTip": "ODTDemoAPI\\Controllers\\SecureController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T17:48:05.043Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-29T05:23:10.477Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ReviewRatingController.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
+              "RelativeToolTip": "ODTDemoAPI\\Controllers\\ReviewRatingController.cs",
+              "ViewState": "AQIAADIAAAAAAAAAAAAgwEMAAABDAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-29T05:19:56.386Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "LoginModel.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\LoginModel.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\LoginModel.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\LoginModel.cs",
-              "RelativeToolTip": "ODTDemoAPI\\OperationModel\\LoginModel.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAA8AAAA1AAAA",
+              "Title": "OnDemandTutorContext.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
+              "RelativeToolTip": "ODTDemoAPI\\Entities\\OnDemandTutorContext.cs",
+              "ViewState": "AQIAAEMAAAAAAAAAAAAqwDQAAAA7AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T17:46:32.515Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "RegisterModel.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterModel.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\RegisterModel.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterModel.cs",
-              "RelativeToolTip": "ODTDemoAPI\\OperationModel\\RegisterModel.cs",
-              "ViewState": "AQIAABEAAAAAAAAAAAAgwAQAAAAZAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T17:38:44.174Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Account.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Entities\\Account.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\Account.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Entities\\Account.cs",
-              "RelativeToolTip": "ODTDemoAPI\\Entities\\Account.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAwwCYAAAAtAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-28T17:00:12.71Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-28T21:00:09.473Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\AuthOperation\\AuthService.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\AuthOperation\\AuthService.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\AuthOperation\\AuthService.cs",
+              "RelativeToolTip": "ODTDemoAPI\\AuthOperation\\AuthService.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABMAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T20:40:13.633Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\appsettings.json",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\appsettings.json",
+              "RelativeToolTip": "ODTDemoAPI\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAA3AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-05-28T20:35:46.331Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TutorCerti.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\TutorCerti.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\TutorCerti.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\TutorCerti.cs",
+              "RelativeToolTip": "ODTDemoAPI\\Entities\\TutorCerti.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T19:58:13.44Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "RegisterLearnerModel.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
+              "RelativeToolTip": "ODTDemoAPI\\OperationModel\\RegisterLearnerModel.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T19:25:05.846Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "ODTDemoAPI\\Controllers\\AccountController.cs",
+              "ViewState": "AQIAAL0AAAAAAAAAAAAowMkAAABEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T17:48:05.043Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "LoginModel.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\LoginModel.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\LoginModel.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\LoginModel.cs",
+              "RelativeToolTip": "ODTDemoAPI\\OperationModel\\LoginModel.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAA8AAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T17:46:32.515Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "RegisterModel.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterModel.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\RegisterModel.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\RegisterModel.cs",
+              "RelativeToolTip": "ODTDemoAPI\\OperationModel\\RegisterModel.cs",
+              "ViewState": "AQIAABEAAAAAAAAAAAAgwAQAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T17:38:44.174Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Account.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\Account.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\Account.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\Account.cs",
+              "RelativeToolTip": "ODTDemoAPI\\Entities\\Account.cs",
+              "ViewState": "AQIAABYAAAAAAAAAAAAwwCYAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T17:00:12.71Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
               "Title": "Program.cs",
-              "DocumentMoniker": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
+              "DocumentMoniker": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Program.cs",
-              "ToolTip": "D:\\ODTTest\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
+              "ToolTip": "C:\\FPT\\sms5\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
               "RelativeToolTip": "ODTDemoAPI\\Program.cs",
               "ViewState": "AQIAAEkAAAAAAAAAAAAkwE8AAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-27T10:14:09.552Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-27T10:14:09.552Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
             }
           ]
         }
