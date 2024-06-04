@@ -78,6 +78,14 @@ namespace ODTDemoAPI.Controllers
                 if (account != null)
                 {
                     var token = _authService.GenerateToken(account);
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = (DateTime?)null
+                    };
+                    Response.Cookies.Append("jwt", token, cookieOptions);
                     return Ok(new { token });
                 }
                 else

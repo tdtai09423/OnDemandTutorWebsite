@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ODTDemoAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+72cc492b8678db20cc7d0a470cd74c77b0b289ee")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f04396f7d461bdefa549975dd4529769ee53fc9")]
 [assembly: System.Reflection.AssemblyProductAttribute("ODTDemoAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ODTDemoAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
