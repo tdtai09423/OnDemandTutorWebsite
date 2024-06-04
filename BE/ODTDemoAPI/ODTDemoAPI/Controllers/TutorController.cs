@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
-using ODTDemoAPI.OutputModel;
 
 namespace ODTDemoAPI.Controllers
 {

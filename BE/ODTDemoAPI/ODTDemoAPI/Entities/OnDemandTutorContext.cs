@@ -53,6 +53,8 @@ public partial class OnDemandTutorContext : DbContext
             entity.Property(e => e.Password).HasMaxLength(60);
             entity.Property(e => e.RoleId).HasMaxLength(10);
             entity.Property(e => e.Status).HasDefaultValue(true);
+            entity.Property(e => e.IsEmailVerified).HasDefaultValue(false);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
         });
 
         modelBuilder.Entity<Curriculum>(entity =>

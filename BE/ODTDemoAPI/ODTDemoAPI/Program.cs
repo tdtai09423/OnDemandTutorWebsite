@@ -7,6 +7,7 @@ using ODTDemoAPI.Entities;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ODTDemoAPI.OperationModel;
 
 namespace ODTDemoAPI
 {
@@ -24,6 +25,18 @@ namespace ODTDemoAPI
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
             });
 
+            builder.Services.AddMemoryCache();
+
+            builder.Services.AddHostedService<EmailVerificationCleanupService>();
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -35,8 +48,8 @@ namespace ODTDemoAPI
             {
                 IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
 
-                options.ClientId = googleAuthNSection["ClientId"];
-                options.ClientSecret = googleAuthNSection["ClientSecret"];
+                options.ClientId = googleAuthNSection["ClientId"]!;
+                options.ClientSecret = googleAuthNSection["ClientSecret"]!;
                 options.CallbackPath = "/login-google";
             });
 
@@ -72,6 +85,7 @@ namespace ODTDemoAPI
                 };
             });
 
+            builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddAuthorization();
             builder.Services.AddScoped<IAuthService,AuthService>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -81,6 +95,9 @@ namespace ODTDemoAPI
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("OnDemandTutor"));
             });
+
+            builder.Services.AddLogging();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", builder =>
@@ -104,6 +121,10 @@ namespace ODTDemoAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHttpsRedirection();
+
+            app.UseSession();
             app.UseCors("AllowAll");
 
             app.MapControllers();

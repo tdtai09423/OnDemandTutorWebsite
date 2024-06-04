@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 
 namespace ODTDemoAPI.Controllers
@@ -15,11 +16,11 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetCertiById(int id)
+        public async Task<IActionResult> GetCertisById(int id)
         {
             try
             {
-                var tutorCerti = findCertiByTutorId(id);
+                var tutorCerti = await _context.TutorCertis.Where(t => t.TutorId == id).ToListAsync();
                 if (tutorCerti != null)
                 {
                     return Ok(tutorCerti);
@@ -133,12 +134,6 @@ namespace ODTDemoAPI.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
-
-        private TutorCerti? findCertiByTutorId(int id)
-        {
-            var tutorCerti = _context.TutorCertis.SingleOrDefault(t => t.TutorId == id);
-            return tutorCerti;
         }
     }
 }
