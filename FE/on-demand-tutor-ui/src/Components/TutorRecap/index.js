@@ -6,6 +6,7 @@ import { Globe, PersonFill, ChatSquareDotsFill, StarFill } from 'react-bootstrap
 import { useState, useEffect } from 'react';
 import sectionAPI from '../../api/sectionAPI';
 import reviewRatingAPI from '../../api/ReviewRatingAPI';
+import majorAPI from '../../api/majorAPI';
 
 function TutorRecap({ tutor }) {
 
@@ -15,14 +16,18 @@ function TutorRecap({ tutor }) {
 
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
+    const [major, setMajor] = useState('');
 
     useEffect(() => {
         const fetchTutors = async () => {
             try {
                 const price = await sectionAPI.get(tutor.tutorId);
-                const rating = await reviewRatingAPI.get(tutor.tutorId);
+                const rating = await reviewRatingAPI.getRating(tutor.tutorId);
                 setPrice(price.data);
                 setRating(rating.data);
+                const majorID = tutor.majorId;
+                const major = await majorAPI.get(majorID);
+                setMajor(major.data);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
@@ -34,18 +39,23 @@ function TutorRecap({ tutor }) {
         <Card className="profile-card">
             <Row noGutters>
                 <Col md={3}>
-                    <Image src={tutor.tutorPicture} className="profile-pic" />
+                    <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
+                        <Image src={tutor.tutorPicture} className="profile-pic" />
+                    </Link>
                 </Col>
                 <Col md={9}>
                     <Card.Body>
                         <Row>
-                            <Col md={8}>
+                            <Col md={12}>
                                 <Card.Title className="tutor-name" >
-                                    {firstName} {lastName}<span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutor.nationality}</span>
+                                    <Link className="" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
+                                        {firstName} {lastName}
+                                    </Link>
+                                    <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutor.nationality}</span>
                                 </Card.Title>
                                 <Card.Text>
                                     <p className="language">
-                                        <Globe className="icon" /> {tutor.majorId}
+                                        <Globe className="icon" /> {major.majorName}
                                     </p>
                                     <p className="students">
                                         <PersonFill className="icon" /> {tutor.activeStudents}2 active students · {tutor.lessons}2 lessons
@@ -58,14 +68,8 @@ function TutorRecap({ tutor }) {
                                     <p className="tutor-description">
                                         {tutor.tutorDescription}
                                     </p>
-                                    <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>Read more</Link>
+                                    <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>More information</Link>
                                 </Card.Text>
-                            </Col>
-                            <Col md={4}>
-                                <div className="price">
-                                    <span className="amount">{tutor.price}</span>
-                                    <span className="duration">{tutor.duration}</span>
-                                </div>
                             </Col>
                         </Row>
 

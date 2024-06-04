@@ -174,7 +174,7 @@ function FilterBar() {
                     </InputGroup>
                 </Col>
                 <Col md={1} className="d-flex justify-content-between">
-                    <Button className="loginButton text-black border border-2 border-dark" variant="outline-success" onClick={submitFilter}>
+                    <Button className="loginButton text-black border border-2 border-dark" variant="" onClick={submitFilter}>
                         <span className="loginContent">Apply</span>
                     </Button>
                 </Col>

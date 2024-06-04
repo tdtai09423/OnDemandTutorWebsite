@@ -1,7 +1,61 @@
-import React from 'react'
-import './style.scss'
-import { Link } from 'react-router-dom'
+
+import React, { useState, useEffect } from 'react';
+import './style.scss';
+import axios from "axios";
+import { Link, useNavigate } from 'react-router-dom';
+// import SignUpStudentAPI from '../../api/signUpStudent';
+import { toast } from 'react-toastify';
 function SignUpStudent() {
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [learnerAge, setLearnerAge] = useState("");
+    const [learnerImage, setlearnerImage] = useState("");
+
+
+    const navigate = useNavigate();
+    //preview and upload image
+    useEffect(() => {
+        return () => {
+            learnerImage && URL.revokeObjectURL(learnerImage.preview)
+        }
+    }, [learnerImage])
+
+    const handlePreviewAvartar = (e) => {
+        const file = e.target.files[0];
+
+        file.preview = URL.createObjectURL(file);
+        setlearnerImage(file)
+    }
+
+    const handleSignUp = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('learnerImage', learnerImage);
+            formData.append('firstName', firstName);
+            formData.append('lastName', lastName);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('confirmPassword', confirmPassword);
+            formData.append('learnerAge', learnerAge);
+
+            console.log(formData)
+            let res = await axios.post("https://localhost:7010/api/Account/learner-register", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            toast.success("Sign up successful!");
+            navigate("/login");
+
+        } catch (error) {
+            toast.error("An error occurred during sign up.");
+            console.error("Sign up error:", error);
+        }
+    }
     return (
         <>
             <div className='login-container col-3'>
@@ -11,20 +65,40 @@ function SignUpStudent() {
                 <button className='ex-button'><i className="fa-brands fa-facebook"></i>  Continue with Facebook</button>
                 <div className='text'>or</div>
 
-                <div className='text'>Name</div>
-                <input type='text' placeholder='Your name' className='form-control' />
+                <div className='text'>First name</div>
+                <input type='text' placeholder='Your first name' className='form-control' value={firstName} onChange={(event) => setFirstName(event.target.value)} />
+
+                <div className='text'>Last name</div>
+                <input type='text' placeholder='Your last name' className='form-control' value={lastName} onChange={(event) => setLastName(event.target.value)} />
+
                 <div className='text'>Email</div>
-                <input type='email' placeholder='Your email' className='form-control' />
+                <input type='email' placeholder='Your email' className='form-control' value={email} onChange={(event) => setEmail(event.target.value)} />
 
                 <div className='text'>Password</div>
-                <input type='password' placeholder='Your password' className='form-control' />
+                <input type='password' placeholder='Your password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
 
-                <div className='checkBox'>
-                    <input type="checkbox" id="rememberMe" name="rememberMe" defaultChecked />
-                    <label for="rememberMe" >Remember me</label>
+                <div className='text'>Confirm password</div>
+                <input type='password' placeholder='Confirm your password' className='form-control' value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
+
+                <div className='text'>Age</div>
+                <input type='number' placeholder='Your age' className='form-control' value={learnerAge} onChange={(event) => setLearnerAge(event.target.value)} />
+
+
+                {/* input and preview avatar */}
+                <div className='text'>Upload your picture</div>
+                {/* <input type='text' placeholder='Upload your picture' className='form-control' value={learnerImage} onChange={(event) => setlearnerImage(event.target.value)} /> */}
+                <div>
+                    <input
+                        type='file' onChange={handlePreviewAvartar}
+                    />
+                    {learnerImage && (
+                        <img src={learnerImage.preview} alt='' width="50%" />
+                    )}
                 </div>
 
-                <button >Sign Up</button>
+                <button className={email && password ? "active" : ""}
+                    onClick={() => handleSignUp()}
+                >Sign up</button>
             </div>
         </>
     )
