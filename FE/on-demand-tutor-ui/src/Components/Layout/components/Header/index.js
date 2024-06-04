@@ -1,12 +1,29 @@
 import { NavDropdown, Navbar, Nav, Button, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Header.scss'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { BoxArrowInRight } from 'react-bootstrap-icons'
 import images from '../../../../assets/images';
+import Handle from 'rc-slider/lib/Handles/Handle';
+import logoutAPI from '../../../../api/logoutAPI';
+
 
 
 function Header() {
+
+    const Jtoken = localStorage.getItem('token');
+    console.log(Jtoken);
+    const navigate = useNavigate();
+
+    const HandleLogOut = async () => {
+        localStorage.removeItem('token');
+        let res = await logoutAPI();
+        window.location.reload();
+        console.log(res);
+        navigate("/");
+
+    }
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid>
@@ -34,10 +51,20 @@ function Header() {
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                    <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
-                        <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
-                        <span className="loginContent">Log In</span>
-                    </Button>
+                    {
+                        Jtoken ? (
+                            <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut}>
+                                <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
+                                <span className="loginContent">Log Out</span>
+                            </Button>
+                        ) : (
+                            <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
+                                <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
+                                <span className="loginContent">Log In</span>
+                            </Button>
+                        )
+                    }
+
 
                 </Navbar.Collapse>
             </Container>

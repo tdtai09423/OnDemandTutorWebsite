@@ -2,7 +2,7 @@ import apiClient from './apiClient';
 
 const loginAPI = (email, password, rememberMe) => {
     console.log("goi api ");
-    return apiClient.post("/api/Account/login", { email, password, rememberMe });
+    return apiClient.post("/Account/login", { email, password, rememberMe });
 }
 
 export default loginAPI;

@@ -12,7 +12,6 @@ function TutorRecap({ tutor }) {
 
     const firstName = tutor.tutorNavigation.firstName;
     const lastName = tutor.tutorNavigation.lastName;
-    console.log(tutor);
 
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
