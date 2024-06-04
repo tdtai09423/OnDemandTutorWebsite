@@ -1,12 +1,11 @@
-import { NavDropdown, Navbar, Nav, Button, Container } from 'react-bootstrap';
+import { NavDropdown, Navbar, Nav, Button, Container, Dropdown, DropdownButton } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Header.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import { BoxArrowInRight } from 'react-bootstrap-icons'
+import { BoxArrowInRight, PersonCircle } from 'react-bootstrap-icons'
 import images from '../../../../assets/images';
 import Handle from 'rc-slider/lib/Handles/Handle';
 import logoutAPI from '../../../../api/logoutAPI';
-
 
 
 function Header() {
@@ -53,10 +52,21 @@ function Header() {
                     </Nav>
                     {
                         Jtoken ? (
-                            <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut}>
-                                <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
-                                <span className="loginContent">Log Out</span>
-                            </Button>
+                            <Dropdown align="" className='log-out-button'>
+                                <Dropdown.Toggle variant="" id="dropdown-sort-by" className="rounded-2" drop="start">
+                                    <PersonCircle style={{ fontSize: '2em' }}></PersonCircle>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className="dropdown-menu" align="end">
+                                    <Dropdown.Item href="#">User profile</Dropdown.Item>
+                                    <Dropdown.Item href="#">View history</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
+                                        <span className="loginContent">Log Out</span>
+                                    </Button>
+                                </Dropdown.Menu>
+                            </Dropdown>
+
+
                         ) : (
                             <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
                                 <BoxArrowInRight className="loginIcon"></BoxArrowInRight>

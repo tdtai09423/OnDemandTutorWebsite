@@ -34,6 +34,8 @@ function TutorRecap({ tutor }) {
         fetchTutors();
     }, []);
 
+    const truncatedDescription = tutor.tutorDescription.length > 150 ? tutor.tutorDescription.substring(0, 150) + '...' : tutor.tutorDescription;
+
     return (
         <Card className="profile-card">
             <Row noGutters>
@@ -45,7 +47,7 @@ function TutorRecap({ tutor }) {
                 <Col md={9}>
                     <Card.Body>
                         <Row>
-                            <Col md={12}>
+                            <Col md={7}>
                                 <Card.Title className="tutor-name" >
                                     <Link className="" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
                                         {firstName} {lastName}
@@ -65,30 +67,35 @@ function TutorRecap({ tutor }) {
                                 </Card.Text>
                                 <Card.Text>
                                     <p className="tutor-description">
-                                        {tutor.tutorDescription}
+                                        {truncatedDescription}
                                     </p>
-                                    <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>More information</Link>
+                                    <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>Read more</Link>
                                 </Card.Text>
                             </Col>
-                        </Row>
 
-                        <Row className="profile-footer">
-                            <Col md={3}>
-                                <div className='d-flex'>
-                                    <h2 style={{ marginRight: '15px' }}>{rating}</h2><span><StarFill style={{ fontSize: '40px' }}></StarFill></span>
-                                </div>
-                            </Col>
-                            <Col md={3}>
-                                <div className='d-block'>
-                                    <h3><strong>₫</strong>{price}</h3><div>50-min lesson</div>
-                                </div>
 
-                            </Col>
-                            <Col className="text-right" md={6}>
-                                <Container className="button-container">
-                                    <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
-                                    <Button variant="outline-secondary" className="message-btn">Send message</Button>
-                                </Container>
+                            <Col md={5} className="profile-button">
+                                <Row>
+                                    <Col md={6}>
+                                        <div className='d-flex'>
+                                            <h2 style={{ marginRight: '15px' }}>{rating}</h2><span><StarFill style={{ fontSize: '40px' }}></StarFill></span>
+                                        </div>
+                                    </Col>
+                                    <Col md={6}>
+                                        <div className='d-block'>
+                                            <h3><strong>₫</strong>{price}</h3><div>50-min lesson</div>
+                                        </div>
+
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col className="text-right" md={12}>
+                                        <Container className="button-container">
+                                            <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
+                                            <Button variant="outline-secondary" className="message-btn">Send message</Button>
+                                        </Container>
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
                     </Card.Body>

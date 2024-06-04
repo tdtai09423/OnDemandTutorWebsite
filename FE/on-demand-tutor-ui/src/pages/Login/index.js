@@ -17,8 +17,8 @@ function Login() {
         try {
             let res = await loginAPI(email, password, rememberMe);
             if (res && res.data.token) {
-                console.log(res.data.token);
                 localStorage.setItem("token", res.data.token);
+                console.log(localStorage);
                 toast.success("Login successful!");
                 navigate("/");
             }
@@ -45,9 +45,9 @@ function Login() {
                 <div className='text'>Password</div>
                 <input type='password' placeholder='Your password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
                 <a className='forgot-password' href="forgot_password.html">Forgot Password?</a>
-                <div className='checkBox'>
+                <div className='checkBox' style={{ marginTop: '10px' }}>
                     <input type="checkbox" id="rememberMe" name="rememberMe" checked={rememberMe} onChange={handleRememberMeChange} />
-                    <label for="rememberMe" >Remember me</label>
+                    <label for="rememberMe" style={{ marginLeft: '5px' }}>Remember me</label>
                 </div>
                 <button className={email && password ? "active" : ""}
                     onClick={() => handleLogIn()}

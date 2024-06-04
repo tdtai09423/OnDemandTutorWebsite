@@ -27,7 +27,7 @@ function LearnerReview({ id }) {
     }, [id]);
 
     return (
-        <span>{firstName} {lastName} : </span>
+        <span style={{ fontSize: '13px' }}>{firstName} {lastName} : </span>
     );
 }
 

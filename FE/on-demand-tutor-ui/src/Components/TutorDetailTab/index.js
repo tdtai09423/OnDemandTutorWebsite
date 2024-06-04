@@ -143,15 +143,15 @@ function TutorDetailTab({ tutorId }) {
             >
                 <Tab eventKey="about" title={<span className="information-tab-text">About</span>} className="information-tab">
                     {tutor.tutorDescription}
+                    <hr />
                 </Tab>
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
                     <ScheduleTab />
                 </Tab>
                 <Tab eventKey="review" title={<span className="information-tab-text">Review</span>} className="information-tab">
                     {reviews.map((review) => (
-                        <div key={review.$id}>
-                            <hr />
-                            <LearnerReview id={review.learnerId} />{review.review}
+                        <div key={review.$id} className='review-block'>
+                            <LearnerReview id={review.learnerId} /><p>{review.review}</p>
                         </div>
                     ))}
                 </Tab>
