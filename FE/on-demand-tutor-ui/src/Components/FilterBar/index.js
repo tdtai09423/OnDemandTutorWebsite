@@ -10,7 +10,7 @@ function FilterBar() {
     const [major, setMajor] = useState('English');
     const [nationality, setNationality] = useState('Any Country');
     const [available, setAvailable] = useState('Anytime');
-    const [native, setNative] = useState('Native speaker');
+    const [native, setNative] = useState('No');
     const [also, setAlso] = useState('Also speak');
 
     const submitFilter = (e) => {
