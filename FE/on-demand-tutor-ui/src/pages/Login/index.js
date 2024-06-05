@@ -18,6 +18,7 @@ function Login() {
             let res = await loginAPI(email, password, rememberMe);
             if (res && res.data.token) {
                 localStorage.setItem("token", res.data.token);
+                localStorage.setItem("email", email);
                 console.log(localStorage);
                 toast.success("Login successful!");
                 navigate("/");

@@ -1,10 +1,9 @@
-import { NavDropdown, Navbar, Nav, Button, Container, Dropdown, DropdownButton } from 'react-bootstrap';
+import { NavDropdown, Navbar, Nav, Button, Container, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Header.scss'
 import { Link, useNavigate } from 'react-router-dom'
 import { BoxArrowInRight, PersonCircle } from 'react-bootstrap-icons'
 import images from '../../../../assets/images';
-import Handle from 'rc-slider/lib/Handles/Handle';
 import logoutAPI from '../../../../api/logoutAPI';
 
 
@@ -16,6 +15,7 @@ function Header() {
 
     const HandleLogOut = async () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('email');
         let res = await logoutAPI();
         window.location.reload();
         console.log(res);
@@ -57,7 +57,7 @@ function Header() {
                                     <PersonCircle style={{ fontSize: '2em' }}></PersonCircle>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className="dropdown-menu" align="end">
-                                    <Dropdown.Item href="#">User profile</Dropdown.Item>
+                                    <Dropdown.Item><Link as={Link} to={"/user-profile"}>User profile</Link></Dropdown.Item>
                                     <Dropdown.Item href="#">View history</Dropdown.Item>
                                     <Dropdown.Divider />
                                     <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>

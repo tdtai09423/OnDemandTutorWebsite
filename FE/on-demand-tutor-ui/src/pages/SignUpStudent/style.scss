@@ -1,8 +1,6 @@
-.login-container {
+.signup-container {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
-    width: 30%;
 
     .tittle {
         font-size: 32px;
@@ -111,4 +109,13 @@
     .login-container {
         width: 65%;
     }
+}
+
+.sign-up-form {
+    border-radius: 10px;
+    padding: 1em 5em;
+    margin: 3em auto;
+    width: 48%;
+    padding-bottom: 5em;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }

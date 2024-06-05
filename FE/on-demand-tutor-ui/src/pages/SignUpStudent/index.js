@@ -12,7 +12,7 @@ function SignUpStudent() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [learnerAge, setLearnerAge] = useState("");
-    const [learnerImage, setlearnerImage] = useState("");
+    const [learnerImage, setLearnerImage] = useState("");
 
 
     const navigate = useNavigate();
@@ -27,21 +27,21 @@ function SignUpStudent() {
         const file = e.target.files[0];
 
         file.preview = URL.createObjectURL(file);
-        setlearnerImage(file)
+        setLearnerImage(file)
+        console.log(file);
     }
 
     const handleSignUp = async () => {
         try {
             const formData = new FormData();
-            formData.append('learnerImage', learnerImage);
-            formData.append('firstName', firstName);
-            formData.append('lastName', lastName);
-            formData.append('email', email);
-            formData.append('password', password);
-            formData.append('confirmPassword', confirmPassword);
-            formData.append('learnerAge', learnerAge);
-
-            console.log(formData)
+            formData.append('LearnerImage', learnerImage);
+            formData.append('FirstName', firstName);
+            formData.append('LastName', lastName);
+            formData.append('Email', email);
+            formData.append('Password', password);
+            formData.append('ConfirmPassword', confirmPassword);
+            formData.append('LearnerAge', learnerAge);
+            console.log(formData);
             let res = await axios.post("https://localhost:7010/api/Account/learner-register", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -58,11 +58,10 @@ function SignUpStudent() {
     }
     return (
         <>
-            <div className='login-container col-3'>
+            <div className='signup-container col-3 sign-up-form'>
                 <div className='tittle'>Sign up as a student</div>
                 <div className='haveacc'>Already have an account? <Link className="forgot-password" as={Link} to={"/login"}> Log in</Link></div>
                 <button className='ex-button'><i className="fa-brands fa-google"></i>  Continue with Google</button>
-                <button className='ex-button'><i className="fa-brands fa-facebook"></i>  Continue with Facebook</button>
                 <div className='text'>or</div>
 
                 <div className='text'>First name</div>

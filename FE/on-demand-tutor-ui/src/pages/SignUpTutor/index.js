@@ -94,11 +94,10 @@ function SignUpTutor() {
     }
     return (
         <>
-            <div className='login-container col-3'>
+            <div className='signup-container col-3 sign-up-form'>
                 <div className='tittle'>Sign up as a tutor</div>
                 <div className='haveacc'>Already have an account? <Link className="forgot-password" as={Link} to={"/login"}> Log in</Link></div>
                 <button className='ex-button'><i className="fa-brands fa-google"></i>  Continue with Google</button>
-                <button className='ex-button'><i className="fa-brands fa-facebook"></i>  Continue with Facebook</button>
                 <div className='text'>or</div>
 
                 <div className='text'>First name</div>
