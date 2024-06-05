@@ -294,7 +294,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("verify-code")]
-        public IActionResult VerifyCode(string email, string code)
+        public async Task<IActionResult> VerifyCode(string email, string code)
         {
             var storedCode = _memoryCache.Get<string>($"{email}_verificationCode");
 
@@ -309,6 +309,8 @@ namespace ODTDemoAPI.Controllers
 
             _memoryCache.Remove($"{email}_verificationCode");
             FindAccountByEmail(email)!.IsEmailVerified = true;
+            FindAccountByEmail(email)!.Status = true;
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("GetAllApprovedTutors", "Tutor", new { message = "Verify email successfully!" });
         }
@@ -344,7 +346,7 @@ namespace ODTDemoAPI.Controllers
                         Email = registerTutorModel.Email,
                         Password = BCrypt.Net.BCrypt.HashPassword(registerTutorModel.Password, BCrypt.Net.BCrypt.GenerateSalt()),
                         RoleId = "TUTOR",
-                        Status = true,
+                        Status = false,
                         IsEmailVerified = false,
                         CreatedDate = DateTime.Now,
                     };
@@ -431,7 +433,7 @@ namespace ODTDemoAPI.Controllers
                         Email = registerLearnerModel.Email,
                         Password = BCrypt.Net.BCrypt.HashPassword(registerLearnerModel.Password, BCrypt.Net.BCrypt.GenerateSalt()),
                         RoleId = "LEARNER",
-                        Status = true,
+                        Status = false,
                         IsEmailVerified = false,
                         CreatedDate = DateTime.Now,
                     };
