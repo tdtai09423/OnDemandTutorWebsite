@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "YBoO56wNRXOaYLAGagkGK93Yi/XVIaItlsnQ9EOZOEI=",
+  "Hash": "+na20VhN84IcJdOUBnaYhpkcV2D3UAjFb+mGdXFK5Rk=",
   "Source": "ODTDemoAPI",
   "BasePath": "_content/ODTDemoAPI",
   "Mode": "Default",
@@ -16,6 +16,25 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\wwwroot\\images\\1033_stringstring.png",
+      "SourceId": "ODTDemoAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\wwwroot\\",
+      "BasePath": "_content/ODTDemoAPI",
+      "RelativePath": "images/1033_stringstring.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\1033_stringstring.png"
+    },
     {
       "Identity": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\wwwroot\\images\\Screenshot 2024-04-21 223437.png",
       "SourceId": "ODTDemoAPI",

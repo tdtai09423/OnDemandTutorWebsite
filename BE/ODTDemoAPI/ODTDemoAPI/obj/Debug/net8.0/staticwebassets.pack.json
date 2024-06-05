@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\wwwroot\\images\\1033_stringstring.png",
+      "PackagePath": "staticwebassets\\images\\1033_stringstring.png"
+    },
+    {
       "Id": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\wwwroot\\images\\Screenshot 2024-04-21 223437.png",
       "PackagePath": "staticwebassets\\images\\Screenshot 2024-04-21 223437.png"
     },

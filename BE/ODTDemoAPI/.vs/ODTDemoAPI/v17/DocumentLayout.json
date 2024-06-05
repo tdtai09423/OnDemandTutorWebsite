@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\entities\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\entities\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\operationmodel\\updatelearnermodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,10 +29,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\operationmodel\\updatetutormodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\operationmodel\\updatetutormodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|d:\\ondemandtutorwebsite\\be\\odtdemoapi\\odtdemoapi\\operationmodel\\emailverificationcleanupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E36D66E5-D8C9-425B-9BFC-F08F8FA0E0B0}|ODTDemoAPI\\ODTDemoAPI.csproj|solutionrelative:odtdemoapi\\operationmodel\\emailverificationcleanupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -64,11 +64,24 @@
         },
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
+              "Title": "Account.cs",
+              "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\Account.cs",
+              "RelativeDocumentMoniker": "ODTDemoAPI\\Entities\\Account.cs",
+              "ToolTip": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Entities\\Account.cs",
+              "RelativeToolTip": "ODTDemoAPI\\Entities\\Account.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAA5wAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-05T06:58:19.277Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "EmailService.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Services\\EmailService.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Services\\EmailService.cs",
@@ -80,7 +93,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "UpdateLearnerModel.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\UpdateLearnerModel.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\UpdateLearnerModel.cs",
@@ -92,7 +105,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "UpdateTutorModel.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\UpdateTutorModel.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\UpdateTutorModel.cs",
@@ -104,7 +117,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "UpdateUserModel.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\UpdateUserModel.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\UpdateUserModel.cs",
@@ -116,40 +129,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "AccountController.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Controllers\\AccountController.cs",
               "ToolTip": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Controllers\\AccountController.cs",
               "RelativeToolTip": "ODTDemoAPI\\Controllers\\AccountController.cs",
-              "ViewState": "AQIAAOYCAAAAAAAAAAAcwNkCAAARAAAA",
+              "ViewState": "AQIAALkBAAAAAAAAAAAYwGwBAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-03T17:15:02.645Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
               "RelativeDocumentMoniker": "ODTDemoAPI\\Program.cs",
               "ToolTip": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\Program.cs",
               "RelativeToolTip": "ODTDemoAPI\\Program.cs",
-              "ViewState": "AQIAAFUAAAAAAAAAAAAwwDIAAABCAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAuAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T16:53:14.288Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "EmailVerificationCleanupService.cs",
-              "DocumentMoniker": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\EmailVerificationCleanupService.cs",
-              "RelativeDocumentMoniker": "ODTDemoAPI\\OperationModel\\EmailVerificationCleanupService.cs",
-              "ToolTip": "D:\\OnDemandTutorWebsite\\BE\\ODTDemoAPI\\ODTDemoAPI\\OperationModel\\EmailVerificationCleanupService.cs",
-              "RelativeToolTip": "ODTDemoAPI\\OperationModel\\EmailVerificationCleanupService.cs",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAmwBwAAABTAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-03T16:42:51.473Z"
+              "WhenOpened": "2024-06-03T16:53:14.288Z",
+              "EditorCaption": ""
             }
           ]
         }
