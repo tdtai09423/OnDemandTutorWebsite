@@ -3,6 +3,7 @@ import './style.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import loginAPI from '../../api/loginAPI';
 import { toast } from 'react-toastify';
+import loginGoogleAPI from '../../api/loginGoogleAPI';
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -30,6 +31,22 @@ function Login() {
         }
     }
 
+    const handleLoginGoogle = async () => {
+        try {
+            let res = await loginGoogleAPI();
+            console.log("res>>>>>>", res)
+            // if (res && res.data.token) {
+            //     localStorage.setItem("token", res.data.token);
+            //     localStorage.setItem("email", email);
+            //     console.log(localStorage);
+            //     toast.success("Login successful!");
+            //     navigate("/");
+            // }
+        } catch (error) {
+            
+        }
+    }
+
     return (
         <>
             <div className='login-container col-3'>
@@ -37,7 +54,7 @@ function Login() {
                 <div className='text'><Link className="forgot-password" as={Link} to={"/sign-up-student"}>Sign up as a student </Link>
                     or <Link className="forgot-password" as={Link} to={"/sign-up-tutor"}> Sign up as a tutor</Link>
                 </div>
-                <button className='ex-button'><i className="fa-brands fa-google"></i>  Continue with Google</button>
+                <button className='ex-button' onClick={handleLoginGoogle}><i className="fa-brands fa-google"></i>  Continue with Google</button>
                 <div className='text'>or</div>
 
                 <div className='text'>Email</div>
