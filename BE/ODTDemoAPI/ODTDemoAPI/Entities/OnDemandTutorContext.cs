@@ -23,6 +23,8 @@ public partial class OnDemandTutorContext : DbContext
 
     public virtual DbSet<LearnerOrder> LearnerOrders { get; set; }
 
+    public virtual DbSet<LearnerFavourite> LearnerFavourites { get; set; }
+
     public virtual DbSet<Major> Majors { get; set; }
 
     public virtual DbSet<Membership> Memberships { get; set; }
@@ -34,6 +36,8 @@ public partial class OnDemandTutorContext : DbContext
     public virtual DbSet<Tutor> Tutors { get; set; }
 
     public virtual DbSet<TutorCerti> TutorCertis { get; set; }
+
+    public virtual DbSet<UserNotification> UserNotifications { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -112,6 +116,25 @@ public partial class OnDemandTutorContext : DbContext
                 .HasConstraintName("FK__LearnerOr__Learn__5812160E");
         });
 
+        modelBuilder.Entity<LearnerFavourite>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("LearnerFavourite");
+
+            entity.HasIndex(e => new { e.LearnerId, e.TutorId }, "UQ_Favourite").IsUnique();
+
+            entity.HasOne(d => d.Learner).WithMany()
+                .HasForeignKey(d => d.LearnerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Learner_Favourite");
+
+            entity.HasOne(d => d.Tutor).WithMany()
+                .HasForeignKey(d => d.TutorId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Learner_Favorite");
+        });
+
         modelBuilder.Entity<Major>(entity =>
         {
             entity.HasKey(e => e.MajorId).HasName("PK__Major__D5B8BF910435AEDB");
@@ -164,6 +187,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.ToTable("Section");
 
+            entity.Property(e => e.MeetUrl).HasMaxLength(300);
             entity.Property(e => e.SectionEnd).HasColumnType("datetime");
             entity.Property(e => e.SectionStart).HasColumnType("datetime");
             entity.Property(e => e.SectionStatus).HasMaxLength(10);
@@ -215,6 +239,21 @@ public partial class OnDemandTutorContext : DbContext
             entity.HasOne(d => d.Tutor).WithMany()
                 .HasForeignKey(d => d.TutorId)
                 .HasConstraintName("FK__TutorCert__Tutor__4222D4EF");
+        });
+
+        modelBuilder.Entity<UserNotification>(entity =>
+        {
+            entity.HasKey(e => e.NotificationId).HasName("PK__UserNoti__20CF2E128BECFF73");
+
+            entity.ToTable("UserNotification");
+
+            entity.Property(e => e.Content).HasMaxLength(300);
+            entity.Property(e => e.NotificateDay).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.UserNotifications)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Notificate_Account");
         });
 
         OnModelCreatingPartial(modelBuilder);

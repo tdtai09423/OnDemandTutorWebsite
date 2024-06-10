@@ -27,6 +27,8 @@ public partial class Account
     public virtual Learner? Learner { get; set; }
     [JsonIgnore]
     public virtual Tutor? Tutor { get; set; }
+    [JsonIgnore]
+    public virtual ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
 
     public void NavigateAccount(string roleId)
     {

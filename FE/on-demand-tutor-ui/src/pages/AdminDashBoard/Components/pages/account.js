@@ -129,7 +129,7 @@ function AdminAccount() {
               spacing={3}
             >
               <Typography variant="h4">
-                Orders
+                Account
               </Typography>
               <Button
                 color="primary"

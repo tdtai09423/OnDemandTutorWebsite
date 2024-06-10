@@ -14,6 +14,7 @@ using System.Security;
 using Microsoft.Extensions.Caching.Memory;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using ODTDemoAPI.EntityViewModels;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -298,6 +299,10 @@ namespace ODTDemoAPI.Controllers
         {
             var storedCode = _memoryCache.Get<string>($"{email}_verificationCode");
 
+            if(string.IsNullOrEmpty(code))
+            {
+                return BadRequest("Code is invalid!");
+            }
             if (storedCode == null)
             {
                 return BadRequest("Code is expired.");
@@ -601,31 +606,59 @@ namespace ODTDemoAPI.Controllers
             return account;
         }
 
-        //tính năng only for admin
-        [HttpPost("avtivate-account")]
-        public IActionResult OperateAccountStatus(string email)
+        [HttpGet("all-accounts")]
+        public async Task<IActionResult> GetAllAccounts()
         {
             try
             {
-                if (FindLearnerByEmail(email) == null || FindTutorByEmail(email) == null)
+                var accountViewModels = new List<AccountViewModel>();
+                var accounts = await _context.Accounts.ToListAsync();
+                foreach (var account in accounts)
                 {
-                    return BadRequest("Not found!");
+                    accountViewModels.Add(new AccountViewModel
+                    {
+                        Id = account.Id,
+                        FullName = account.FirstName + " " + account.LastName,
+                        Email = account.Email,
+                        RoleId = account.RoleId,
+                        Status = account.Status,
+                        IsEmailVerified = account.IsEmailVerified,
+                        CreatedDate = account.CreatedDate,
+                    });
                 }
-                if (FindTutorByEmail(email) != null)
-                {
-                    FindAccountByEmail(email)!.Status = false;
-                }
-                if (FindLearnerByEmail(email) != null)
-                {
-                    FindAccountByEmail(email)!.Status = false;
-                }
-                return Ok();
+                return Ok(accountViewModels);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Unauthorized(new { ex.Message });
             }
         }
+
+        //tính năng only for admin
+        //[HttpPost("disable-account")]
+        //public IActionResult DisableAccountStatus(string email)
+        //{
+        //    try
+        //    {
+        //        if (FindLearnerByEmail(email) == null || FindTutorByEmail(email) == null)
+        //        {
+        //            return BadRequest("Not found!");
+        //        }
+        //        if (FindTutorByEmail(email) != null)
+        //        {
+        //            FindAccountByEmail(email)!.Status = false;
+        //        }
+        //        if (FindLearnerByEmail(email) != null)
+        //        {
+        //            FindAccountByEmail(email)!.Status = false;
+        //        }
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost("update-learner")]
         public async Task<IActionResult> UpdateUserInfo(UpdateUserModel model)
