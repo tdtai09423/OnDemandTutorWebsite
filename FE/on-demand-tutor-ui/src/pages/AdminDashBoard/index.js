@@ -1,8 +1,9 @@
+import 'simplebar-react/dist/simplebar.min.css';
+import HomeAdmin from './Components/pages/index.js'
 function AdminDashBoard() {
+
     return (
-        <div>
-            <h1>Admin Dashboard</h1>
-        </div>
+        <HomeAdmin />
     );
 }
 

@@ -9,6 +9,8 @@ import SendReport from "../pages/SendReport";
 import Policy from "../pages/Policy";
 import AdminDashBoard from "../pages/AdminDashBoard";
 import UserProfile from "../pages/UserProfile";
+import DashboardLayout from '../Components/Layout/DashboardLayout/index.js'
+import AdminOrder from '../pages/AdminDashBoard/Components/pages/order.js'
 
 //Public Route
 const publicRoute = [
@@ -21,7 +23,8 @@ const publicRoute = [
     { path: '/tutor-profile', component: TutorProfile },
     { path: '/send-report', component: SendReport, layout: null },
     { path: '/policy', component: Policy, layout: null },
-    { path: '/admin-dash-board', component: AdminDashBoard, layout: null },
+    { path: '/admin-dash-board', component: AdminDashBoard, layout: DashboardLayout },
+    { path: '/admin-dash-board-account', component: AdminOrder, layout: DashboardLayout },
     { path: '/user-profile', component: UserProfile },
 
 
