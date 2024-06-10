@@ -78,6 +78,14 @@ namespace ODTDemoAPI.Controllers
                 if (account != null)
                 {
                     var token = _authService.GenerateToken(account);
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = (DateTime?)null
+                    };
+                    Response.Cookies.Append("jwt", token, cookieOptions);
                     return Ok(new { token });
                 }
                 else
@@ -135,12 +143,14 @@ namespace ODTDemoAPI.Controllers
 
                     else if (model.Picture.Length > 0)
                     {
-                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", model.Picture.FileName);
+                        var extension = Path.GetExtension(model.Picture.FileName);
+                        var fileName = $"{account.Id}_{account.FirstName}{account.LastName}{extension}";
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
                         using (var stream = System.IO.File.Create(path))
                         {
                             await model.Picture.CopyToAsync(stream);
                         }
-                        account.Learner.LearnerPicture = "/images/" + account.Learner.LearnerId + "_" + account.FirstName + account.LastName;
+                        account.Learner.LearnerPicture = "/images/" + fileName;
                     }
 
                     else
@@ -207,12 +217,14 @@ namespace ODTDemoAPI.Controllers
 
                         if (model.TutorImage.Length > 0)
                         {
-                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", model.TutorImage.FileName);
+                            var extension = Path.GetExtension(model.TutorImage.FileName);
+                            var fileName = $"{account.Id}_{account.FirstName}{account.LastName}{extension}";
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
                             using (var stream = System.IO.File.Create(path))
                             {
                                 await model.TutorImage.CopyToAsync(stream);
                             }
-                            account.Tutor.TutorPicture = "/images/" + account.Tutor.TutorId + "_" + account.FirstName + account.LastName;
+                            account.Tutor.TutorPicture = "/images/" + fileName;
 
                             _context.Tutors.Add(account.Tutor);
                             _context.SaveChanges();
@@ -282,7 +294,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("verify-code")]
-        public IActionResult VerifyCode(string email, string code)
+        public async Task<IActionResult> VerifyCode(string email, string code)
         {
             var storedCode = _memoryCache.Get<string>($"{email}_verificationCode");
 
@@ -297,6 +309,8 @@ namespace ODTDemoAPI.Controllers
 
             _memoryCache.Remove($"{email}_verificationCode");
             FindAccountByEmail(email)!.IsEmailVerified = true;
+            FindAccountByEmail(email)!.Status = true;
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("GetAllApprovedTutors", "Tutor", new { message = "Verify email successfully!" });
         }
@@ -332,7 +346,7 @@ namespace ODTDemoAPI.Controllers
                         Email = registerTutorModel.Email,
                         Password = BCrypt.Net.BCrypt.HashPassword(registerTutorModel.Password, BCrypt.Net.BCrypt.GenerateSalt()),
                         RoleId = "TUTOR",
-                        Status = true,
+                        Status = false,
                         IsEmailVerified = false,
                         CreatedDate = DateTime.Now,
                     };
@@ -359,12 +373,14 @@ namespace ODTDemoAPI.Controllers
 
                         if (registerTutorModel.TutorImage.Length > 0)
                         {
-                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", registerTutorModel.TutorImage.FileName);
+                            var extension = Path.GetExtension(registerTutorModel.TutorImage.FileName);
+                            var fileName = $"{account.Id}_{account.FirstName}{account.LastName}{extension}";
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
                             using (var stream = System.IO.File.Create(path))
                             {
                                 await registerTutorModel.TutorImage.CopyToAsync(stream);
                             }
-                            account.Tutor.TutorPicture = "/images/" + account.Tutor.TutorId + "_" + account.FirstName + account.LastName;
+                            account.Tutor.TutorPicture = "/images/" + fileName;
 
                             _context.Tutors.Add(account.Tutor);
                             _context.SaveChanges();
@@ -417,7 +433,7 @@ namespace ODTDemoAPI.Controllers
                         Email = registerLearnerModel.Email,
                         Password = BCrypt.Net.BCrypt.HashPassword(registerLearnerModel.Password, BCrypt.Net.BCrypt.GenerateSalt()),
                         RoleId = "LEARNER",
-                        Status = true,
+                        Status = false,
                         IsEmailVerified = false,
                         CreatedDate = DateTime.Now,
                     };
@@ -438,12 +454,14 @@ namespace ODTDemoAPI.Controllers
 
                         else if (registerLearnerModel.LearnerImage.Length > 0)
                         {
-                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", registerLearnerModel.LearnerImage.FileName);
-                            using (var stream = new FileStream(path, FileMode.Create))
+                            var extension = Path.GetExtension(registerLearnerModel.LearnerImage.FileName);
+                            var fileName = $"{account.Id}_{account.FirstName}{account.LastName}{extension}";
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                            using (var stream = System.IO.File.Create(path))
                             {
                                 await registerLearnerModel.LearnerImage.CopyToAsync(stream);
                             }
-                            account.Learner.LearnerPicture = "/images/" + account.Learner.LearnerId + "_" + account.FirstName + account.LastName;
+                            account.Learner.LearnerPicture = "/images/" + fileName;
                         }
 
                         else
@@ -668,7 +686,7 @@ namespace ODTDemoAPI.Controllers
                     if(learnerModel!.Image!.Length > 0 || learnerModel!.Image != null)
                     {
                         var oldImagePath = learner!.LearnerPicture;
-                        var newImagePath = await SaveImageAsync(learnerModel.Image);
+                        var newImagePath = await SaveImageAsync(learnerModel.Image, account);
                         learner.LearnerPicture = newImagePath;
 
                         if(!string.IsNullOrEmpty(oldImagePath))
@@ -700,7 +718,7 @@ namespace ODTDemoAPI.Controllers
                     if(tutorModel.Image != null)
                     {
                         var oldImagePath = tutor!.TutorPicture;
-                        var newImagePath = await SaveImageAsync(tutorModel.Image);
+                        var newImagePath = await SaveImageAsync(tutorModel.Image, account);
                         tutor!.TutorPicture = newImagePath;
 
                         if (!string.IsNullOrEmpty(oldImagePath))
@@ -736,14 +754,16 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        private async Task<string> SaveImageAsync(IFormFile image)
+        private async Task<string> SaveImageAsync(IFormFile image, Account account)
         {
-            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", image.FileName);
-            using(var stream = System.IO.File.Create(imagePath))
+            var extension = Path.GetExtension(image.FileName);
+            var fileName = $"{account.Id}_{account.FirstName}{account.LastName}{extension}";
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+            using (var stream = System.IO.File.Create(path))
             {
                 await image.CopyToAsync(stream);
             }
-            return imagePath;
+            return path;
         }
 
         private void DeleteOldImage(string path)

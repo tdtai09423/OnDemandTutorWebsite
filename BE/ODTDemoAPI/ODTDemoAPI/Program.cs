@@ -27,8 +27,6 @@ namespace ODTDemoAPI
 
             builder.Services.AddMemoryCache();
 
-            builder.Services.AddHostedService<EmailVerificationCleanupService>();
-
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options =>
             {
