@@ -1,9 +1,7 @@
 import ChartPieIcon from "@heroicons/react/24/solid/ChartPieIcon"
-import CogIcon from "@heroicons/react/24/solid/CogIcon"
-import DocumentTextIcon from "@heroicons/react/24/solid/DocumentTextIcon"
+import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon"
 import ExclamationTriangleIcon from "@heroicons/react/24/solid/ExclamationTriangleIcon"
 import ShoppingCartIcon from "@heroicons/react/24/solid/ShoppingCartIcon"
-import StarIcon from "@heroicons/react/24/solid/StarIcon"
 import { SvgIcon } from '@mui/material';
 
 export const items = [
@@ -17,7 +15,7 @@ export const items = [
     label: 'Home'
   },
   {
-    href: '/admin-dash-board-account',
+    href: '/admin-dash-board-order',
     icon: (
       <SvgIcon>
         <ShoppingCartIcon />
@@ -26,31 +24,13 @@ export const items = [
     label: 'Orders'
   },
   {
-    href: '/admin-dash-board/settings',
+    href: '/admin-dash-board-account',
     icon: (
       <SvgIcon>
-        <CogIcon />
+        <UserCircleIcon />
       </SvgIcon>
     ),
-    label: 'Settings'
-  },
-  {
-    href: '/admin-dash-board/theme',
-    icon: (
-      <SvgIcon>
-        <DocumentTextIcon />
-      </SvgIcon>
-    ),
-    label: 'Theme'
-  },
-  {
-    href: '/admin-dash-board/icons',
-    icon: (
-      <SvgIcon>
-        <StarIcon />
-      </SvgIcon>
-    ),
-    label: 'Icons'
+    label: 'Account'
   },
   {
     href: '/admin-dash-board/404',
