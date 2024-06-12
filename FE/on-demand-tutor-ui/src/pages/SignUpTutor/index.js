@@ -84,12 +84,30 @@ function SignUpTutor() {
                 },
             });
 
-            toast.success("Sign up successful!");
-            navigate("/login");
+            toast.success(res.message);
+            handleSendVerifyCode();
 
         } catch (error) {
-            toast.error("An error occurred during sign up.");
+            toast.error(error.message);
             console.error("Sign up error:", error);
+        }
+    }
+
+    const handleSendVerifyCode = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('toEmail', email);
+            let res1 = await axios.post("https://localhost:7010/api/Account/send-verification-code", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            toast.success("Sent verification code to your email!");
+
+            navigate("/verify-code", {state: {email : email}});
+        } catch (error) {
+            toast.error(error.message);
+            console.error("Send code error:", error);
         }
     }
     return (
@@ -97,9 +115,7 @@ function SignUpTutor() {
             <div className='signup-container col-3 sign-up-form'>
                 <div className='tittle'>Sign up as a tutor</div>
                 <div className='haveacc'>Already have an account? <Link className="forgot-password" as={Link} to={"/login"}> Log in</Link></div>
-                <button className='ex-button'><i className="fa-brands fa-google"></i>  Continue with Google</button>
-                <div className='text'>or</div>
-
+                
                 <div className='text'>First name</div>
                 <input type='text' placeholder='Your first name' className='form-control' value={firstName} onChange={(event) => setFirstName(event.target.value)} />
                 <div className='text'>Last name</div>
