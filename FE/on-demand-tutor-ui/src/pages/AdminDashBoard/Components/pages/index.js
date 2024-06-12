@@ -1,7 +1,7 @@
 import { subDays, subHours, subMinutes } from 'date-fns';
 import ShoppingBagIcon from '@heroicons/react/24/solid/ShoppingBagIcon';
-import ShoppingCartIcon from '@heroicons/react/24/solid/ShoppingCartIcon';
-import CurrencyDollarIcon from '@heroicons/react/24/solid/CurrencyDollarIcon';
+import User from '@heroicons/react/24/solid/UserIcon';
+import Users from '@heroicons/react/24/solid/UserGroupIcon';
 import {
   Avatar,
   Box,
@@ -14,10 +14,30 @@ import {
 import { OverviewKpi } from '../sections/overview/overview-kpi.js';
 import { OverviewLatestCustomers } from '../sections/overview/overview-latest-customers.js';
 import { OverviewSummary } from '../sections/overview/overview-summary.js';
+import { useState, useEffect } from 'react';
+import tutorAPI from '../../../../api/tutorAPI.js';
 
 const now = new Date();
 
 function HomeAdmin() {
+
+  const [orders, setOrders] = useState([]);
+  const [tutors, setTutors] = useState([]);
+  const [learners, setLearners] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const tutorList = await tutorAPI.getAll();
+        setTutors(tutorList.data.$values);
+      } catch (error) {
+        console.error("Error fetching tutors:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+
   return (
     <>
       <Box
@@ -76,12 +96,12 @@ function HomeAdmin() {
                         }}
                       >
                         <SvgIcon>
-                          <ShoppingCartIcon />
+                          <User />
                         </SvgIcon>
                       </Avatar>
                     }
-                    label='Products'
-                    value='23'
+                    label='Tutors'
+                    value={tutors.length}
                   />
                 </Grid>
                 <Grid
@@ -99,11 +119,11 @@ function HomeAdmin() {
                         }}
                       >
                         <SvgIcon>
-                          <CurrencyDollarIcon />
+                          <Users />
                         </SvgIcon>
                       </Avatar>
                     }
-                    label='Transactions'
+                    label='Learner'
                     value='1942'
                   />
                 </Grid>
