@@ -11,8 +11,8 @@ import AdminDashBoard from "../pages/AdminDashBoard";
 import UserProfile from "../pages/UserProfile";
 import DashboardLayout from '../Components/Layout/DashboardLayout/index.js'
 import AdminOrder from '../pages/AdminDashBoard/Components/pages/order.js'
+import VerifyCode from "../pages/VerifyCode/index.js";
 import AdminAccount from '../pages/AdminDashBoard/Components/pages/account.js'
-
 //Public Route
 const publicRoute = [
     { path: '/', component: Home },
@@ -28,6 +28,7 @@ const publicRoute = [
     { path: '/admin-dash-board-order', component: AdminOrder, layout: DashboardLayout },
     { path: '/admin-dash-board-account', component: AdminAccount, layout: DashboardLayout },
     { path: '/user-profile', component: UserProfile },
+    { path: '/verify-code', component: VerifyCode },
 
 
 ];
