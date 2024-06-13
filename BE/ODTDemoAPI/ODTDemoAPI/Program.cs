@@ -18,7 +18,6 @@ namespace ODTDemoAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var key = "your-256-bit-secret-your-256-bit-secret";
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
@@ -66,7 +65,7 @@ namespace ODTDemoAPI
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
                     ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
                 };
 
                 options.Events = new JwtBearerEvents

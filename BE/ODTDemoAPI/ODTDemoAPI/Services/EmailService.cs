@@ -5,14 +5,7 @@ namespace ODTDemoAPI.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly IConfiguration _configuration;
-
-        public EmailService(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public async Task SendMailAsync(string toEmail, string subject, string body)
+        public Task SendMailAsync(string toEmail, string subject, string body)
         {
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
@@ -30,6 +23,7 @@ namespace ODTDemoAPI.Services
             mailMessage.To.Add(toEmail);
 
             smtpClient.Send(mailMessage);
+            return Task.CompletedTask;
         }
     }
 }
