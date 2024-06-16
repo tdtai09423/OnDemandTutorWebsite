@@ -16,14 +16,7 @@ function VerifyCode() {
 
     const handleSendVerifyCode = async () => {
         try {
-            // const formData = new FormData();
-            // formData.append('email', email);
-            // formData.append('code', verifyCode);
-            // let res = await axios.post("https://localhost:7010/api/Account/verify-code",formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            // });
+
             let verify = await sendVerifyCode.verifyCode(email, verifyCode);
             toast.success("Verify succesfully!");
             navigate("/login")

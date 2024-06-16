@@ -1,6 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import { useEffect, useState } from 'react';
 import orderHistoryAPI from '../../../../api/orderHistoryAPI';
+import CancelOrder from '../../CancelOrder';
 function OrderHistoryList({ user }) {
   const [listOrder, setListOrder] = useState([]);
   console.log("userID>>>>>>>>>>>>>>>>>", user.id)
@@ -30,8 +31,11 @@ function OrderHistoryList({ user }) {
         </thead>
         <tbody>
           {listOrder && listOrder.length > 0 &&
-
             listOrder.map((item, index) => {
+              // Calculate time difference
+              const timeDiff = new Date() - new Date(item.OrderDate);
+              const isCancellable = item.OrderStatus === "Not start" && timeDiff > 48 * 60 * 60 * 1000; // 48 hours in milliseconds
+
               return (
                 <tr key={`order-${index}`}>
                   <th>{item.OrderId}</th>
@@ -39,6 +43,13 @@ function OrderHistoryList({ user }) {
                   <th>{item.OrderStatus}</th>
                   <th>{item.Total}</th>
                   <th>{item.CurriculumId}</th>
+                  {isCancellable && (
+                    <th>
+                      <CancelOrder
+                        order={item}
+                      />
+                    </th>
+                  )}
                 </tr>
               )
             })
