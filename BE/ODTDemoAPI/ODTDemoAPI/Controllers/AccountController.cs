@@ -14,6 +14,7 @@ using System.Security;
 using Microsoft.Extensions.Caching.Memory;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using ODTDemoAPI.EntityViewModels;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -69,7 +70,7 @@ namespace ODTDemoAPI.Controllers
                 var surname = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value;
                 var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                if(string.IsNullOrEmpty(email))
+                if (string.IsNullOrEmpty(email))
                 {
                     return BadRequest("Not found email in claims");
                 }
@@ -109,7 +110,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
@@ -298,6 +299,10 @@ namespace ODTDemoAPI.Controllers
         {
             var storedCode = _memoryCache.Get<string>($"{email}_verificationCode");
 
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest("Code is invalid!");
+            }
             if (storedCode == null)
             {
                 return BadRequest("Code is expired.");
@@ -601,31 +606,59 @@ namespace ODTDemoAPI.Controllers
             return account;
         }
 
-        //tính năng only for admin
-        [HttpPost("avtivate-account")]
-        public IActionResult OperateAccountStatus(string email)
+        [HttpGet("all-accounts")]
+        public async Task<IActionResult> GetAllAccounts()
         {
             try
             {
-                if (FindLearnerByEmail(email) == null || FindTutorByEmail(email) == null)
+                var accountViewModels = new List<AccountViewModel>();
+                var accounts = await _context.Accounts.ToListAsync();
+                foreach (var account in accounts)
                 {
-                    return BadRequest("Not found!");
+                    accountViewModels.Add(new AccountViewModel
+                    {
+                        Id = account.Id,
+                        FullName = account.FirstName + " " + account.LastName,
+                        Email = account.Email,
+                        RoleId = account.RoleId,
+                        Status = account.Status,
+                        IsEmailVerified = account.IsEmailVerified,
+                        CreatedDate = account.CreatedDate,
+                    });
                 }
-                if (FindTutorByEmail(email) != null)
-                {
-                    FindAccountByEmail(email)!.Status = false;
-                }
-                if (FindLearnerByEmail(email) != null)
-                {
-                    FindAccountByEmail(email)!.Status = false;
-                }
-                return Ok();
+                return Ok(accountViewModels);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return Unauthorized(new { ex.Message });
             }
         }
+
+        //tính năng only for admin
+        //[HttpPost("disable-account")]
+        //public IActionResult DisableAccountStatus(string email)
+        //{
+        //    try
+        //    {
+        //        if (FindLearnerByEmail(email) == null || FindTutorByEmail(email) == null)
+        //        {
+        //            return BadRequest("Not found!");
+        //        }
+        //        if (FindTutorByEmail(email) != null)
+        //        {
+        //            FindAccountByEmail(email)!.Status = false;
+        //        }
+        //        if (FindLearnerByEmail(email) != null)
+        //        {
+        //            FindAccountByEmail(email)!.Status = false;
+        //        }
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost("update-learner")]
         public async Task<IActionResult> UpdateUserInfo(UpdateUserModel model)
@@ -633,39 +666,39 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var email = User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value;
-                if(email == null)
+                if (email == null)
                 {
-                    return Unauthorized(new { message = "You are logging out or your session is out. Please check your login status."});
+                    return Unauthorized(new { message = "You are logging out or your session is out. Please check your login status." });
                 }
 
                 var findAccount = FindAccountByEmail(email!);
                 bool isLearner = findAccount!.RoleId == "LEARNER";
 
-                var account = _context.Accounts.Include(a => isLearner ? (object?) a.Learner : a.Tutor).FirstOrDefault(a => a.Email == email);
+                var account = _context.Accounts.Include(a => isLearner ? (object?)a.Learner : a.Tutor).FirstOrDefault(a => a.Email == email);
 
-                if(account == null)
+                if (account == null)
                 {
                     return NotFound("Account not found!");
                 }
 
-                if(!string.IsNullOrEmpty(model.FirstName))
+                if (!string.IsNullOrEmpty(model.FirstName))
                 {
                     account.FirstName = model.FirstName;
                 }
 
-                if(!string.IsNullOrEmpty(model.LastName))
+                if (!string.IsNullOrEmpty(model.LastName))
                 {
                     account.LastName = model.LastName;
                 }
 
-                if(model.PasswordModel != null)
+                if (model.PasswordModel != null)
                 {
-                    if(!BCrypt.Net.BCrypt.Verify(model.PasswordModel.CurrentPassword, account.Password))
+                    if (!BCrypt.Net.BCrypt.Verify(model.PasswordModel.CurrentPassword, account.Password))
                     {
                         return BadRequest(new { message = "Current password is incorrect." });
                     }
 
-                    if(model.PasswordModel.Password != model.PasswordModel.ConfirmPassword)
+                    if (model.PasswordModel.Password != model.PasswordModel.ConfirmPassword)
                     {
                         return BadRequest(new { message = "New password and confirm password do not match." });
                     }
@@ -673,23 +706,23 @@ namespace ODTDemoAPI.Controllers
                     account.Password = BCrypt.Net.BCrypt.HashPassword(model.PasswordModel.Password);
                 }
 
-                if(isLearner)
+                if (isLearner)
                 {
                     var learner = account.Learner;
                     var learnerModel = model as UpdateLearnerModel;
 
-                    if(learnerModel!.Age.HasValue)
+                    if (learnerModel!.Age.HasValue)
                     {
                         learner!.LearnerAge = learnerModel.Age.Value;
                     }
 
-                    if(learnerModel!.Image!.Length > 0 || learnerModel!.Image != null)
+                    if (learnerModel!.Image!.Length > 0 || learnerModel!.Image != null)
                     {
                         var oldImagePath = learner!.LearnerPicture;
                         var newImagePath = await SaveImageAsync(learnerModel.Image, account);
                         learner.LearnerPicture = newImagePath;
 
-                        if(!string.IsNullOrEmpty(oldImagePath))
+                        if (!string.IsNullOrEmpty(oldImagePath))
                         {
                             DeleteOldImage(oldImagePath);
                         }
@@ -700,22 +733,22 @@ namespace ODTDemoAPI.Controllers
                     var tutor = account.Tutor;
                     var tutorModel = model as UpdateTutorModel;
 
-                    if(tutorModel!.Age.HasValue)
+                    if (tutorModel!.Age.HasValue)
                     {
                         tutor!.TutorAge = tutorModel.Age.Value;
                     }
 
-                    if(!string.IsNullOrEmpty(tutorModel!.Nationality))
+                    if (!string.IsNullOrEmpty(tutorModel!.Nationality))
                     {
                         tutor!.Nationality = tutorModel.Nationality;
                     }
 
-                    if(!string.IsNullOrEmpty(tutorModel!.Description))
+                    if (!string.IsNullOrEmpty(tutorModel!.Description))
                     {
                         tutor!.TutorDescription = tutorModel.Description;
                     }
 
-                    if(tutorModel.Image != null)
+                    if (tutorModel.Image != null)
                     {
                         var oldImagePath = tutor!.TutorPicture;
                         var newImagePath = await SaveImageAsync(tutorModel.Image, account);
@@ -728,9 +761,9 @@ namespace ODTDemoAPI.Controllers
                     }
                 }
 
-                if(!string.IsNullOrEmpty(model.Email) && model.Email != email)
+                if (!string.IsNullOrEmpty(model.Email) && model.Email != email)
                 {
-                    if(IsValidEmail(model.Email))
+                    if (IsValidEmail(model.Email))
                     {
                         await SendVerificationCode(model.Email);
                         HttpContext.Items["NewEmail"] = model.Email;
@@ -768,7 +801,7 @@ namespace ODTDemoAPI.Controllers
 
         private void DeleteOldImage(string path)
         {
-            if(System.IO.File.Exists(path))
+            if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);
             }
@@ -780,11 +813,11 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var account = FindAccountByEmail(email);
-                if(account == null)
+                if (account == null)
                 {
                     return NotFound(new { message = "Not found account" });
                 }
-                return Ok(new { message = "Verification code has been sent to you."});//chuyển hướng đến action SendVerificationCode
+                return Ok(new { message = "Verification code has been sent to you." });//chuyển hướng đến action SendVerificationCode
             }
             catch (Exception ex)
             {
@@ -823,7 +856,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                if(newPassword != confirmPassword)
+                if (newPassword != confirmPassword)
                 {
                     return BadRequest("Password and confirm password do not match.");
                 }
