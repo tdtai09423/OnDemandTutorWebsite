@@ -14,8 +14,6 @@ public partial class Section
 
     public string SectionStatus { get; set; } = null!;
 
-    public decimal Price { get; set; }
-
     public int? CurriculumId { get; set; }
 
     public string? MeetUrl { get; set; }

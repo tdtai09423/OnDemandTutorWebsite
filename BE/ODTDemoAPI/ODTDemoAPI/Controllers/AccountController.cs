@@ -128,6 +128,10 @@ namespace ODTDemoAPI.Controllers
                 _context.Accounts.Add(account);
                 await _context.SaveChangesAsync();
 
+                var wallet = new Wallet { AccountId = account.Id, Balance = 0 };
+                _context.Wallets.Add(wallet);
+                await _context.SaveChangesAsync();
+
                 account.NavigateAccount(account.RoleId);
 
                 if (account.Learner != null)
@@ -159,6 +163,7 @@ namespace ODTDemoAPI.Controllers
 
                     _context.Learners.Add(account.Learner);
                     await _context.SaveChangesAsync();
+
                     return Ok(new { learner = account.Learner });
                 }
 
@@ -357,6 +362,10 @@ namespace ODTDemoAPI.Controllers
                     _context.Accounts.Add(account);
                     await _context.SaveChangesAsync();
 
+                    var wallet = new Wallet { AccountId =  account.Id, Balance = 0 };
+                    _context.Wallets.Add(wallet);
+                    await _context.SaveChangesAsync();
+
                     account.NavigateAccount(account.RoleId);
 
                     if (account.Tutor != null)
@@ -441,6 +450,10 @@ namespace ODTDemoAPI.Controllers
                         CreatedDate = DateTime.Now,
                     };
                     _context.Accounts.Add(account);
+                    await _context.SaveChangesAsync();
+
+                    var wallet = new Wallet { AccountId = account.Id, Balance = 0 };
+                    _context.Wallets.Add(wallet);
                     await _context.SaveChangesAsync();
 
                     account.NavigateAccount(account.RoleId);

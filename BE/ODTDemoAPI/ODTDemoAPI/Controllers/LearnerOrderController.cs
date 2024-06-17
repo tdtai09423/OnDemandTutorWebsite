@@ -43,16 +43,24 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Not found learner");
                 }
 
-                var curriculum = await _context.Curricula
+                var curricula = await _context.Curricula
                     .Include(c => c.Sections)
-                    .FirstOrDefaultAsync(c => c.CurriculumType == request.CurriculumType && c.TutorId == request.TutorId);
+                    .Where(c => c.CurriculumType == request.CurriculumType && c.TutorId == request.TutorId)
+                    .ToListAsync();
+
+                if(curricula.Count == 0 || curricula == null)  
+                {
+                    return NotFound("This tutor does not have this kind of curriculum.");
+                }
+
+                var curriculum = curricula.FirstOrDefault(c => c.CurriculumDescription == request.CurriculumDescription);
 
                 if (curriculum == null)
                 {
                     return NotFound("Curriculum not found");
                 }
 
-                decimal total = curriculum.Sections.Sum(s => s.Price) * curriculum.TotalSlot;
+                decimal total = curriculum.PricePerSection * curriculum.TotalSlot;
 
                 var order = new LearnerOrder
                 {
@@ -115,6 +123,7 @@ namespace ODTDemoAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 order.OrderStatus = "Paid";
+                _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
                 NotifyTutorAboutBooking(order.Curriculum!.TutorId, order);
@@ -170,23 +179,35 @@ namespace ODTDemoAPI.Controllers
                             return BadRequest("Learner Not Found");
                         }
 
-                        var wallet = learner.Wallet ?? new Wallet { AccountId = learnerId, Balance = 0 };
+                        //if(learner.Wallet == null)
+                        //{
+                        //    learner.Wallet = new Wallet
+                        //    {
+                        //        AccountId = learnerId,
+                        //        Balance = 0,
+                        //        Account = learner
+                        //    };
+                        //    _context.Accounts.Update(learner);
+                        //    await _context.SaveChangesAsync();
+                        //}
 
-                        if(wallet.AccountId == 0)
+                        var wallet = learner.Wallet ?? new Wallet { AccountId = learnerId, Balance = 0 };
+                        if (wallet.AccountId == 0)
                         {
                             _context.Wallets.Add(wallet);
                             await _context.SaveChangesAsync();
                         }
 
-                        var amount = session.AmountTotal! / 100;
+                        var amount = session.AmountTotal!.GetValueOrDefault() / 100m;
 
-                        wallet.Balance += (decimal) amount;
+                        wallet.Balance += amount;
+                        _context.Wallets.Update(wallet);
                         await _context.SaveChangesAsync();
 
                         var transactionRecord = new Transaction
                         {
                             AccountId = learnerId,
-                            Amount = (decimal) amount,
+                            Amount = amount,
                             TransactionDate = DateTime.Now,
                             TransactionType = "Top-up",
                         };
@@ -209,6 +230,7 @@ namespace ODTDemoAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Unhandled error");
                 return BadRequest(ex.Message);
             }
         }
@@ -243,7 +265,7 @@ namespace ODTDemoAPI.Controllers
 
                 NotifyLearnerAboutBookingStatus(order.LearnerId, order, "accepted");
 
-                //tạo section cho booking
+                //TODO: tạo section cho booking
                 //Code here
 
                 return Ok("Booking accepted.");
@@ -377,8 +399,8 @@ namespace ODTDemoAPI.Controllers
             _context.SaveChanges();
         }
 
-        [HttpPost("test-stripe")]
-        public async Task<IActionResult> CreateStripe(decimal amount, int learnerId)
+        [HttpPost("top-up-wallet")]
+        public async Task<IActionResult> TopUpWallet(decimal amount, int learnerId)
         {
             var options = new SessionCreateOptions
             {
@@ -451,9 +473,10 @@ namespace ODTDemoAPI.Controllers
                     Description = "Top-up wallet to complete booking payment",
                 },
                 Mode = "payment",
-                SuccessUrl = $"https://localhost:7010/api/LearnerOrder/payment-success?session_id={{CHECKOUT_SESSION_ID}}&learner_id={learnerId}",
+                SuccessUrl = $"https://localhost:7010/api/LearnerOrder/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
                 CancelUrl = "https://localhost:7010/api/LearnerOrder/payment-failed",
                 UiMode = "hosted",
+                ClientReferenceId = learnerId.ToString(),
             };
 
             var service = new SessionService();

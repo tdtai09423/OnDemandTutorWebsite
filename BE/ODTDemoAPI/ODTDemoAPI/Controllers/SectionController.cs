@@ -24,7 +24,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                var minPrice = await _context.Sections.Where(s => s.Curriculum!.TutorId == tutorId).MinAsync(s => (decimal?)s.Price) ?? 0;
+                var minPrice = await _context.Curricula.Where(c => c.TutorId == tutorId).MinAsync(c => (decimal?)c.PricePerSection) ?? 0;
                 return Ok(minPrice);
             }
             catch (Exception ex)
@@ -38,7 +38,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                var maxPrice = await _context.Sections.Where(s => s.Curriculum!.TutorId == tutorId).MaxAsync(s => (decimal?)s.Price) ?? 0;
+                var maxPrice = await _context.Curricula.Where(c => c.TutorId == tutorId).MaxAsync(c => (decimal?)c.PricePerSection) ?? 0;
                 return Ok(maxPrice);
             }
             catch (Exception ex)
@@ -91,7 +91,6 @@ namespace ODTDemoAPI.Controllers
                     SectionStart = s.SectionStart,
                     SectionEnd = s.SectionEnd,
                     SectionStatus = s.SectionStatus,
-                    Price = s.Price,
                     MeetUrl = s.MeetUrl,
                 }).ToList()
             }).ToList();
@@ -117,7 +116,6 @@ namespace ODTDemoAPI.Controllers
                     SectionStart = s.SectionStart,
                     SectionEnd = s.SectionEnd,
                     SectionStatus = s.SectionStatus,
-                    Price = s.Price,
                     MeetUrl = s.MeetUrl
                 }).ToList()
             }).ToList();

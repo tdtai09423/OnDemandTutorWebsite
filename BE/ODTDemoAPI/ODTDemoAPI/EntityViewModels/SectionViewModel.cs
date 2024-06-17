@@ -10,8 +10,6 @@
 
         public string? SectionStatus { get; set; }
 
-        public decimal Price { get; set; }
-
         public string? MeetUrl { get; set; }
     }
 }
