@@ -8,6 +8,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ODTDemoAPI.OperationModel;
+using Stripe;
+using Stripe.Checkout;
 
 namespace ODTDemoAPI
 {
@@ -18,6 +20,10 @@ namespace ODTDemoAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            //builder.Services.AddScoped(Timer);
+            //builder.Services.AddHostedService<AutomaticCleanUpService>();
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            builder.Services.AddScoped<SessionService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
@@ -115,6 +121,8 @@ namespace ODTDemoAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
             app.UseAuthentication();
             app.UseAuthorization();

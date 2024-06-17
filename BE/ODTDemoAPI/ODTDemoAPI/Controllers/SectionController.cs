@@ -103,7 +103,7 @@ namespace ODTDemoAPI.Controllers
         public async Task<IActionResult> GetWeeklyScheduleLearner(int learnerId, [FromQuery] DateTime startTime, DateTime endTime)
         {
             var sections = await _context.Sections
-                                         .Include(s => s.Curriculum)
+                                         .Include(s => s.Curriculum!)
                                          .ThenInclude(c => c.LearnerOrders)
                                          .Where(s => s.Curriculum!.LearnerOrders.Any(o => o.LearnerId == learnerId) && s.SectionStart >= startTime && s.SectionEnd <= endTime)
                                          .OrderBy(s => s.SectionStart)

@@ -1,20 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.OperationModel;
-using BCrypt;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Services;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Runtime.CompilerServices;
-using System.Security;
 using Microsoft.Extensions.Caching.Memory;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using ODTDemoAPI.EntityViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -87,6 +83,7 @@ namespace ODTDemoAPI.Controllers
                         Expires = (DateTime?)null
                     };
                     Response.Cookies.Append("jwt", token, cookieOptions);
+                    HttpContext.Session.SetObject("Account", account);
                     return Ok(new { token });
                 }
                 else
@@ -95,6 +92,7 @@ namespace ODTDemoAPI.Controllers
                     HttpContext.Session.SetString("GivenName", givenName!);
                     HttpContext.Session.SetString("Surname", surname!);
                     HttpContext.Session.SetString("Email", email);
+                    HttpContext.Session.SetObject("Account", account);
                 }
 
                 return Ok(claims);
@@ -534,9 +532,10 @@ namespace ODTDemoAPI.Controllers
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict,
-                    Expires = loginModel.RememberMe ? DateTime.UtcNow.AddDays(3) : (DateTime?)null
+                    Expires = loginModel.RememberMe ? DateTime.Now.AddDays(3) : (DateTime?)null
                 };
                 Response.Cookies.Append("jwt", token, cookieOptions);
+                HttpContext.Session.SetObject("Account", account);
 
                 return Ok(new { token });
             }
@@ -552,6 +551,7 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 Response.Cookies.Delete("jwtToken");
+                HttpContext.Session.Remove("Account");
                 return Ok(new { message = "Logged out successfully!" });
             }
             catch (Exception ex)
@@ -586,7 +586,7 @@ namespace ODTDemoAPI.Controllers
                     return Unauthorized(new { isAuthenticated = false });
                 }
 
-                if (jsonToken == null || jsonToken.ValidTo <= DateTime.UtcNow)
+                if (jsonToken == null || jsonToken.ValidTo <= DateTime.Now)
                 {
                     return Unauthorized(new { isAuthenticated = false });
                 }
@@ -660,26 +660,37 @@ namespace ODTDemoAPI.Controllers
         //    }
         //}
 
-        [HttpPost("update-learner")]
-        public async Task<IActionResult> UpdateUserInfo(UpdateUserModel model)
+        [HttpPost("toggle-status")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ToggleAccountStatus([FromBody] ToggleAccountStatusModel model)
         {
             try
             {
-                var email = User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value;
-                if(email == null)
-                {
-                    return Unauthorized(new { message = "You are logging out or your session is out. Please check your login status."});
-                }
-
-                var findAccount = FindAccountByEmail(email!);
-                bool isLearner = findAccount!.RoleId == "LEARNER";
-
-                var account = _context.Accounts.Include(a => isLearner ? (object?) a.Learner : a.Tutor).FirstOrDefault(a => a.Email == email);
-
+                var account = FindAccountByEmail(model.Email);
                 if(account == null)
                 {
-                    return NotFound("Account not found!");
+                    return NotFound("Account not found");
                 }
+
+                account.Status = model.Status;
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Message = "Account status update successfully!", account });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model, Account account)
+        {
+            try
+            {
+                var email = account.Email;
+                bool isLearner = account.RoleId == "LEARNER";
+
 
                 if(!string.IsNullOrEmpty(model.FirstName))
                 {
@@ -787,7 +798,61 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        private async Task<string> SaveImageAsync(IFormFile image, Account account)
+        [HttpPost("update-learner")]
+        public async Task<IActionResult> UpdateLearnerInfo([FromForm] UpdateLearnerModel model)
+        {
+            try
+            {
+                var account = HttpContext.Session.GetObject<Account>("Account");
+                if(account  == null || account.RoleId != "LEARNER")
+                {
+                    return Unauthorized("You are logged out or your account is out of session. Please check your login status.");
+                }
+
+                var email = account.Email;
+                var findAccount = _context.Accounts.Include(a => a.Learner).FirstOrDefault(a => a.Email == email);
+
+                if (findAccount == null || findAccount.Learner == null)
+                {
+                    return NotFound("Learner account not found!");
+                }
+
+                return await UpdateUserInfo(model, account);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("update-tutor")]
+        public async Task<IActionResult> UpdateTutorModel([FromForm] UpdateTutorModel model)
+        {
+            try
+            {
+                var account = HttpContext.Session.GetObject<Account>("Account");
+                if (account == null || account.RoleId != "TUTOR")
+                {
+                    return Unauthorized("You are logged out or your account is out of session. Please check your login status.");
+                }
+
+                var email = account.Email;
+                var findAccount = _context.Accounts.Include(a => a.Tutor).FirstOrDefault(a => a.Email == email);
+
+                if (findAccount == null || findAccount.Tutor == null)
+                {
+                    return NotFound("Tutor account not found!");
+                }
+
+                return await UpdateUserInfo(model, account);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private static async Task<string> SaveImageAsync(IFormFile image, Account account)
         {
             var extension = Path.GetExtension(image.FileName);
             var fileName = $"{account.Id}_{account.FirstName}{account.LastName}{extension}";
@@ -799,7 +864,7 @@ namespace ODTDemoAPI.Controllers
             return path;
         }
 
-        private void DeleteOldImage(string path)
+        private static void DeleteOldImage(string path)
         {
             if(System.IO.File.Exists(path))
             {
