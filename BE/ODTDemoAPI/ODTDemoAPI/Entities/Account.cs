@@ -25,10 +25,15 @@ public partial class Account
     public DateTime CreatedDate { get; set; }
     [JsonIgnore]
     public virtual Learner? Learner { get; set; }
+
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+
     [JsonIgnore]
     public virtual Tutor? Tutor { get; set; }
     [JsonIgnore]
     public virtual ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
+
+    public virtual Wallet? Wallet { get; set; }
 
     public void NavigateAccount(string roleId)
     {

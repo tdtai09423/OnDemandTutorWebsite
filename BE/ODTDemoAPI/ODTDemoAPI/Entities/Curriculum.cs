@@ -16,6 +16,8 @@ public partial class Curriculum
 
     public string? CurriculumDescription { get; set; }
 
+    public decimal PricePerSection { get; set; }
+
     public int? TutorId { get; set; }
     [JsonIgnore]
     public virtual ICollection<LearnerOrder> LearnerOrders { get; set; } = new List<LearnerOrder>();
