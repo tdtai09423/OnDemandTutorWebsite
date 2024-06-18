@@ -31,6 +31,8 @@ const publicRoute = [
     { path: '/admin-dash-board-certificate', component: Certificate, layout: DashboardLayout },
     { path: '/user-profile', component: UserProfile },
     { path: '/verify-code', component: VerifyCode },
+    { path: '/order-history', component: OrderHistory },
+
 
 
 ];
