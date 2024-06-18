@@ -1,30 +1,20 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './TutorDetail.scss'
-import { useState } from 'react';
-import tutorAPI from '../../api/tutorAPI';
+
 import TutorDetailTab from '../../Components/TutorDetailTab';// Import Bootstrap components
+import { useSearchParams } from 'react-router-dom';
 
-function TutorDetail() {
-    
-    const [tutor, setTutor] = useState({});
+function TutorDetail(param) {
 
-    useEffect(() => {
-        const fetchTutors = async () => {
-            try {
-                const tutor = await tutorAPI.get(1);
-                setTutor(tutor.data);
-                console.log(tutor.data);
-            } catch (error) {
-                console.error("Error fetching tutors:", error);
-            }
-        };
-        fetchTutors();
-    }, []);
+    const [searchParam] = useSearchParams();
+    const tutorId = searchParam.get('tutorId');
 
     return (
 
-        <TutorDetailTab tutorParam={tutor}/>
+        <TutorDetailTab
+            tutorId={tutorId}
+        />
     );
 };
 

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
-using ODTDemoAPI.OutputModel;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -68,51 +67,6 @@ namespace ODTDemoAPI.Controllers
                 else
                 {
                     return Ok(tutor);
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        //chua test vi li do nhu tren
-        [HttpPut("{tutorId}")]
-        public ActionResult<IEnumerable<Tutor>> UpdateTutor(int tutorId, Tutor newTutor)
-        {
-            try
-            {
-                if(tutorId != newTutor.TutorId)
-                {
-                    return BadRequest("Tutor ID mismatch. Please try again");
-                }
-                var tutor = FindTutorById(tutorId);
-                if(tutor == null)
-                {
-                    return NotFound("No tutors can be found with this ID. Please try again.");
-                }
-                else
-                {
-                    tutor = newTutor;
-                    if(tutor.TutorNavigation != null)
-                    {
-                        tutor.TutorNavigation.Email = newTutor.TutorNavigation.Email;
-                        tutor.TutorNavigation.Password = newTutor.TutorNavigation.Password;
-                    }
-                    _context.Entry(tutor).State = EntityState.Modified;
-                    _context.SaveChanges();
-                    return NoContent();
-                }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if(FindTutorById(tutorId) == null)
-                {
-                    return NotFound("No tutors can be found with this ID. Please try again.");
-                }
-                else
-                {
-                    throw;
                 }
             }
             catch (Exception ex)

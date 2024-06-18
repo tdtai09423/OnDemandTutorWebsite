@@ -7,6 +7,9 @@ using ODTDemoAPI.Entities;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using ODTDemoAPI.OperationModel;
+using Stripe;
+using Stripe.Checkout;
 
 namespace ODTDemoAPI
 {
@@ -17,11 +20,24 @@ namespace ODTDemoAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var key = "your-256-bit-secret-your-256-bit-secret";
+            //builder.Services.AddScoped(Timer);
+            //builder.Services.AddHostedService<AutomaticCleanUpService>();
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            builder.Services.AddScoped<SessionService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+            });
+
+            builder.Services.AddMemoryCache();
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
 
             builder.Services.AddAuthentication(options =>
@@ -35,8 +51,8 @@ namespace ODTDemoAPI
             {
                 IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
 
-                options.ClientId = googleAuthNSection["ClientId"];
-                options.ClientSecret = googleAuthNSection["ClientSecret"];
+                options.ClientId = googleAuthNSection["ClientId"]!;
+                options.ClientSecret = googleAuthNSection["ClientSecret"]!;
                 options.CallbackPath = "/login-google";
             });
 
@@ -55,7 +71,7 @@ namespace ODTDemoAPI
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = builder.Configuration["Jwt:Issuer"],
                     ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
                 };
 
                 options.Events = new JwtBearerEvents
@@ -72,6 +88,7 @@ namespace ODTDemoAPI
                 };
             });
 
+            builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddAuthorization();
             builder.Services.AddScoped<IAuthService,AuthService>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -81,6 +98,9 @@ namespace ODTDemoAPI
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("OnDemandTutor"));
             });
+
+            builder.Services.AddLogging();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", builder =>
@@ -102,8 +122,14 @@ namespace ODTDemoAPI
 
             app.UseRouting();
 
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHttpsRedirection();
+
+            app.UseSession();
             app.UseCors("AllowAll");
 
             app.MapControllers();

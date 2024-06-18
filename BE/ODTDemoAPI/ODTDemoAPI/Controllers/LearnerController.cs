@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 
@@ -20,7 +19,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                var learner = findLearnerById(learnerId);
+                var learner = FindLearnerById(learnerId);
                 if (learner == null)
                 {
                     return NotFound("No learners can be found with this ID. Please try again.");
@@ -35,33 +34,7 @@ namespace ODTDemoAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPost]
-        public ActionResult<IEnumerable<Learner>> CreateNewLearner(Learner learner)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                if (findLearnerByEmail(learner.LearnerEmail) == null)
-                {
-                    _context.Learners.Add(learner);
-                    _context.SaveChanges();
-                    return CreatedAtAction(nameof(GetLearnerById), new { learnerId = learner.LearnerId }, learner);
-                }
-                else
-                {
-                    return BadRequest("Dupplicated email. Please try again.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        private Learner? findLearnerById(int learnerId)
+        private Learner? FindLearnerById(int learnerId)
         {
             var learner = _context.Learners
                                 .Include(l => l.LearnerNavigation) //include account
@@ -70,7 +43,7 @@ namespace ODTDemoAPI.Controllers
             return learner;
         }
 
-        private Learner? findLearnerByEmail(string email)
+        private Learner? FindLearnerByEmail(string email)
         {
             var learner = _context.Learners
                                 .Include(l => l.LearnerNavigation) //include account

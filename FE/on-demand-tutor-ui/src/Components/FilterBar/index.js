@@ -1,16 +1,17 @@
 import React from 'react';
 import { Container, Row, Col, Form, InputGroup, Dropdown, Button } from 'react-bootstrap';
 import 'rc-slider/assets/index.css';
-import './FilterBar.scss';
 import CustomDropdown from './components/CustomDropdown';
 import { useState } from 'react';
+import DatePicker from "react-widgets/DatePicker";
+import './FilterBar.scss';
 
 function FilterBar() {
 
     const [major, setMajor] = useState('English');
     const [nationality, setNationality] = useState('Any Country');
-    const [available, setAvailable] = useState('Anytime');
-    const [native, setNative] = useState('Native speaker');
+    const [available, setAvailable] = useState('');
+    const [native, setNative] = useState('No');
     const [also, setAlso] = useState('Also speak');
 
     const submitFilter = (e) => {
@@ -23,8 +24,9 @@ function FilterBar() {
     const handleSelectBirth = (birth) => {
         setNationality(birth); // update the nationality state when an option is selected
     };
-    const handleSelectAvailable = (available) => {
-        setAvailable(available); // update the nationality state when an option is selected
+    const handleDateChange = (date) => {
+        setAvailable(date);
+        console.log('Selected Date:', date); // You can process the selected date here
     };
     const handleSelectNative = (native) => {
         setNative(native); // update the nationality state when an option is selected
@@ -82,40 +84,14 @@ function FilterBar() {
                     </Dropdown>
                 </Col>
                 <Col md={3}>
-                    <Dropdown align="end" className="w-100">
-                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
-                            <div className="dropdown-text">
-                                <span className="dropdown-tittle">I'm available</span>
-                                <span className="dropdown-choice">{available}</span>
-                            </div>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className=" dropdown-menu">
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Anytime')}>
-                                Anytime
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Monday')}>
-                                Monday
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Tuesday')}>
-                                Tuesday
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Wednesday')}>
-                                Wednesday
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Thursday')}>
-                                Thursday
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Friday')}>
-                                Friday
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Saturday')}>
-                                Saturday
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectAvailable('Sunday')}>
-                                Sunday
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <DatePicker
+                        selected={available}
+                        onChange={handleDateChange}
+                        minDate={new Date()}
+                        id='custom-datepicker'
+                        className="custom-datepicker" // Use a specific class for your custom styles
+                        valueFormat={{ dateStyle: "medium" }}
+                    />
                 </Col>
             </Row>
             <Row className="filter-bar-row">
@@ -174,7 +150,7 @@ function FilterBar() {
                     </InputGroup>
                 </Col>
                 <Col md={1} className="d-flex justify-content-between">
-                    <Button className="loginButton text-black border border-2 border-dark" variant="outline-success" onClick={submitFilter}>
+                    <Button className="loginButton text-black border border-2 border-dark" variant="" onClick={submitFilter}>
                         <span className="loginContent">Apply</span>
                     </Button>
                 </Col>

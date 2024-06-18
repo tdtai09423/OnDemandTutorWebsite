@@ -1,8 +1,12 @@
 .login-container {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
+    margin: 3em auto;
     width: 30%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 10px;
+    padding: 0 2em;
+    padding-bottom: 3em;
 
     .tittle {
         font-size: 25px;
@@ -19,7 +23,7 @@
     }
 
     input {
-        padding: 2px 2px;
+        padding: 7px 2px;
         outline: none;
         margin-bottom: 5px;
         font-size: 17px;
@@ -63,6 +67,7 @@
         outline: none;
         margin-top: 10px;
         border: 2px solid;
+        background-color: #ff7aac;
 
         &active {
             background-color: #ff7aac;

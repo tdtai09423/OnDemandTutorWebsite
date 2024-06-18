@@ -33,9 +33,14 @@ button {
 .loginButton {
     color: black;
     border: 2px solid #000;
+    text-align: center;
 
     &:hover {
         color: white;
         background-color: #ff7aac;
     }
+}
+
+.log-out-button {
+    margin-right: 1em;
 }

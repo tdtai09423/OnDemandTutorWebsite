@@ -2,50 +2,100 @@ import { Button, Card, Row, Col, Image, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './TutorRecap.scss'
 import { Link } from 'react-router-dom'
-import { Globe, PersonFill, ChatSquareDotsFill } from 'react-bootstrap-icons'
+import { Globe, PersonFill, ChatSquareDotsFill, StarFill } from 'react-bootstrap-icons'
+import { useState, useEffect } from 'react';
+import sectionAPI from '../../api/sectionAPI';
+import reviewRatingAPI from '../../api/ReviewRatingAPI';
+import majorAPI from '../../api/majorAPI';
 
 function TutorRecap({ tutor }) {
+
+    const firstName = tutor.tutorNavigation.firstName;
+    const lastName = tutor.tutorNavigation.lastName;
+
+    const [price, setPrice] = useState();
+    const [rating, setRating] = useState();
+    const [major, setMajor] = useState('');
+
+    useEffect(() => {
+        const fetchTutors = async () => {
+            try {
+                //const price = await sectionAPI.get(tutor.tutorId);
+                const rating = await reviewRatingAPI.getRating(tutor.tutorId);
+                //setPrice(price.data);
+                setRating(rating.data);
+                const majorID = tutor.majorId;
+                const major = await majorAPI.get(majorID);
+                setMajor(major.data);
+            } catch (error) {
+                console.error("Error fetching tutors:", error);
+            }
+        };
+        fetchTutors();
+    }, []);
+
+    const truncatedDescription = tutor.tutorDescription.length > 150 ? tutor.tutorDescription.substring(0, 150) + '...' : tutor.tutorDescription;
 
     return (
         <Card className="profile-card">
             <Row noGutters>
                 <Col md={3}>
-                    <Image src={tutor.image} className="profile-pic" />
+                    <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
+                        <Image src={tutor.tutorPicture} className="profile-pic" />
+                    </Link>
                 </Col>
                 <Col md={9}>
                     <Card.Body>
-                        <Card.Title className="tutor-name" >
-                            {tutor.title} <span className="flag">{tutor.nationality}</span>
-                        </Card.Title>
-                        <Card.Text>
-                            <p className="language">
-                                <Globe className="icon" /> {tutor.majorId}
-                            </p>
-                            <p className="students">
-                                <PersonFill className="icon" /> {tutor.activeStudents} active students · {tutor.lessons} lessons
-                            </p>
-                            <p className="speaks">
-                                <ChatSquareDotsFill className="icon" /> {tutor.speaks}
-                            </p>
-                        </Card.Text>
-                        <Card.Text>
-                            <p className="tutor-description">
-                                {tutor.tutorDescription}
-                            </p>
-                            <Link className="read-more" as={Link} to={"/tutor-detail"}>Read more</Link>
-                        </Card.Text>
-                        <Row className="profile-footer">
-                            <Col>
-                                <div className="price">
-                                    <span className="amount">{tutor.price}</span>
-                                    <span className="duration">{tutor.duration}</span>
-                                </div>
+                        <Row>
+                            <Col md={7}>
+                                <Card.Title className="tutor-name" >
+                                    <Link className="" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
+                                        {firstName} {lastName}
+                                    </Link>
+                                    <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutor.nationality}</span>
+                                </Card.Title>
+                                <Card.Text>
+                                    <p className="language">
+                                        <Globe className="icon" /> {major.majorName}
+                                    </p>
+                                    <p className="students">
+                                        <PersonFill className="icon" /> {tutor.activeStudents}2 active students · {tutor.lessons}2 lessons
+                                    </p>
+                                    <p className="speaks">
+                                        <ChatSquareDotsFill className="icon" /> {tutor.tutorEmail}
+                                    </p>
+                                </Card.Text>
+                                <Card.Text>
+                                    <p className="tutor-description">
+                                        {truncatedDescription}
+                                    </p>
+                                    <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>Read more</Link>
+                                </Card.Text>
                             </Col>
-                            <Col className="text-right">
-                                <Container className="button-container">
-                                    <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail?tutorId=" + tutor}>Book trial lesson</Button>
-                                    <Button variant="outline-secondary" className="message-btn">Send message</Button>
-                                </Container>
+
+
+                            <Col md={5} className="profile-button">
+                                <Row>
+                                    <Col md={6}>
+                                        <div className='d-flex'>
+                                            <h2 style={{ marginRight: '15px' }}>{rating}</h2><span><StarFill style={{ fontSize: '40px' }}></StarFill></span>
+                                        </div>
+                                    </Col>
+                                    <Col md={6}>
+                                        <div className='d-block'>
+                                            <h3><strong>₫</strong>{price}</h3><div>50-min lesson</div>
+                                        </div>
+
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col className="text-right" md={12}>
+                                        <Container className="button-container">
+                                            <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
+                                            <Button variant="outline-secondary" className="message-btn">Send message</Button>
+                                        </Container>
+                                    </Col>
+                                </Row>
                             </Col>
                         </Row>
                     </Card.Body>

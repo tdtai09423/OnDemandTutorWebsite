@@ -1,12 +1,28 @@
-import { NavDropdown, Navbar, Nav, Button, Container } from 'react-bootstrap';
+import { NavDropdown, Navbar, Nav, Button, Container, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Header.scss'
-import { Link } from 'react-router-dom'
-import { BoxArrowInRight } from 'react-bootstrap-icons'
+import { Link, useNavigate } from 'react-router-dom'
+import { BoxArrowInRight, PersonCircle } from 'react-bootstrap-icons'
 import images from '../../../../assets/images';
+import logoutAPI from '../../../../api/logoutAPI';
 
 
 function Header() {
+
+    const Jtoken = localStorage.getItem('token');
+    console.log(Jtoken);
+    const navigate = useNavigate();
+
+    const HandleLogOut = async () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('email');
+        let res = await logoutAPI();
+        window.location.reload();
+        console.log(res);
+        navigate("/");
+
+    }
+
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container fluid>
@@ -34,10 +50,31 @@ function Header() {
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                    <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
-                        <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
-                        <span className="loginContent">Log In</span>
-                    </Button>
+                    {
+                        Jtoken ? (
+                            <Dropdown align="" className='log-out-button'>
+                                <Dropdown.Toggle variant="" id="dropdown-sort-by" className="rounded-2" drop="start">
+                                    <PersonCircle style={{ fontSize: '2em' }}></PersonCircle>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className="dropdown-menu" align="end">
+                                    <Dropdown.Item><Link as={Link} to={"/user-profile"}>User profile</Link></Dropdown.Item>
+                                    <Dropdown.Item href="#">View history</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
+                                        <span className="loginContent">Log Out</span>
+                                    </Button>
+                                </Dropdown.Menu>
+                            </Dropdown>
+
+
+                        ) : (
+                            <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
+                                <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
+                                <span className="loginContent">Log In</span>
+                            </Button>
+                        )
+                    }
+
 
                 </Navbar.Collapse>
             </Container>

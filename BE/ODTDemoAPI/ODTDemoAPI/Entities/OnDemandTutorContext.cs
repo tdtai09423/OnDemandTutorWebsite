@@ -23,6 +23,8 @@ public partial class OnDemandTutorContext : DbContext
 
     public virtual DbSet<LearnerOrder> LearnerOrders { get; set; }
 
+    public virtual DbSet<LearnerFavourite> LearnerFavourites { get; set; }
+
     public virtual DbSet<Major> Majors { get; set; }
 
     public virtual DbSet<Membership> Memberships { get; set; }
@@ -31,13 +33,19 @@ public partial class OnDemandTutorContext : DbContext
 
     public virtual DbSet<Section> Sections { get; set; }
 
+    public virtual DbSet<Transaction> Transactions { get; set; }
+
     public virtual DbSet<Tutor> Tutors { get; set; }
 
     public virtual DbSet<TutorCerti> TutorCertis { get; set; }
 
+    public virtual DbSet<UserNotification> UserNotifications { get; set; }
+
+    public virtual DbSet<Wallet> Wallets { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=Zincerious;Initial Catalog=OnDemandTutor;User ID=sa;Password=12345;Encrypt=False;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("OnDemandTutor"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +61,8 @@ public partial class OnDemandTutorContext : DbContext
             entity.Property(e => e.Password).HasMaxLength(60);
             entity.Property(e => e.RoleId).HasMaxLength(10);
             entity.Property(e => e.Status).HasDefaultValue(true);
+            entity.Property(e => e.IsEmailVerified).HasDefaultValue(false);
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
         });
 
         modelBuilder.Entity<Curriculum>(entity =>
@@ -110,6 +120,25 @@ public partial class OnDemandTutorContext : DbContext
                 .HasConstraintName("FK__LearnerOr__Learn__5812160E");
         });
 
+        modelBuilder.Entity<LearnerFavourite>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("LearnerFavourite");
+
+            entity.HasIndex(e => new { e.LearnerId, e.TutorId }, "UQ_Favourite").IsUnique();
+
+            entity.HasOne(d => d.Learner).WithMany()
+                .HasForeignKey(d => d.LearnerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Learner_Favourite");
+
+            entity.HasOne(d => d.Tutor).WithMany()
+                .HasForeignKey(d => d.TutorId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Learner_Favorite");
+        });
+
         modelBuilder.Entity<Major>(entity =>
         {
             entity.HasKey(e => e.MajorId).HasName("PK__Major__D5B8BF910435AEDB");
@@ -162,6 +191,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.ToTable("Section");
 
+            entity.Property(e => e.MeetUrl).HasMaxLength(300);
             entity.Property(e => e.SectionEnd).HasColumnType("datetime");
             entity.Property(e => e.SectionStart).HasColumnType("datetime");
             entity.Property(e => e.SectionStatus).HasMaxLength(10);
@@ -170,6 +200,24 @@ public partial class OnDemandTutorContext : DbContext
                 .HasForeignKey(d => d.CurriculumId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Section__Curricu__5441852A");
+        });
+
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A6BD018149B");
+
+            entity.ToTable("Transaction");
+
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.TransactionDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.TransactionType).HasMaxLength(50);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Transacti__Accou__1EA48E88");
         });
 
         modelBuilder.Entity<Tutor>(entity =>
@@ -213,6 +261,39 @@ public partial class OnDemandTutorContext : DbContext
             entity.HasOne(d => d.Tutor).WithMany()
                 .HasForeignKey(d => d.TutorId)
                 .HasConstraintName("FK__TutorCert__Tutor__4222D4EF");
+        });
+
+        modelBuilder.Entity<UserNotification>(entity =>
+        {
+            entity.HasKey(e => e.NotificationId).HasName("PK__UserNoti__20CF2E128BECFF73");
+
+            entity.ToTable("UserNotification");
+
+            entity.Property(e => e.Content).HasMaxLength(300);
+            entity.Property(e => e.NotificateDay).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.UserNotifications)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Notificate_Account");
+        });
+
+        modelBuilder.Entity<Wallet>(entity =>
+        {
+            entity.HasKey(e => e.WalletId).HasName("PK__Wallet__84D4F90E5D17AE7A");
+
+            entity.ToTable("Wallet");
+
+            entity.HasIndex(e => e.AccountId, "UQ__Wallet__349DA5A7674B1809").IsUnique();
+
+            entity.Property(e => e.Balance)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.Account).WithOne(p => p.Wallet)
+                .HasForeignKey<Wallet>(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Wallet__AccountI__1AD3FDA4");
         });
 
         OnModelCreatingPartial(modelBuilder);

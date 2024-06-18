@@ -14,9 +14,9 @@ public partial class Section
 
     public string SectionStatus { get; set; } = null!;
 
-    public int Price { get; set; }
-
     public int? CurriculumId { get; set; }
+
+    public string? MeetUrl { get; set; }
     [JsonIgnore]
     public virtual Curriculum? Curriculum { get; set; }
 }

@@ -11,9 +11,9 @@ function Home() {
     useEffect(() => {
         const fetchTutors = async () => {
             try {
-                const tutorList = await tutorAPI.getAll();
+                const tutorList = await tutorAPI.getApproved();
                 setTutors(tutorList.data.$values);
-                console.log(tutorList.data.$values);
+                console.log(tutorList);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
