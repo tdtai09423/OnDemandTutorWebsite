@@ -128,7 +128,7 @@ namespace ODTDemoAPI.Controllers
                 _context.Accounts.Add(account);
                 await _context.SaveChangesAsync();
 
-                var wallet = new Wallet { AccountId = account.Id, Balance = 0 };
+                var wallet = new Wallet { WalletId = account.Id, Balance = 0 };
                 _context.Wallets.Add(wallet);
                 await _context.SaveChangesAsync();
 
@@ -362,7 +362,7 @@ namespace ODTDemoAPI.Controllers
                     _context.Accounts.Add(account);
                     await _context.SaveChangesAsync();
 
-                    var wallet = new Wallet { AccountId =  account.Id, Balance = 0 };
+                    var wallet = new Wallet { WalletId =  account.Id, Balance = 0 };
                     _context.Wallets.Add(wallet);
                     await _context.SaveChangesAsync();
 
@@ -452,7 +452,7 @@ namespace ODTDemoAPI.Controllers
                     _context.Accounts.Add(account);
                     await _context.SaveChangesAsync();
 
-                    var wallet = new Wallet { AccountId = account.Id, Balance = 0 };
+                    var wallet = new Wallet { WalletId = account.Id, Balance = 0 };
                     _context.Wallets.Add(wallet);
                     await _context.SaveChangesAsync();
 

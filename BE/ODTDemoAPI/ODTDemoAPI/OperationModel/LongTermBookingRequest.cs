@@ -11,5 +11,9 @@
         public DayOfWeek Day2 { get; set; }
 
         public int Duration { get; set; }
+
+        public int WeekNumber { get; set; }
+
+        public int Year { get; set; }
     }
 }

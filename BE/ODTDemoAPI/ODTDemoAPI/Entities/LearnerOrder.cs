@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace ODTDemoAPI.Entities;
@@ -10,7 +11,7 @@ public partial class LearnerOrder
 
     public DateTime OrderDate { get; set; }
 
-    public string OrderStatus { get; set; } = null!;
+    public string? OrderStatus { get; set; }
 
     public decimal Total { get; set; }
 
