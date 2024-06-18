@@ -216,3 +216,134 @@
 .schedule-icon {
     padding: 0;
 }
+
+.calendar {
+    display: block;
+    position: relative;
+    width: 100%;
+    background: var(--neutral-color);
+    border: 1px solid var(--border-color);
+}
+
+.calendar .header {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 115%;
+    padding: 1.5em 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.calendar .header .col-center {
+    text-align: center;
+
+}
+
+.calendar .days {
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--text-color-light);
+    font-size: 100%;
+    padding: 0.75em 0;
+    border-bottom: 1px solid black;
+}
+
+.calendar .body .cell {
+    position: relative;
+    height: 10em;
+    border-right: 1px solid black;
+    overflow-y: scroll;
+    cursor: pointer;
+    transition: 0.25s ease-out;
+    font-size: 1.5em;
+}
+
+.calendar .body .cell::-webkit-scrollbar {
+    display: none;
+}
+
+.calendar .body .today {
+    border-left: 10px solid transparent;
+    border-image: linear-gradient(45deg, #ff1a79 0%, #eb82b3 40%);
+    border-image-slice: 1;
+}
+
+.calendar .body .row {
+    border-bottom: 1px solid var(--border-color);
+    height: auto;
+}
+
+/* .calendar .body .row:last-child {
+    border-bottom: none;
+  } */
+
+.calendar .body .cell:last-child {
+    border-right: none;
+}
+
+.calendar .body .cell .number {
+    position: absolute;
+    font-size: 82.5%;
+    line-height: 1;
+    top: 0.75em;
+    right: 0.75em;
+    font-weight: 700;
+}
+
+.calendar .body .disabled {
+    color: var(--text-color-light);
+    pointer-events: none;
+}
+
+.calendar .body .col {
+    flex-grow: 0;
+    flex-basis: calc(100% / 7);
+    width: calc(100% / 7);
+}
+
+.calendar .footer {
+    display: flex;
+    margin-top: 20px;
+}
+
+.calendar .footer .prev {
+    font-weight: bold;
+    text-align: left;
+}
+
+.calendar .footer .prev .icon {
+    font-weight: bold;
+    float: left;
+}
+
+.calendar .footer .icon-wrapper .icon {
+    border: 2px solid black;
+    width: 60%;
+    background-color: white;
+
+    &:hover {
+        border: 2px solid #ff7aac;
+        color: #ff7aac;
+    }
+}
+
+.calendar .footer .current {
+    font-weight: bold;
+    text-align: center;
+}
+
+.calendar .footer .next .icon {
+    font-weight: bold;
+    float: right;
+}
+
+.calendar .footer .next {
+    font-weight: bold;
+    text-align: right;
+}
+
+.sections-day {
+    margin-top: 50px;
+    display: grid;
+}
+
+.section-day {}

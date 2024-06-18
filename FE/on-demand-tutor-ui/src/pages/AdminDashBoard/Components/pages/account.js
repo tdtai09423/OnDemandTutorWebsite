@@ -1,11 +1,8 @@
 import { useCallback, useState, useEffect } from 'react';
-import { subHours, subMinutes } from 'date-fns';
 import { Box, Button, Card, Container, Divider, Stack, Typography } from '@mui/material';
 import { OrdersSearch } from '../sections/orders/orders-search.js';
-import tutorAPI from '../../../../api/tutorAPI.js';
+import userAPI from '../../../../api/userAPI.js';
 import { AccountsTable } from '../sections/orders/account-table.js';
-
-const now = new Date();
 
 
 function AdminAccount() {
@@ -14,14 +11,13 @@ function AdminAccount() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [tutors, setTutors] = useState([]);
+  const [users, setUser] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const tutorList = await tutorAPI.getAll();
-        setTutors(tutorList.data.$values);
-        console.log(tutorList.data.$values);
+        const userList = await userAPI.getAll();
+        setUser(userList.data.$values);
       } catch (error) {
         console.error("Error fetching tutors:", error);
       }
@@ -79,13 +75,6 @@ function AdminAccount() {
               <Typography variant="h4">
                 Account
               </Typography>
-              <Button
-                color="primary"
-                size="large"
-                variant="contained"
-              >
-                Add
-              </Button>
             </Stack>
             <div>
               <Card>
@@ -97,8 +86,8 @@ function AdminAccount() {
                 />
                 <Divider />
                 <AccountsTable
-                  count={tutors.length}
-                  items={tutors}
+                  count={users.length}
+                  items={users}
                   page={page}
                   rowsPerPage={rowsPerPage}
                   onPageChange={handleChangePage}

@@ -3,7 +3,7 @@ import EllipsisVerticalIcon from '@heroicons/react/24/solid/EllipsisVerticalIcon
 import {
   Box,
   Divider,
-  IconButton,
+  Button,
   Link,
   Stack,
   SvgIcon,
@@ -15,23 +15,39 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
+import Combobox from "react-widgets/Combobox";
+import 'react-widgets/styles.css';
 import { Scrollbar } from '../../../../../Components/scrollbar.js';
 import { CheckCircleFill, XCircleFill } from 'react-bootstrap-icons'
 
 const statusMap = {
   1: {
     color: 'success.main',
-    label: 'Approved'
+    label: 'Approved',
+    id: 1
   },
   0: {
     color: 'error.main',
-    label: 'Denied'
+    label: 'Denied',
+    id: 0
   },
-  Pending: {
+  2: {
     color: 'warning.main',
-    label: 'Pending'
+    label: 'Pending',
+    id: 2
   }
 };
+let Certificate = [
+  { id: 0, name: 'Denied' },
+  { id: 1, name: 'Approved' },
+  { id: 2, name: 'Pending' }
+];
+let statuss = [
+  { id: 'Disable', name: 'Disable' },
+  { id: 'Enable', name: 'Enable' }
+];
+
+
 
 export const AccountsTable = (props) => {
   const {
@@ -42,6 +58,8 @@ export const AccountsTable = (props) => {
     rowsPerPage = 0,
     onRowsPerPageChange
   } = props;
+
+  console.log(items)
 
   return (
     <div>
@@ -56,10 +74,10 @@ export const AccountsTable = (props) => {
                 Created Date
               </TableCell>
               <TableCell>
-                Name
+                Full Name
               </TableCell>
               <TableCell>
-                Certificate status
+                Email Verify
               </TableCell>
               <TableCell>
                 Role ID
@@ -72,10 +90,14 @@ export const AccountsTable = (props) => {
           </TableHead>
           <TableBody>
             {items.map((account) => {
-              const id = account.tutorNavigation.id;
-              const certiStatus = statusMap[account.certiStatus];
-              const status = account.tutorNavigation.status;
-              const roleId = account.tutorNavigation.roleId;
+              const id = account.id;
+              const isEmailVerified = account.isEmailVerified;
+              const status = account.status;
+              const roleId = account.roleId;
+              let accountStatus = '';
+              status ? accountStatus = 'Enable' : accountStatus = 'Disable';
+              let emailVerified = '';
+              isEmailVerified ? emailVerified = 'Verified' : emailVerified = 'Not verified';
 
               return (
                 <TableRow key={id}>
@@ -98,25 +120,49 @@ export const AccountsTable = (props) => {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    {account.tutorNavigation.firstName}
+                    {account.fullName}
                   </TableCell>
                   <TableCell>
-                    <Stack
+                    {/* <Stack
                       alignItems="center"
                       direction="row"
-                      spacing={1}
+                      spacing
+                      ={1}
                     >
-                      <Box
+                       <Box
                         sx={{
                           backgroundColor: certiStatus.color,
                           borderRadius: '50%',
                           height: 8,
                           width: 8
                         }}
-                      />
-                      <Typography variant="body2">
+                      /> 
+                       <Typography variant="body2">
                         {certiStatus.label}
-                      </Typography>
+                      </Typography> 
+                       <Combobox
+                        data={Certificate}
+                        dataKey='id'
+                        textField='name'
+                        defaultValue={certiStatus.label}
+                        style={{ width: '10em' }}
+                      /> 
+                    </Stack> */}
+                    <Stack
+                      alignItems="center"
+                      direction="row"
+                      spacing={1}
+                    >
+                      {status ? (
+                        <CheckCircleFill style={{ color: 'green', marginRight: '5px' }}>
+
+                        </CheckCircleFill>
+                      ) : (
+                        <XCircleFill style={{ color: 'red', marginRight: '5px' }}>
+
+                        </XCircleFill>
+                      )}
+                      {emailVerified}
                     </Stack>
                   </TableCell>
                   <TableCell>
@@ -137,18 +183,27 @@ export const AccountsTable = (props) => {
 
                         </XCircleFill>
                       )}
-                      <Typography variant="body2">
-                        {status ? 'Enable' : 'Disable'}
-                      </Typography>
+                      {/* <Typography variant="body2">
+                        status
+                      </Typography> */}
+                      <Combobox
+                        data={statuss}
+                        dataKey='id'
+                        textField='name'
+                        defaultValue={accountStatus}
+                        style={{ width: '10em' }}
+                      />
                     </Stack>
 
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton>
-                      <SvgIcon fontSize="small">
-                        <EllipsisVerticalIcon />
-                      </SvgIcon>
-                    </IconButton>
+                    <Button
+                      color="primary"
+                      size="large"
+                      variant="contained"
+                    >
+                      Update
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
