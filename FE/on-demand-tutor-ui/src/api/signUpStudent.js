@@ -8,5 +8,5 @@ import apiClient from './apiClient';
 const SignUpStudentAPI = (FormData) => {
     console.log("goi api ");
     return apiClient.post("/Account/learner-register", { FormData });
-
+}
 export default SignUpStudentAPI;

@@ -50,7 +50,7 @@ function UserProfileTab({ user }) {
         fetchUser();
 
     }, [user])
-    
+
 
     return (
         <section className="h-100 gradient-custom-2">
@@ -63,18 +63,18 @@ function UserProfileTab({ user }) {
                                     {/* avatar */}
                                     <Image src={avatar}
                                         className="img-fluid img-thumbnail mt-4 mb-2"
-                                        style={{ width: '150px', zIndex: 1 }} />                                
+                                        style={{ width: '150px', zIndex: 1 }} />
                                 </div>
                                 {/* first name, last name, nation      */}
                                 <div className="ms-3" style={{ marginTop: '130px' }}>
                                     <h5>{firstName} {lastName}</h5>
                                     {(user.roleId === 'TUTOR') ? <p>{nationality}</p> : <p>Student</p>}
-                                    
+
                                 </div>
-                                
+
                             </div>
                             <div className="p-4 text-black bg-body-tertiary">
-                                <EditProfile user={user}/>
+                                <EditProfile user={user} />
                                 <div className="d-flex justify-content-end text-center py-1 text-body">
                                     {nationality ? (<div>
                                         <p className="mb-1 h5">2</p>

@@ -23,9 +23,9 @@ function OrderHistory() {
   }, [])
   return (
     <div className='Container'>
-      
+
       <OrderHistoryList
-        user={"18"}
+        user={user}
       />
     </div>
   );
