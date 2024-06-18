@@ -14,13 +14,12 @@ function CancelOrder({ order }) {
     const handleCancelOrder = async () => {
         try {
             const confirmed = window.confirm('Are you sure to cancel this order?');
-            if (confirmed) {
-                let res = await deleteUpdateCourse(order.OrderId);
-                if (res && res.data.id) {
-                    handleClose();
-                }
-                console.log("check  res", res);
-            }
+            // if (confirmed) {
+            //     let res = await deleteUpdateCourse(order.OrderId);
+            //     handleClose();
+                
+            //     console.log("check  res", res);
+            // }
         } catch (error) {
             console.log("error when cancel order", error);
         }
@@ -31,7 +30,7 @@ function CancelOrder({ order }) {
 
     return (
         <>
-            <Button variant="Danger" onClick={handleShow}>
+            <Button variant="danger" size="sm" onClick={handleShow}>
                 Cancel Order
             </Button>
 

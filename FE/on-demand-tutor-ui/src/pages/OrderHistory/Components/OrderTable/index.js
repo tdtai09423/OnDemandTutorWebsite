@@ -10,52 +10,68 @@ function OrderHistoryList({ user }) {
     getOrderHistory();
   }, [])
   const getOrderHistory = async () => {
-    let res = await orderHistoryAPI.getOrderHistoryById(user.id);
-    if (res && res.data) {
-      setListOrder(res.data);
+    try {
+      console.log("try order history")
+      // let res = await orderHistoryAPI.getOrderHistoryById(user.id);
+      let userID = '18';
+      let res = await orderHistoryAPI.getOrderHistoryById(userID);
+      console.log("res>>>>>>>>>>>>>>>>", res.data.$values)
+      setListOrder(res.data.$values);
+      console.log("try order history finish")
+
+    } catch (error) {
+      console.log("try order history failed", error)
+      
     }
+    
   }
 
 
   return (
     <div className='Container'>
+      
       <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Order Date</th>
-            <th>Order Status</th>
-            <th>Total</th>
-            <th>Curriculum ID</th>
+  <thead>
+    <tr>
+      <th>Order ID</th>
+      <th>Order Date</th>
+      <th>Order Status</th>
+      <th>Total</th>
+      <th>Curriculum ID</th>
+      <th>More</th>
+    </tr>
+  </thead>
+  <tbody>
+    {listOrder && listOrder.length > 0 ? (
+      listOrder.map((item, index) => {
+        const timeDiff = new Date() - new Date(item.orderDate);
+        const isCancellable = item.orderStatus === "pending" && timeDiff < 48 * 60 * 60 * 1000;
+        const isCompleted = item.orderStatus === "completed"
+        return (
+          <tr key={`order-${index}`}>
+            <td>{item.orderId}</td>
+            <td>{item.orderDate}</td>
+            <td>{item.orderStatus}</td>
+            <td>{item.total}</td>
+            <td>{item.curriculumId}</td>
+            {isCancellable ? (
+              <td>
+                <CancelOrder order={item} />
+              </td>
+            ) : (
+              <td></td> 
+            )}
+            
           </tr>
-        </thead>
-        <tbody>
-          {listOrder && listOrder.length > 0 &&
-            listOrder.map((item, index) => {
-              // Calculate time difference
-              const timeDiff = new Date() - new Date(item.OrderDate);
-              const isCancellable = item.OrderStatus === "Not start" && timeDiff > 48 * 60 * 60 * 1000; // 48 hours in milliseconds
-
-              return (
-                <tr key={`order-${index}`}>
-                  <th>{item.OrderId}</th>
-                  <th>{item.OrderDate}</th>
-                  <th>{item.OrderStatus}</th>
-                  <th>{item.Total}</th>
-                  <th>{item.CurriculumId}</th>
-                  {isCancellable && (
-                    <th>
-                      <CancelOrder
-                        order={item}
-                      />
-                    </th>
-                  )}
-                </tr>
-              )
-            })
-          }
-        </tbody>
-      </Table>
+        );
+      })
+    ) : (
+      <tr>
+        <td colSpan="6">No orders available</td>
+      </tr>
+    )}
+  </tbody>
+</Table>
     </div>
   );
 }
