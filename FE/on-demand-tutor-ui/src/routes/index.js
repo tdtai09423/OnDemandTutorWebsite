@@ -12,7 +12,8 @@ import UserProfile from "../pages/UserProfile";
 import DashboardLayout from '../Components/Layout/DashboardLayout/index.js'
 import AdminOrder from '../pages/AdminDashBoard/Components/pages/order.js'
 import VerifyCode from "../pages/VerifyCode/index.js";
-import OrderHistory from "../pages/OrderHistory/index.js";
+import AdminAccount from '../pages/AdminDashBoard/Components/pages/account.js'
+import Certificate from "../pages/AdminDashBoard/Components/pages/certificate.js";
 //Public Route
 const publicRoute = [
     { path: '/', component: Home },
@@ -25,7 +26,9 @@ const publicRoute = [
     { path: '/send-report', component: SendReport, layout: null },
     { path: '/policy', component: Policy, layout: null },
     { path: '/admin-dash-board', component: AdminDashBoard, layout: DashboardLayout },
-    { path: '/admin-dash-board-account', component: AdminOrder, layout: DashboardLayout },
+    { path: '/admin-dash-board-order', component: AdminOrder, layout: DashboardLayout },
+    { path: '/admin-dash-board-account', component: AdminAccount, layout: DashboardLayout },
+    { path: '/admin-dash-board-certificate', component: Certificate, layout: DashboardLayout },
     { path: '/user-profile', component: UserProfile },
     { path: '/verify-code', component: VerifyCode },
     { path: '/order-history', component: OrderHistory },

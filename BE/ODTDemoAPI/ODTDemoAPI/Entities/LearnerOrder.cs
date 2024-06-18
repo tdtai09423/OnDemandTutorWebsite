@@ -12,7 +12,7 @@ public partial class LearnerOrder
 
     public string OrderStatus { get; set; } = null!;
 
-    public double Total { get; set; }
+    public decimal Total { get; set; }
 
     public int? CurriculumId { get; set; }
 

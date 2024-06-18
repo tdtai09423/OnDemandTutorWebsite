@@ -33,6 +33,7 @@
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.5",
+    "react-widgets": "^5.8.4",
     "scss": "^0.2.4",
     "simplebar-react": "3.2.1",
     "web-vitals": "^2.1.4",
