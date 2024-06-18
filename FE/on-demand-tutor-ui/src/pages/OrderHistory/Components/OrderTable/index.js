@@ -60,6 +60,12 @@ function OrderHistoryList({ user }) {
               </td>
             ) : (
               <td></td> 
+            )}{isCompleted ? (
+              <td>
+                {/* <Feedback order={item} /> */}
+              </td>
+            ) : (
+              <td></td>
             )}
             
           </tr>
