@@ -26,12 +26,12 @@ export const OverviewLatestCustomers = (props) => {
           <Button
             color="inherit"
             component="a"
-            href="#"
+            href="/admin-dash-board-order"
           >
             View All
           </Button>
         )}
-        title="Latest Customers"
+        title="Latest order from learner"
       />
       <Divider />
       <Scrollbar>
