@@ -1,4 +1,7 @@
-﻿namespace ODTDemoAPI.OperationModel
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Runtime.InteropServices;
+
+namespace ODTDemoAPI.OperationModel
 {
     public class UpdateUserModel
     {
@@ -7,7 +10,7 @@
         public string? LastName { get; set;}
 
         public string? Email { get; set;}
-
+        [ValidateNever]
         public UpdatePasswordModel? PasswordModel { get; set;}
     }
 }

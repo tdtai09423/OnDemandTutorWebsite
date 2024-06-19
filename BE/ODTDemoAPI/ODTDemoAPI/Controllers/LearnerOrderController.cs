@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using ODTDemoAPI.Entities;
+using ODTDemoAPI.EntityViewModels;
 using ODTDemoAPI.OperationModel;
 using ODTDemoAPI.Services;
 using Stripe;
 using Stripe.Checkout;
+using Stripe.Climate;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -39,7 +41,7 @@ namespace ODTDemoAPI.Controllers
             //lưu vào memory cache + nếu tutor không chấp nhận trong vòng 48 giờ => auto reject => refund
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_startTime_ST", startTime, TimeSpan.FromHours(48));
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_duration_ST", duration, TimeSpan.FromHours(48));
-            
+
             return await CreateBooking(request);
         }
 
@@ -51,12 +53,16 @@ namespace ODTDemoAPI.Controllers
             DayOfWeek day1 = request.Day1;
             DayOfWeek day2 = request.Day2;
             int duration = request.Duration;
+            int weekNumber = request.WeekNumber;
+            int year = request.Year;
 
             // lưu vào memory cache + nếu tutor không chấp nhận trong vòng 48 giờ => auto reject => refund
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_startTime_LT", startTime, TimeSpan.FromHours(48));
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_day1_LT", day1, TimeSpan.FromHours(48));
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_day2_LT", day2, TimeSpan.FromHours(48));
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_duration_LT", duration, TimeSpan.FromHours(48));
+            _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_weekNumber_LT", weekNumber, TimeSpan.FromHours(48));
+            _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_year_LT", year, TimeSpan.FromHours(48));
 
             return await CreateBooking(request);
         }
@@ -77,9 +83,9 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Not found learner");
                 }
 
-                List<Curriculum> curricula; 
+                List<Curriculum> curricula;
 
-                if(request is ShortTermBookingRequest)
+                if (request is ShortTermBookingRequest)
                 {
                     curricula = await _context.Curricula
                     .Include(c => c.Sections)
@@ -108,7 +114,7 @@ namespace ODTDemoAPI.Controllers
 
                 LearnerOrder order;
 
-                if(request is ShortTermBookingRequest)
+                if (request is ShortTermBookingRequest)
                 {
                     order = new LearnerOrder
                     {
@@ -149,7 +155,6 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var learner = await _context.Accounts
-                    .Include(a => a.Wallet)
                     .FirstOrDefaultAsync(a => a.Id == order.LearnerId);
 
                 if (learner == null)
@@ -157,12 +162,12 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Learner not found");
                 }
 
-                var wallet = learner.Wallet;
-                if (wallet != null)
+                var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learner.Id);
+                if (wallet == null)
                 {
                     wallet = new Wallet
                     {
-                        AccountId = learner.Id,
+                        WalletId = learner.Id,
                         Balance = 0,
                     };
                     _context.Wallets.Add(wallet);
@@ -171,7 +176,7 @@ namespace ODTDemoAPI.Controllers
 
                 decimal total = order.Total;
 
-                var balance = learner.Wallet!.Balance;
+                var balance = wallet.Balance;
 
                 if (balance < total)
                 {
@@ -180,17 +185,64 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 balance -= total;
-                learner.Wallet.Balance = balance;
-                _context.Wallets.Update(learner.Wallet);
-                await _context.SaveChangesAsync();
+                wallet.Balance = balance;
+                _context.Wallets.Update(wallet);
+
+                var transaction = new Transaction
+                {
+                    AccountId = learner.Id,
+                    Amount = total,
+                    TransactionDate = DateTime.Now,
+                    TransactionType = "Paid for order",
+                };
+
+                _context.Transactions.Add(transaction);
 
                 order.OrderStatus = "Paid";
-                _context.LearnerOrders.Update(order);
-                await _context.SaveChangesAsync();
+                _context.Database.ExecuteSql($"UPDATE dbo.LearnerOrder SET OrderStatus = 'Paid' WHERE OrderId = {order.OrderId}");
+                var saved = false;
+                while (!saved)
+                {
+                    try
+                    {
+                        // Attempt to save changes to the database
+                        await _context.SaveChangesAsync();
+                        saved = true;
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        foreach (var entry in ex.Entries)
+                        {
+                            if (entry.Entity is LearnerOrder)
+                            {
+                                var proposedValues = entry.CurrentValues;
+                                var databaseValues = entry.GetDatabaseValues();
 
-                NotifyTutorAboutBooking(order.Curriculum!.TutorId, order);
+                                foreach (var property in proposedValues.Properties)
+                                {
+                                    var proposedValue = proposedValues[property];
+                                    var databaseValue = databaseValues[property];
 
-                NotifyLearnerAboutBooking(order.LearnerId, order);
+                                    // TODO: decide which value should be written to database
+                                    // proposedValues[property] = <value to be saved>;
+                                }
+
+                                // Refresh original values to bypass next concurrency check
+                                entry.OriginalValues.SetValues(databaseValues);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(
+                                    "Don't know how to handle concurrency conflicts for "
+                                    + entry.Metadata.Name);
+                            }
+                        }
+                    }
+                }
+
+                //await NotifyTutorAboutBooking(order.Curriculum!.TutorId, order);
+
+                //await NotifyLearnerAboutBooking(order.LearnerId, order);
 
                 return Ok(new { Order = order });
 
@@ -234,7 +286,7 @@ namespace ODTDemoAPI.Controllers
                 {
                     try
                     {
-                        var learner = await _context.Accounts.Include(a => a.Wallet).FirstOrDefaultAsync(a => a.Id == learnerId);
+                        var learner = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == learnerId);
                         if (learner == null)
                         {
                             _logger.LogError("Learner not found");
@@ -253,9 +305,14 @@ namespace ODTDemoAPI.Controllers
                         //    await _context.SaveChangesAsync();
                         //}
 
-                        var wallet = learner.Wallet ?? new Wallet { AccountId = learnerId, Balance = 0 };
-                        if (wallet.AccountId == 0)
+                        var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learner.Id);
+                        if (wallet == null)
                         {
+                            wallet = new Wallet
+                            {
+                                WalletId = learner.Id,
+                                Balance = 0,
+                            };
                             _context.Wallets.Add(wallet);
                             await _context.SaveChangesAsync();
                         }
@@ -315,7 +372,7 @@ namespace ODTDemoAPI.Controllers
             //không để cho các learner cũ vào meeting khi không order
             var existingCurri = await _context.Curricula.AnyAsync(c => c.Sections.FirstOrDefault(s => s.MeetUrl == meetUrl)!.MeetUrl == meetUrl);
 
-            if(existingCurri)
+            if (existingCurri)
             {
                 return BadRequest("Meet URL already exists. Please use another URL.");
             }
@@ -355,20 +412,21 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Order not found");
                 }
 
-                if (order.OrderStatus != "Pending")
+                if (order.OrderStatus != "Paid")
                 {
-                    return BadRequest("Order status is not at pending status");
+                    return BadRequest("Order status is not at paid status");
                 }
 
                 order.OrderStatus = "Accepted";
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                NotifyLearnerAboutBookingStatus(order.LearnerId, order, "accepted");
+                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "accepted");
 
                 //TODO: tạo section cho booking
                 var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
-                if(curriculum!.CurriculumType == "ShortTerm")
+                var meetUrl = HttpContext.Session.GetString("MeetUrl");
+                if (curriculum!.CurriculumType == "ShortTerm")
                 {
                     var sectionStart = _memoryCache.Get<DateTime>($"{order.LearnerId}request{response.TutorId}_startTime_ST");
                     var sectionEnd = sectionStart.AddMinutes(_memoryCache.Get<int>($"{order.LearnerId}request{response.TutorId}_duration_ST"));
@@ -376,33 +434,46 @@ namespace ODTDemoAPI.Controllers
                     {
                         SectionStart = sectionStart,
                         SectionEnd = sectionEnd,
-                        SectionStatus = "", //scheduled, completed, pending
+                        SectionStatus = "Not Started", //Not Started, Completed
                         CurriculumId = curriculum.CurriculumId,
-                        MeetUrl = HttpContext.Session.GetString("MeetUrl"),
+                        MeetUrl = meetUrl,
                     };
                     _context.Sections.Add(section);
                     await _context.SaveChangesAsync();
                     _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_startTime_ST");
                     _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_duration_ST");
                 }
-                if(curriculum!.CurriculumType == "LongTerm")
+                if (curriculum!.CurriculumType == "LongTerm")
                 {
                     var startTime = _memoryCache.Get<TimeSpan>($"{order.LearnerId}request{response.TutorId}_startTime_LT");
                     var day1 = _memoryCache.Get<DayOfWeek>($"{order.LearnerId}request{response.TutorId}_day1_LT");
                     var day2 = _memoryCache.Get<DayOfWeek>($"{order.LearnerId}request{response.TutorId}_day2_LT");
                     var duration = _memoryCache.Get<int>($"{order.LearnerId}request{response.TutorId}_duration_LT");
+                    var weekNumber = _memoryCache.Get<int>($"{order.LearnerId}request{response.TutorId}_weekNumber_LT");
+                    var year = _memoryCache.Get<int>($"{order.LearnerId}request{response.TutorId}_year_LT");
                     List<Section> sections = new();
-                    for(int i = 1; i <= curriculum.TotalSlot; i++)
+                    var loopNum = (curriculum.TotalSlot / 2) - 1;
+                    for (int i = 0; i <= loopNum; i++)
                     {
+                        var section_start1 = GetDateTimeFromWeek(year, weekNumber + i, day1, startTime);
                         var sectionDay1 = new Section
                         {
-                            
+                            SectionStart = section_start1,
+                            SectionEnd = section_start1.AddMinutes(duration),
+                            SectionStatus = "Not Started",
+                            CurriculumId = curriculum.CurriculumId,
+                            MeetUrl = meetUrl,
                         };
                         sections.Add(sectionDay1);
 
+                        var section_start2 = GetDateTimeFromWeek(year, weekNumber + i, day2, startTime);
                         var sectionDay2 = new Section
                         {
-
+                            SectionStart = section_start2,
+                            SectionEnd = section_start2.AddMinutes(duration),
+                            SectionStatus = "Not Started",
+                            CurriculumId = curriculum.CurriculumId,
+                            MeetUrl = meetUrl,
                         };
                         sections.Add(sectionDay2);
                     }
@@ -413,6 +484,8 @@ namespace ODTDemoAPI.Controllers
                     _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_day1_LT");
                     _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_day2_LT");
                     _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_duration_LT");
+                    _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_weekNumber_LT");
+                    _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_year_LT");
                 }
 
                 return Ok("Booking accepted.");
@@ -421,6 +494,47 @@ namespace ODTDemoAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private static DateTime GetDateTimeFromWeek(int year, int weekNumber, DayOfWeek dayOfWeek, TimeSpan timeOfDay)
+        {
+            var weeks = GetWeeks(year);
+
+            if (weekNumber < 1 || weekNumber > weeks.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(weekNumber), "Invalid week number.");
+            }
+
+            var selectedWeek = weeks[weekNumber - 1];
+
+            DateTime result = selectedWeek.StartDate.AddDays((int)dayOfWeek).Add(timeOfDay);
+            return result;
+        }
+
+        private static List<WeekViewModel> GetWeeks(int year)
+        {
+            var weeks = new List<WeekViewModel>();
+            var startDate = new DateTime(year, 1, 1);
+
+            while (startDate.DayOfWeek != DayOfWeek.Monday)
+            {
+                startDate = startDate.AddDays(1);
+            }
+
+            var endDate = new DateTime(year, 12, 31);
+
+            while (startDate <= endDate)
+            {
+                var week = new WeekViewModel
+                {
+                    StartDate = startDate,
+                    EndDate = startDate.AddDays(6),
+                };
+                weeks.Add(week);
+                startDate = startDate.AddDays(7);
+            }
+
+            return weeks;
         }
 
         [HttpPost("reject-booking")]
@@ -446,7 +560,7 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                NotifyLearnerAboutBookingStatus(order.LearnerId, order, "rejected");
+                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "rejected");
 
                 await RefundPayment(order.Total, (int)order.LearnerId!);
 
@@ -463,13 +577,13 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var learner = await _context.Accounts
-                    .Include(a => a.Wallet)
                     .FirstOrDefaultAsync(a => a.Id == learnerId);
 
                 if (learner != null)
                 {
-                    learner.Wallet!.Balance += amount;
-                    _context.Wallets.Update(learner.Wallet);
+                    var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learnerId);
+                    wallet!.Balance += amount;
+                    _context.Wallets.Update(wallet);
 
                     var transaction = new Transaction
                     {
@@ -511,50 +625,56 @@ namespace ODTDemoAPI.Controllers
             _context.SaveChanges();
         }
 
-        private void NotifyTutorAboutBooking(int? tutorId, LearnerOrder order)
+        private async Task NotifyTutorAboutBooking(int? tutorId, LearnerOrder order)
         {
+            if (tutorId == null || order == null)
+            {
+                return;
+            }
+            var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+            if(tutor == null)
+            {
+                return;
+            }
             var notification = new UserNotification
             {
                 Content = $"You have received a new booking request for curriculum {order.Curriculum!.CurriculumType}.",
                 NotificateDay = DateTime.Now,
                 AccountId = (int)tutorId!
             };
-
-            var tutor = _context.Tutors.Find(tutorId);
-            if (tutor != null)
+            if (tutor != null && tutor.TutorNavigation != null)
             {
                 string subject = "New Booking Request";
                 string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nYou have received a new booking request for curriculum {order.Curriculum!.CurriculumType}. Please login to your dhashboard for more details.";
 
                 var emailService = new EmailService();
-                emailService.SendMailAsync(tutor.TutorEmail, subject, message);
+                await emailService.SendMailAsync(tutor.TutorEmail, subject, message);
             }
 
             _context.UserNotifications.Add(notification);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        private void NotifyLearnerAboutBooking(int? learnerId, LearnerOrder order)
+        private async Task NotifyLearnerAboutBooking(int? learnerId, LearnerOrder order)
         {
+            var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
             var notification = new UserNotification
             {
                 Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.",
                 NotificateDay = DateTime.Now,
                 AccountId = (int)learnerId!
             };
-
-            var learner = _context.Learners.Find(learnerId);
-            if (learner != null)
+            if (learner != null && learner.LearnerNavigation != null)
             {
                 string subject = "Booking Sent";
                 string message = $"Dear {learner.LearnerNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.";
 
                 var emailService = new EmailService();
-                emailService.SendMailAsync(learner.LearnerEmail, subject, message);
+                await emailService.SendMailAsync(learner.LearnerEmail, subject, message);
             }
 
             _context.UserNotifications.Add(notification);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         [HttpPost("top-up-wallet")]

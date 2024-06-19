@@ -25,7 +25,7 @@ public partial class Account
     public DateTime CreatedDate { get; set; }
     [JsonIgnore]
     public virtual Learner? Learner { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
     [JsonIgnore]
@@ -33,12 +33,6 @@ public partial class Account
     [JsonIgnore]
     public virtual ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
 
-    public virtual Wallet? Wallet { get; set; }
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 698c35669d05c2a798bf88142c05a314fd01a03f
     public void NavigateAccount(string roleId)
     {
         if (roleId == "TUTOR")
