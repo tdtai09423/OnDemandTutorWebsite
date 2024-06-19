@@ -67,7 +67,7 @@ namespace ODTDemoAPI.Controllers
                 var surname = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Surname)?.Value;
                 var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                if(string.IsNullOrEmpty(email))
+                if (string.IsNullOrEmpty(email))
                 {
                     return BadRequest("Not found email in claims");
                 }
@@ -109,7 +109,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
@@ -364,6 +364,7 @@ namespace ODTDemoAPI.Controllers
                     await _context.SaveChangesAsync();
 
                     var wallet = new Wallet { WalletId =  account.Id, Balance = 0 };
+                    
                     _context.Wallets.Add(wallet);
                     await _context.SaveChangesAsync();
 
@@ -681,10 +682,29 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var account = FindAccountByEmail(model.Email);
+                
                 if(account == null)
                 {
                     return NotFound("Account not found");
                 }
+
+                account.Status = model.Status;
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Account status update successfully!", account });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model, Account account)
+        {
+            try
+            {
+                var email = account.Email;
+                bool isLearner = account.RoleId == "LEARNER";
 
                 account.Status = model.Status;
                 _context.Accounts.Update(account);
@@ -724,24 +744,24 @@ namespace ODTDemoAPI.Controllers
                 bool isLearner = account.RoleId == "LEARNER";
 
 
-                if(!string.IsNullOrEmpty(model.FirstName))
+                if (!string.IsNullOrEmpty(model.FirstName))
                 {
                     account.FirstName = model.FirstName;
                 }
 
-                if(!string.IsNullOrEmpty(model.LastName))
+                if (!string.IsNullOrEmpty(model.LastName))
                 {
                     account.LastName = model.LastName;
                 }
 
-                if(model.PasswordModel != null)
+                if (model.PasswordModel != null)
                 {
-                    if(!BCrypt.Net.BCrypt.Verify(model.PasswordModel.CurrentPassword, account.Password))
+                    if (!BCrypt.Net.BCrypt.Verify(model.PasswordModel.CurrentPassword, account.Password))
                     {
                         return BadRequest(new { message = "Current password is incorrect." });
                     }
 
-                    if(model.PasswordModel.Password != model.PasswordModel.ConfirmPassword)
+                    if (model.PasswordModel.Password != model.PasswordModel.ConfirmPassword)
                     {
                         return BadRequest(new { message = "New password and confirm password do not match." });
                     }
@@ -749,7 +769,7 @@ namespace ODTDemoAPI.Controllers
                     account.Password = BCrypt.Net.BCrypt.HashPassword(model.PasswordModel.Password);
                 }
 
-                if(isLearner)
+                if (isLearner)
                 {
                     var learner = account.Learner;
                     Console.WriteLine(JsonSerializer.Serialize(learner));
@@ -815,9 +835,9 @@ namespace ODTDemoAPI.Controllers
                     }
                 }
 
-                if(!string.IsNullOrEmpty(model.Email) && model.Email != email)
+                if (!string.IsNullOrEmpty(model.Email) && model.Email != email)
                 {
-                    if(IsValidEmail(model.Email))
+                    if (IsValidEmail(model.Email))
                     {
                         HttpContext.Items["NewEmail"] = model.Email;
                         HttpContext.Items["CurrentEmail"] = email;
@@ -847,7 +867,8 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var account = HttpContext.Session.GetObject<Account>("Account");
-                if(account  == null || account.RoleId != "LEARNER")
+                
+                if (account == null || account.RoleId != "LEARNER")
                 {
                     return Unauthorized("You are logged out or your account is out of session. Please check your login status.");
                 }
@@ -909,7 +930,7 @@ namespace ODTDemoAPI.Controllers
 
         private static void DeleteOldImage(string path)
         {
-            if(System.IO.File.Exists(path))
+            if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);
             }
@@ -921,11 +942,11 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var account = FindAccountByEmail(email);
-                if(account == null)
+                if (account == null)
                 {
                     return NotFound(new { message = "Not found account" });
                 }
-                return Ok(new { message = "Verification code has been sent to you."});//chuyển hướng đến action SendVerificationCode
+                return Ok(new { message = "Verification code has been sent to you." });//chuyển hướng đến action SendVerificationCode
             }
             catch (Exception ex)
             {
@@ -964,7 +985,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                if(newPassword != confirmPassword)
+                if (newPassword != confirmPassword)
                 {
                     return BadRequest("Password and confirm password do not match.");
                 }

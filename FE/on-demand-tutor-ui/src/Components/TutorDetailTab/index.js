@@ -64,7 +64,7 @@ function TutorDetailTab({ tutorId }) {
                 <Col md={7}>
                     <Row className="profile-footer-detail">
                         <Col md={3}>
-                            <Image src={tutor.tutorPicture} className="profile-pic-detail" />
+                            <Image src={tutor.tutorPicture} className="profile-pic-detail" style={{ height: '100px', width: 'auto' }} />
                         </Col>
                     </Row>
                     <Row className="profile-footer-detail">
@@ -146,7 +146,9 @@ function TutorDetailTab({ tutorId }) {
                     <hr />
                 </Tab>
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
-                    <ScheduleTab />
+                    <ScheduleTab
+                        tutorId={tutorId}
+                    />
                 </Tab>
                 <Tab eventKey="review" title={<span className="information-tab-text">Review</span>} className="information-tab">
                     {reviews.map((review) => (
@@ -161,6 +163,7 @@ function TutorDetailTab({ tutorId }) {
                             <li key={certi.$id}>{certi.tutorCertificate}</li>
                         ))}
                     </ul>
+                    <hr />
                 </Tab>
             </Tabs>
         </Container>

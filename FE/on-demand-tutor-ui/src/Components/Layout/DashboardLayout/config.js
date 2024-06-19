@@ -1,6 +1,5 @@
 import ChartPieIcon from "@heroicons/react/24/solid/ChartPieIcon"
 import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon"
-import ExclamationTriangleIcon from "@heroicons/react/24/solid/ExclamationTriangleIcon"
 import ShoppingCartIcon from "@heroicons/react/24/solid/ShoppingCartIcon"
 import { SvgIcon } from '@mui/material';
 
@@ -33,12 +32,12 @@ export const items = [
     label: 'Account'
   },
   {
-    href: '/admin-dash-board/404',
+    href: '/admin-dash-board-certificate',
     icon: (
       <SvgIcon>
-        <ExclamationTriangleIcon />
+        <UserCircleIcon />
       </SvgIcon>
     ),
-    label: 'Error'
+    label: 'Certificate'
   }
 ];

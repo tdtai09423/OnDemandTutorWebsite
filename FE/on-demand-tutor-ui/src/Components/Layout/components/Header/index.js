@@ -58,7 +58,8 @@ function Header() {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className="dropdown-menu" align="end">
                                     <Dropdown.Item><Link as={Link} to={"/user-profile"}>User profile</Link></Dropdown.Item>
-                                    <Dropdown.Item href="#">View history</Dropdown.Item>
+                                    <Dropdown.Item><Link as={Link} to={"/order-history"}>View history</Link></Dropdown.Item>
+                                    <Dropdown.Item><Link as={Link} to={"/favorite-tutor"}>Favorite tutor</Link></Dropdown.Item>
                                     <Dropdown.Divider />
                                     <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
                                         <span className="loginContent">Log Out</span>

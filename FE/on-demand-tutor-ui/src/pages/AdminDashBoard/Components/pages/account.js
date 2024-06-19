@@ -1,85 +1,29 @@
-import { useCallback, useState } from 'react';
-import { subHours, subMinutes } from 'date-fns';
+import { useCallback, useState, useEffect } from 'react';
 import { Box, Button, Card, Container, Divider, Stack, Typography } from '@mui/material';
 import { OrdersSearch } from '../sections/orders/orders-search.js';
-import { OrdersTable } from '../sections/orders/orders-table.js';
+import userAPI from '../../../../api/userAPI.js';
+import { AccountsTable } from '../sections/orders/account-table.js';
 
-const now = new Date();
-
-const orders = [
-  {
-    id: '5273',
-    createdAt: subMinutes(now, 21).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Devon Lane'
-    },
-    status: 'delivered',
-    totalAmount: 192.5,
-    updatedAt: subMinutes(now, 7).getTime()
-  },
-  {
-    id: '9265',
-    createdAt: subMinutes(now, 56).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Livia Louthe'
-    },
-    status: 'complete',
-    totalAmount: 631,
-    updatedAt: subMinutes(now, 54).getTime()
-  },
-  {
-    id: '9266',
-    createdAt: subHours(subMinutes(now, 31), 2).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Peri Ottawell'
-    },
-    status: 'placed',
-    totalAmount: 631,
-    updatedAt: subHours(subMinutes(now, 43), 1).getTime()
-  },
-  {
-    id: '1090',
-    createdAt: subHours(subMinutes(now, 51), 2).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Thadeus Jacketts'
-    },
-    status: 'processed',
-    totalAmount: 100,
-    updatedAt: subHours(subMinutes(now, 13), 2).getTime()
-  },
-  {
-    id: '1111',
-    createdAt: subHours(subMinutes(now, 6), 3).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Rad Jose'
-    },
-    status: 'processed',
-    totalAmount: 60,
-    updatedAt: subHours(subMinutes(now, 54), 2).getTime()
-  },
-  {
-    id: '2475',
-    createdAt: subHours(subMinutes(now, 17), 4).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Eydie Hopkyns'
-    },
-    status: 'complete',
-    totalAmount: 1200,
-    updatedAt: subHours(subMinutes(now, 1), 2).getTime()
-  }
-];
 
 function AdminAccount() {
   const [mode, setMode] = useState('table');
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [users, setUser] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userList = await userAPI.getAll();
+        setUser(userList.data.$values);
+      } catch (error) {
+        console.error("Error fetching tutors:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleModeChange = useCallback(
     (event, value) => {
@@ -131,13 +75,6 @@ function AdminAccount() {
               <Typography variant="h4">
                 Account
               </Typography>
-              <Button
-                color="primary"
-                size="large"
-                variant="contained"
-              >
-                Add
-              </Button>
             </Stack>
             <div>
               <Card>
@@ -148,9 +85,9 @@ function AdminAccount() {
                   query={query}
                 />
                 <Divider />
-                <OrdersTable
-                  count={orders.length}
-                  items={orders}
+                <AccountsTable
+                  count={users.length}
+                  items={users}
                   page={page}
                   rowsPerPage={rowsPerPage}
                   onPageChange={handleChangePage}

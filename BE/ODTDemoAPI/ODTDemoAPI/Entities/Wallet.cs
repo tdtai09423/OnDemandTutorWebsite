@@ -11,3 +11,4 @@ public partial class Wallet
 
     public decimal Balance { get; set; }
 }
+
