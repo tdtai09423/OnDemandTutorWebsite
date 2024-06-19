@@ -35,6 +35,10 @@ public partial class Account
 
     public virtual Wallet? Wallet { get; set; }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 698c35669d05c2a798bf88142c05a314fd01a03f
     public void NavigateAccount(string roleId)
     {
         if (roleId == "TUTOR")

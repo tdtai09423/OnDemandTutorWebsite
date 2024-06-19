@@ -20,9 +20,9 @@ function TutorRecap({ tutor }) {
     useEffect(() => {
         const fetchTutors = async () => {
             try {
-                const price = await sectionAPI.get(tutor.tutorId);
+                //const price = await sectionAPI.get(tutor.tutorId);
                 const rating = await reviewRatingAPI.getRating(tutor.tutorId);
-                setPrice(price.data);
+                //setPrice(price.data);
                 setRating(rating.data);
                 const majorID = tutor.majorId;
                 const major = await majorAPI.get(majorID);

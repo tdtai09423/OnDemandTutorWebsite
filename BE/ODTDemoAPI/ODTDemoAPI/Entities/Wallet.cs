@@ -14,4 +14,8 @@ public partial class Wallet
 
     [JsonIgnore]
     public virtual Account Account { get; set; } = null!;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 698c35669d05c2a798bf88142c05a314fd01a03f

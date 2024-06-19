@@ -302,7 +302,7 @@ namespace ODTDemoAPI.Controllers
         {
             var storedCode = _memoryCache.Get<string>($"{email}_verificationCode");
 
-            if (string.IsNullOrEmpty(code))
+            if(string.IsNullOrEmpty(code))
             {
                 return BadRequest("Code is invalid!");
             }
@@ -362,7 +362,11 @@ namespace ODTDemoAPI.Controllers
                     _context.Accounts.Add(account);
                     await _context.SaveChangesAsync();
 
+<<<<<<< HEAD
                     var wallet = new Wallet { AccountId = account.Id, Balance = 0 };
+=======
+                    var wallet = new Wallet { AccountId =  account.Id, Balance = 0 };
+>>>>>>> 698c35669d05c2a798bf88142c05a314fd01a03f
                     _context.Wallets.Add(wallet);
                     await _context.SaveChangesAsync();
 
@@ -680,10 +684,36 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var account = FindAccountByEmail(model.Email);
+<<<<<<< HEAD
                 if (account == null)
                 {
                     return NotFound("Account not found");
                 }
+=======
+                if(account == null)
+                {
+                    return NotFound("Account not found");
+                }
+
+                account.Status = model.Status;
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Account status update successfully!", account });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model, Account account)
+        {
+            try
+            {
+                var email = account.Email;
+                bool isLearner = account.RoleId == "LEARNER";
+
+>>>>>>> 698c35669d05c2a798bf88142c05a314fd01a03f
 
                 account.Status = model.Status;
                 _context.Accounts.Update(account);
@@ -817,7 +847,11 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var account = HttpContext.Session.GetObject<Account>("Account");
+<<<<<<< HEAD
                 if (account == null || account.RoleId != "LEARNER")
+=======
+                if(account  == null || account.RoleId != "LEARNER")
+>>>>>>> 698c35669d05c2a798bf88142c05a314fd01a03f
                 {
                     return Unauthorized("You are logged out or your account is out of session. Please check your login status.");
                 }

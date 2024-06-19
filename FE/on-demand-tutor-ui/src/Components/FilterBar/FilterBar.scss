@@ -72,3 +72,19 @@
     width: 130%;
     margin-left: 60px;
 }
+
+.rw-widget-picker {
+    border-radius: 4px;
+    height: 3.95em;
+}
+
+.rw-widget-picker:focus {
+    border-color: none;
+    box-shadow: none;
+}
+
+.rw-widget-input {}
+
+.rw-widget {
+    font-size: 100px;
+}
