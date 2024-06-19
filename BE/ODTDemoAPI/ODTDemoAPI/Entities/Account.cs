@@ -25,7 +25,7 @@ public partial class Account
     public DateTime CreatedDate { get; set; }
     [JsonIgnore]
     public virtual Learner? Learner { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
     [JsonIgnore]

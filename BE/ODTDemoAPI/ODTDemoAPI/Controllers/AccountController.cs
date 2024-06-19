@@ -11,6 +11,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 using ODTDemoAPI.EntityViewModels;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -699,8 +700,26 @@ namespace ODTDemoAPI.Controllers
 
         private async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model, Account account)
         {
+            Console.WriteLine($"Model FirstName: {model.FirstName}, LastName: {model.LastName}, Email: {model.Email}, PWM CrP: {model.PasswordModel.CurrentPassword}, NP: {model.PasswordModel.Password}, CP: {model.PasswordModel.ConfirmPassword}");
+            Console.WriteLine($"Account: {JsonSerializer.Serialize(account)}");
+            if (model == null) return BadRequest(new { message = "Model cannot be null." });
+            if (account == null) return BadRequest(new { message = "Account cannot be null." });
             try
             {
+                if (model.PasswordModel == null || string.IsNullOrEmpty(model.PasswordModel.CurrentPassword)
+                    || string.IsNullOrEmpty(model.PasswordModel.Password)
+                    || string.IsNullOrEmpty(model.PasswordModel.ConfirmPassword))
+                {
+                    ModelState.Remove("PasswordModel.CurrentPassword");
+                    ModelState.Remove("PasswordModel.Password");
+                    ModelState.Remove("PasswordModel.ConfirmPassword");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
                 var email = account.Email;
                 bool isLearner = account.RoleId == "LEARNER";
 
@@ -733,54 +752,65 @@ namespace ODTDemoAPI.Controllers
                 if(isLearner)
                 {
                     var learner = account.Learner;
-                    var learnerModel = model as UpdateLearnerModel;
+                    Console.WriteLine(JsonSerializer.Serialize(learner));
+                    UpdateLearnerModel? learnerModel = model as UpdateLearnerModel;
 
-                    if(learnerModel!.Age.HasValue)
+                    if (learner == null) return BadRequest(new { message = "Tutor cannot be null." });
+
+                    if (learnerModel != null)
                     {
-                        learner!.LearnerAge = learnerModel.Age.Value;
-                    }
-
-                    if(learnerModel!.Image!.Length > 0 || learnerModel!.Image != null)
-                    {
-                        var oldImagePath = learner!.LearnerPicture;
-                        var newImagePath = await SaveImageAsync(learnerModel.Image, account);
-                        learner.LearnerPicture = newImagePath;
-
-                        if(!string.IsNullOrEmpty(oldImagePath))
+                        if (learnerModel.Age.HasValue && learnerModel.Age != int.Parse("") && learnerModel.Age != null)
                         {
-                            DeleteOldImage(oldImagePath);
+                            learner.LearnerAge = learnerModel.Age.Value;
+                        }
+
+                        if (learnerModel.Image != null && learnerModel.Image.Length > 0)
+                        {
+                            var oldImagePath = learner.LearnerPicture;
+                            var newImagePath = await SaveImageAsync(learnerModel.Image, account);
+                            learner.LearnerPicture = newImagePath;
+
+                            if (!string.IsNullOrEmpty(oldImagePath))
+                            {
+                                DeleteOldImage(oldImagePath);
+                            }
                         }
                     }
                 }
                 else
                 {
                     var tutor = account.Tutor;
-                    var tutorModel = model as UpdateTutorModel;
+                    UpdateTutorModel? tutorModel = model as UpdateTutorModel;
 
-                    if(tutorModel!.Age.HasValue)
+                    if (tutor == null) return BadRequest(new { message = "Tutor cannot be null." });
+
+                    if (tutorModel != null)
                     {
-                        tutor!.TutorAge = tutorModel.Age.Value;
-                    }
-
-                    if(!string.IsNullOrEmpty(tutorModel!.Nationality))
-                    {
-                        tutor!.Nationality = tutorModel.Nationality;
-                    }
-
-                    if(!string.IsNullOrEmpty(tutorModel!.Description))
-                    {
-                        tutor!.TutorDescription = tutorModel.Description;
-                    }
-
-                    if(tutorModel.Image != null)
-                    {
-                        var oldImagePath = tutor!.TutorPicture;
-                        var newImagePath = await SaveImageAsync(tutorModel.Image, account);
-                        tutor!.TutorPicture = newImagePath;
-
-                        if (!string.IsNullOrEmpty(oldImagePath))
+                        if (tutorModel.Age.HasValue)
                         {
-                            DeleteOldImage(oldImagePath);
+                            tutor.TutorAge = tutorModel.Age.Value;
+                        }
+
+                        if (!string.IsNullOrEmpty(tutorModel.Nationality))
+                        {
+                            tutor.Nationality = tutorModel.Nationality;
+                        }
+
+                        if (!string.IsNullOrEmpty(tutorModel.Description))
+                        {
+                            tutor.TutorDescription = tutorModel.Description;
+                        }
+
+                        if (tutorModel.Image != null)
+                        {
+                            var oldImagePath = tutor.TutorPicture;
+                            var newImagePath = await SaveImageAsync(tutorModel.Image, account);
+                            tutor.TutorPicture = newImagePath;
+
+                            if (!string.IsNullOrEmpty(oldImagePath))
+                            {
+                                DeleteOldImage(oldImagePath);
+                            }
                         }
                     }
                 }
@@ -789,10 +819,10 @@ namespace ODTDemoAPI.Controllers
                 {
                     if(IsValidEmail(model.Email))
                     {
-                        await SendVerificationCode(model.Email);
                         HttpContext.Items["NewEmail"] = model.Email;
                         HttpContext.Items["CurrentEmail"] = email;
                         account.IsEmailVerified = false;
+                        await SendVerificationCode(model.Email);
                     }
                     else
                     {
@@ -830,7 +860,7 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Learner account not found!");
                 }
 
-                return await UpdateUserInfo(model, account);
+                return await UpdateUserInfo(model, findAccount);
             }
             catch (Exception ex)
             {
@@ -857,7 +887,7 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Tutor account not found!");
                 }
 
-                return await UpdateUserInfo(model, account);
+                return await UpdateUserInfo(model, findAccount);
             }
             catch (Exception ex)
             {

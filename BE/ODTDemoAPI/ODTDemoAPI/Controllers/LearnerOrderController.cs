@@ -213,7 +213,7 @@ namespace ODTDemoAPI.Controllers
                     {
                         foreach (var entry in ex.Entries)
                         {
-                            if (entry.Entity is Person)
+                            if (entry.Entity is LearnerOrder)
                             {
                                 var proposedValues = entry.CurrentValues;
                                 var databaseValues = entry.GetDatabaseValues();
@@ -412,16 +412,16 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Order not found");
                 }
 
-                if (order.OrderStatus != "Pending")
+                if (order.OrderStatus != "Paid")
                 {
-                    return BadRequest("Order status is not at pending status");
+                    return BadRequest("Order status is not at paid status");
                 }
 
                 order.OrderStatus = "Accepted";
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                NotifyLearnerAboutBookingStatus(order.LearnerId, order, "accepted");
+                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "accepted");
 
                 //TODO: tạo section cho booking
                 var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
@@ -560,7 +560,7 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                NotifyLearnerAboutBookingStatus(order.LearnerId, order, "rejected");
+                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "rejected");
 
                 await RefundPayment(order.Total, (int)order.LearnerId!);
 

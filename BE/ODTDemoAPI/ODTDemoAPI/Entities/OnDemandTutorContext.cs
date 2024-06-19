@@ -112,6 +112,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.Property(e => e.OrderDate).HasColumnType("datetime");
             entity.Property(e => e.OrderStatus).HasMaxLength(10);
+            entity.Property(e => e.Total).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.Curriculum).WithMany(p => p.LearnerOrders)
                 .HasForeignKey(d => d.CurriculumId)
@@ -292,7 +293,7 @@ public partial class OnDemandTutorContext : DbContext
             entity.HasIndex(e => e.WalletId, "UQ__Wallet__84D4F90F9A3D95CE").IsUnique();
 
             entity.Property(e => e.WalletId).ValueGeneratedNever();
-            entity.Property(e => e.Balance).HasDefaultValue(0);
+            entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
         });
 
         OnModelCreatingPartial(modelBuilder);
