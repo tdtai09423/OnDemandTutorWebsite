@@ -33,14 +33,18 @@ public partial class OnDemandTutorContext : DbContext
 
     public virtual DbSet<Section> Sections { get; set; }
 
+    public virtual DbSet<Transaction> Transactions { get; set; }
+
     public virtual DbSet<Tutor> Tutors { get; set; }
 
     public virtual DbSet<TutorCerti> TutorCertis { get; set; }
 
     public virtual DbSet<UserNotification> UserNotifications { get; set; }
 
+    public virtual DbSet<Wallet> Wallets { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("OnDemandTutor"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -198,6 +202,24 @@ public partial class OnDemandTutorContext : DbContext
                 .HasConstraintName("FK__Section__Curricu__5441852A");
         });
 
+        modelBuilder.Entity<Transaction>(entity =>
+        {
+            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A6BD018149B");
+
+            entity.ToTable("Transaction");
+
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.TransactionDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.TransactionType).HasMaxLength(50);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Transactions)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Transacti__Accou__1EA48E88");
+        });
+
         modelBuilder.Entity<Tutor>(entity =>
         {
             entity.ToTable("Tutor");
@@ -254,6 +276,24 @@ public partial class OnDemandTutorContext : DbContext
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Notificate_Account");
+        });
+
+        modelBuilder.Entity<Wallet>(entity =>
+        {
+            entity.HasKey(e => e.WalletId).HasName("PK__Wallet__84D4F90E5D17AE7A");
+
+            entity.ToTable("Wallet");
+
+            entity.HasIndex(e => e.AccountId, "UQ__Wallet__349DA5A7674B1809").IsUnique();
+
+            entity.Property(e => e.Balance)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.Account).WithOne(p => p.Wallet)
+                .HasForeignKey<Wallet>(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Wallet__AccountI__1AD3FDA4");
         });
 
         OnModelCreatingPartial(modelBuilder);

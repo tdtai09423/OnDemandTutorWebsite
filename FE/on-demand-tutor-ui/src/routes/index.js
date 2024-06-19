@@ -13,6 +13,7 @@ import DashboardLayout from '../Components/Layout/DashboardLayout/index.js'
 import AdminOrder from '../pages/AdminDashBoard/Components/pages/order.js'
 import VerifyCode from "../pages/VerifyCode/index.js";
 import OrderHistory from "../pages/OrderHistory/index.js";
+import FavoriteTutor from "../pages/FavoriteTutor/index.js";
 //Public Route
 const publicRoute = [
     { path: '/', component: Home },
@@ -29,6 +30,8 @@ const publicRoute = [
     { path: '/user-profile', component: UserProfile },
     { path: '/verify-code', component: VerifyCode },
     { path: '/order-history', component: OrderHistory },
+    { path: '/favorite-tutor', component: FavoriteTutor },
+
 
 
 

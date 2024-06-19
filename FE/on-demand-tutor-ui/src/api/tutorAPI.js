@@ -14,6 +14,7 @@ const tutorAPI = {
         const url = '/TutorCerti/' + id;
         return apiClient.get(url);
     }
+    
 }
 
 export default tutorAPI;
