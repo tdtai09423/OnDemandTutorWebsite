@@ -4,11 +4,24 @@ import {
     set
 } from "date-fns";
 import './ScheduleTab.scss';
+import { useNavigate } from 'react-router-dom'
 import sectionAPI from "../../../../api/sectionAPI";
 
 
 
 function ScheduleCell({ tutorId, day, selectedDate, formattedDate }) {
+
+    const Jtoken = localStorage.getItem('token');
+    console.log(Jtoken);
+    const navigate = useNavigate();
+
+    const handleOnClick = () => {
+        if (Jtoken) {
+            navigate("/payment?tutorId=" + tutorId + "")
+        } else {
+            navigate("/login")
+        }
+    }
 
     const originalDate = new Date(day);
 
@@ -115,7 +128,7 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate }) {
                 {free.map((sectionFree) => {
                     if (!sections.some(section => section.sectionStart === sectionFree.sectionStart)) {
                         return (
-                            <div key={free.$id} className="sectionFree">{formatSection(new Date(sectionFree.sectionStart))}</div>
+                            <div key={free.$id} className="sectionFree" onClick={handleOnClick}>{formatSection(new Date(sectionFree.sectionStart))}</div>
                         );
                     } else {
                         return (
