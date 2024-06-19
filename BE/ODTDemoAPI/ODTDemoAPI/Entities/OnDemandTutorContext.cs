@@ -44,7 +44,7 @@ public partial class OnDemandTutorContext : DbContext
     public virtual DbSet<Wallet> Wallets { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetConnectionString("OnDemandTutor"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -296,7 +296,10 @@ public partial class OnDemandTutorContext : DbContext
                 .HasConstraintName("FK__Wallet__AccountI__1AD3FDA4");
         });
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 698c35669d05c2a798bf88142c05a314fd01a03f
         OnModelCreatingPartial(modelBuilder);
     }
 

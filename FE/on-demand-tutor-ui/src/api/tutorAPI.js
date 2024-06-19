@@ -25,6 +25,7 @@ const tutorAPI = {
         const url = '/TutorCerti/' + statusType + '/' + id;
         return apiClient.post(url);
     }
+    
 }
 
 export default tutorAPI;
