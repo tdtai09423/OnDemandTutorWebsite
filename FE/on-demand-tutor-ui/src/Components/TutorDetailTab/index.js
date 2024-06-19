@@ -64,7 +64,7 @@ function TutorDetailTab({ tutorId }) {
                 <Col md={7}>
                     <Row className="profile-footer-detail">
                         <Col md={3}>
-                            <Image src={tutor.tutorPicture} className="profile-pic-detail" />
+                            <Image src={tutor.tutorPicture} className="profile-pic-detail" style={{ height: '100px', width: 'auto' }} />
                         </Col>
                     </Row>
                     <Row className="profile-footer-detail">
