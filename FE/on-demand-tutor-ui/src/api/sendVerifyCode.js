@@ -1,8 +1,17 @@
+
 import apiClient from './apiClient';
 
-const sendVerifyCode = (email) => {
-    console.log("goi api send verification code");
-    return apiClient.post("/Account/send-verification-code", { email});
+
+
+const sendVerifyCode = {
+    sendCodeToEmail(email) {
+        const url = 'Account/send-verification-code?toEmail=' + email;
+        return apiClient.post(url);
+    },
+    verifyCode(email, code) {
+        const url = '/Account/verify-code?email=' + email + '&code=' + code;
+        return apiClient.post(url);
+    }
 }
 
 export default sendVerifyCode;

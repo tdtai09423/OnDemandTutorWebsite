@@ -5,6 +5,7 @@ import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
 // import SignUpStudentAPI from '../../api/signUpStudent';
 import { toast } from 'react-toastify';
+import sendVerifyCode from '../../api/sendVerifyCode';
 function SignUpStudent() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -57,16 +58,16 @@ function SignUpStudent() {
 
     const handleSendVerifyCode = async () => {
         try {
-            const formData = new FormData();
-            formData.append('toEmail', email);
-            let res1 = await axios.post("https://localhost:7010/api/Account/send-verification-code", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            // const formData = new FormData();
+            // formData.append('toEmail', email);
+            // let res1 = await axios.post("https://localhost:7010/api/Account/send-verification-code", formData, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data',
+            //     },
+            // });
+            let sendCode = await sendVerifyCode.sendCodeToEmail(email);
             toast.success("Sent verification code to your email!");
-
-            navigate("/verify-code", {state: {email : email}});
+            navigate("/verify-code", { state: { email: email } });
         } catch (error) {
             toast.error(error.message);
             console.error("Send code error:", error);

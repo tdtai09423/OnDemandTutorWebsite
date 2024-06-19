@@ -296,6 +296,7 @@ public partial class OnDemandTutorContext : DbContext
                 .HasConstraintName("FK__Wallet__AccountI__1AD3FDA4");
         });
 
+
         OnModelCreatingPartial(modelBuilder);
     }
 
