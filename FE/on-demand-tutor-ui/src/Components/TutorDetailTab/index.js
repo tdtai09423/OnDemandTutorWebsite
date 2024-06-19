@@ -32,12 +32,12 @@ function TutorDetailTab({ tutorId }) {
         const fetchTutors = async () => {
             try {
                 const tutor = await tutorAPI.get(tutorId);
-                //const price = await sectionAPI.get(tutorId);
+                const price = await sectionAPI.get(tutorId);
                 const rating = await reviewRatingAPI.getRating(tutorId);
                 const reviews = await reviewRatingAPI.getReview(tutorId);
                 const certi = await tutorAPI.getCerti(tutorId);
                 setTutor(tutor.data);
-                //setPrice(price.data);
+                setPrice(price.data);
                 setRating(rating.data);
                 setCerti(certi.data.$values);
                 setReviews(reviews.data.$values);
@@ -64,7 +64,7 @@ function TutorDetailTab({ tutorId }) {
                 <Col md={7}>
                     <Row className="profile-footer-detail">
                         <Col md={3}>
-                            <Image src={tutor.tutorPicture} className="profile-pic-detail" />
+                            <Image src={tutor.tutorPicture} className="profile-pic-detail" style={{ height: '100px', width: 'auto' }} />
                         </Col>
                     </Row>
                     <Row className="profile-footer-detail">
@@ -163,6 +163,7 @@ function TutorDetailTab({ tutorId }) {
                             <li key={certi.$id}>{certi.tutorCertificate}</li>
                         ))}
                     </ul>
+                    <hr />
                 </Tab>
             </Tabs>
         </Container>

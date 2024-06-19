@@ -22,7 +22,7 @@ function OrderHistory() {
     fetchUser();
   }, [])
   return (
-    <div className='Container'>
+    <div className='Container' style={{ marginTop: '50px' }}>
 
       <OrderHistoryList
         user={user}
