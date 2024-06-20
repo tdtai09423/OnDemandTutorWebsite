@@ -701,25 +701,6 @@ namespace ODTDemoAPI.Controllers
 
         private async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model, Account account)
         {
-            try
-            {
-                var email = account.Email;
-                bool isLearner = account.RoleId == "LEARNER";
-
-                account.Status = model.Status;
-                _context.Accounts.Update(account);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Message = "Account status update successfully!", account });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        private async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserModel model, Account account)
-        {
             Console.WriteLine($"Model FirstName: {model.FirstName}, LastName: {model.LastName}, Email: {model.Email}, PWM CrP: {model.PasswordModel.CurrentPassword}, NP: {model.PasswordModel.Password}, CP: {model.PasswordModel.ConfirmPassword}");
             Console.WriteLine($"Account: {JsonSerializer.Serialize(account)}");
             if (model == null) return BadRequest(new { message = "Model cannot be null." });
