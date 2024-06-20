@@ -87,7 +87,7 @@ namespace ODTDemoAPI
                     }
                 };
             });
-
+            builder.Services.AddScoped<ILearnerFavouriteService, LearnerFavouriteService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddAuthorization();
             builder.Services.AddScoped<IAuthService,AuthService>();
