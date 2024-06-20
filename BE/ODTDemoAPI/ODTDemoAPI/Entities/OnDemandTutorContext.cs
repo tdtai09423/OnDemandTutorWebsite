@@ -294,6 +294,11 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.Property(e => e.WalletId).ValueGeneratedNever();
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)").HasDefaultValue(0);
+
+            entity.HasOne(d => d.WalletNavigation).WithOne(p => p.Wallet)
+                .HasForeignKey<Wallet>(d => d.WalletId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Wallet_Account");
         });
 
         OnModelCreatingPartial(modelBuilder);
