@@ -33,6 +33,8 @@ public partial class Account
     [JsonIgnore]
     public virtual ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
 
+    public virtual Wallet? Wallet { get; set; }
+
     public void NavigateAccount(string roleId)
     {
         if (roleId == "TUTOR")

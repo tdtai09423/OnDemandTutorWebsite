@@ -150,33 +150,66 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("checking-out")]
-        public async Task<IActionResult> CheckOut([FromBody] LearnerOrder order)
+        public async Task<IActionResult> CheckOut([FromForm] int orderId)
         {
             try
             {
+                var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+                if (order == null)
+                {
+                    return NotFound("Order not found!");
+                }
+
                 var learner = await _context.Accounts
                     .FirstOrDefaultAsync(a => a.Id == order.LearnerId);
 
                 if (learner == null)
                 {
-                    return NotFound("Learner not found");
+                    return NotFound("Learner not found!");
                 }
 
-                var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learner.Id);
-                if (wallet == null)
+                if (order.OrderStatus != "Pending")
                 {
-                    wallet = new Wallet
-                    {
-                        WalletId = learner.Id,
-                        Balance = 0,
-                    };
-                    _context.Wallets.Add(wallet);
-                    await _context.SaveChangesAsync();
+                    return BadRequest(new { message = "Order status is not at pending." });
                 }
+
+                var accountWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learner.Id);
+                if (learner.Wallet == null)
+                {
+                    if (accountWallet == null)
+                    {
+                        var wallet = new Wallet
+                        {
+                            WalletId = learner.Id,
+                            Balance = 0,
+                        };
+                        _context.Wallets.Add(wallet);
+
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        decimal currBalance = accountWallet.Balance;
+                        _context.Wallets.Remove(accountWallet);
+                        await _context.SaveChangesAsync();
+
+                        var wallet = new Wallet
+                        {
+                            WalletId = learner.Id,
+                            Balance = currBalance,
+                        };
+                        _context.Wallets.Add(wallet);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    learner.Wallet = accountWallet;
+                }
+
+                var learnerWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learner.Id);
 
                 decimal total = order.Total;
 
-                var balance = wallet.Balance;
+                var balance = learnerWallet!.Balance;
 
                 if (balance < total)
                 {
@@ -185,8 +218,8 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 balance -= total;
-                wallet.Balance = balance;
-                _context.Wallets.Update(wallet);
+                learnerWallet!.Balance = balance;
+                _context.Wallets.Update(accountWallet!);
 
                 var transaction = new Transaction
                 {
@@ -221,14 +254,14 @@ namespace ODTDemoAPI.Controllers
                                 foreach (var property in proposedValues.Properties)
                                 {
                                     var proposedValue = proposedValues[property];
-                                    var databaseValue = databaseValues[property];
+                                    var databaseValue = databaseValues![property];
 
                                     // TODO: decide which value should be written to database
                                     // proposedValues[property] = <value to be saved>;
                                 }
 
                                 // Refresh original values to bypass next concurrency check
-                                entry.OriginalValues.SetValues(databaseValues);
+                                entry.OriginalValues.SetValues(databaseValues!);
                             }
                             else
                             {
@@ -292,18 +325,6 @@ namespace ODTDemoAPI.Controllers
                             _logger.LogError("Learner not found");
                             return BadRequest("Learner Not Found");
                         }
-
-                        //if(learner.Wallet == null)
-                        //{
-                        //    learner.Wallet = new Wallet
-                        //    {
-                        //        AccountId = learnerId,
-                        //        Balance = 0,
-                        //        Account = learner
-                        //    };
-                        //    _context.Accounts.Update(learner);
-                        //    await _context.SaveChangesAsync();
-                        //}
 
                         var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learner.Id);
                         if (wallet == null)
@@ -395,6 +416,58 @@ namespace ODTDemoAPI.Controllers
                           && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 
             return result;
+        }
+
+        [HttpPost("cancel-booking")]
+        public async Task<IActionResult> CancelBooking([FromForm] int orderId, int learnerId)
+        {
+            try
+            {
+                var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
+                if (learner == null)
+                {
+                    return NotFound("Learner not found!");
+                }
+
+                var order = await _context.LearnerOrders.Include(o => o.Learner).Include(o => o.Curriculum).FirstOrDefaultAsync(o => o.OrderId == orderId && o.LearnerId == learnerId);
+                if (order == null)
+                {
+                    return NotFound("Order not found!");
+                }
+
+                if (order.OrderStatus == "Accepted")
+                {
+                    return BadRequest(new { message = "Cannot cancel booking after being accepted. If you really want to cancel, contact Support Centre for more details." });
+                }
+
+                if (order.OrderStatus == "Rejected")
+                {
+                    return BadRequest(new { message = "Cannot cancel booking because the tutor has rejected it. Refunded to your wallet!" });
+                }
+
+                var timeSinceBooking = DateTime.Now - order.OrderDate;
+                if (timeSinceBooking.TotalHours > 48)
+                {
+                    return BadRequest(new { message = "Cannot cancel booking after 48 hours. If you really want to cancel, contact Support Centre for more details." });
+                }
+
+                bool isPaid = false;
+                if (order.OrderStatus == "Paid")
+                {
+                    isPaid = true;
+                    await RefundPayment(order.Total, learnerId);
+                }
+
+                order.OrderStatus = "Cancelled";
+                _context.LearnerOrders.Update(order);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message1 = "Cancel booking successfully!", message2 = isPaid ? "Refunded to your wallet!" : null });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -602,13 +675,13 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        private void NotifyLearnerAboutBookingStatus(int? learnerId, LearnerOrder order, string status)
+        private void NotifyLearnerAboutBookingStatus(int learnerId, LearnerOrder order, string status)
         {
             var notification = new UserNotification
             {
                 Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been {status} by the tutor.",
                 NotificateDay = DateTime.Now,
-                AccountId = (int)learnerId!
+                AccountId = learnerId
             };
 
             var learner = _context.Learners.Find(learnerId);
@@ -625,14 +698,14 @@ namespace ODTDemoAPI.Controllers
             _context.SaveChanges();
         }
 
-        private async Task NotifyTutorAboutBooking(int? tutorId, LearnerOrder order)
+        private async Task NotifyTutorAboutBooking(int tutorId, LearnerOrder order)
         {
-            if (tutorId == null || order == null)
+            if (order == null)
             {
                 return;
             }
             var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
-            if(tutor == null)
+            if (tutor == null)
             {
                 return;
             }
@@ -640,7 +713,7 @@ namespace ODTDemoAPI.Controllers
             {
                 Content = $"You have received a new booking request for curriculum {order.Curriculum!.CurriculumType}.",
                 NotificateDay = DateTime.Now,
-                AccountId = (int)tutorId!
+                AccountId = tutorId
             };
             if (tutor != null && tutor.TutorNavigation != null)
             {
@@ -655,14 +728,14 @@ namespace ODTDemoAPI.Controllers
             await _context.SaveChangesAsync();
         }
 
-        private async Task NotifyLearnerAboutBooking(int? learnerId, LearnerOrder order)
+        private async Task NotifyLearnerAboutBooking(int learnerId, LearnerOrder order)
         {
             var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
             var notification = new UserNotification
             {
                 Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.",
                 NotificateDay = DateTime.Now,
-                AccountId = (int)learnerId!
+                AccountId = learnerId
             };
             if (learner != null && learner.LearnerNavigation != null)
             {
@@ -701,7 +774,7 @@ namespace ODTDemoAPI.Controllers
                 },
                 PaymentIntentData = new SessionPaymentIntentDataOptions
                 {
-                    Description = "Top-up wallet to complete booking payment",
+                    Description = "Top-up wallet",
                 },
                 Mode = "payment",
                 SuccessUrl = $"https://localhost:7010/api/LearnerOrder/payment-success?session_id={{CHECKOUT_SESSION_ID}}",

@@ -9,7 +9,6 @@ namespace ODTDemoAPI.OperationModel
 
         public string? LastName { get; set;}
 
-        public string? Email { get; set;}
         [ValidateNever]
         public UpdatePasswordModel? PasswordModel { get; set;}
     }
