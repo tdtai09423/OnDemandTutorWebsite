@@ -16,6 +16,7 @@ function UserProfileTab({ user }) {
     const [avatar, setAvatar] = useState();
     const [nationality, setNationality] = useState();
     const [description, setDescription] = useState('');
+    const [userInformation, setUserInformation] = useState({});
 
 
 
@@ -32,6 +33,18 @@ function UserProfileTab({ user }) {
                     setAvatar(tutor.data.tutorPicture);
                     setNationality(tutor.data.nationality);
                     setDescription(tutor.data.tutorDescription);
+                    setUserInformation((prevInfo) => ({
+                        roleId: user.roleId,
+                        id: tutor.data.tutorId,
+                        firstName: tutor.data.tutorNavigation.firstName,
+                        lastName: tutor.data.tutorNavigation.lastName,
+                        age: tutor.data.tutorAge,
+                        email: tutor.data.tutorEmail,
+                        avatar: tutor.data.tutorPicture,
+                        nationality: tutor.data.nationality,
+                        description: tutor.data.tutorDescription,
+
+                    }));
                 } else if (user.roleId === 'LEARNER') {
                     const learner = await learnerAPI.get(user.id);
                     console.log(learner);
@@ -41,6 +54,20 @@ function UserProfileTab({ user }) {
                     setEmail(learner.data.learnerEmail);
                     setAvatar('https://villagesonmacarthur.com/wp-content/uploads/2020/12/Blank-Avatar.png');
                     setNationality(null);
+                    setDescription(null);
+                    setUserInformation((prevInfo) => ({
+                        id: learner.data.learnerId,
+                        roleId: user.roleId,
+                        firstName: learner.data.learnerNavigation.firstName,
+                        lastName: learner.data.learnerNavigation.lastName,
+                        age: learner.data.learnerAge,
+                        email: learner.data.learnerEmail,
+                        avatar: 'https://villagesonmacarthur.com/wp-content/uploads/2020/12/Blank-Avatar.png',
+                        nationality: nationality,
+                        description: description,
+
+                    }));
+
                 }
 
             } catch (error) {
@@ -74,7 +101,7 @@ function UserProfileTab({ user }) {
 
                             </div>
                             <div className="p-4 text-black bg-body-tertiary">
-                                <EditProfile user={user} />
+                                <EditProfile userInformation={userInformation} />
                                 <div className="d-flex justify-content-end text-center py-1 text-body">
                                     {nationality ? (<div>
                                         <p className="mb-1 h5">2</p>

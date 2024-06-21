@@ -2,13 +2,12 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import learnerAPI from '../../../../api/learnerAPI';
-import tutorAPI from '../../../../api/tutorAPI';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-const EditProfile = ({ user }) => {
+const EditProfile = ({ userInformation }) => {
 
-    console.log("user>>>>>>>>>>>>>>>>", user);
+    console.log("userInformation>>>>>>>>>>>>>>>>", userInformation);
+    const [userId, setUserId] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [age, setAge] = useState('');
@@ -17,7 +16,6 @@ const EditProfile = ({ user }) => {
     const [password, setPassword] = useState('');
     const [nationality, setNationality] = useState('');
     const [description, setDescription] = useState('');
-    const [roleIdd, setRoleIdd] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
@@ -26,36 +24,36 @@ const EditProfile = ({ user }) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                if (user.roleId === 'TUTOR') {
-                    const tutor = await tutorAPI.get(user.id);
-                    console.log(tutor);
-                    setFirstName(tutor.data.tutorNavigation.firstName);
-                    setLastName(tutor.data.tutorNavigation.lastName);
-                    setAge(tutor.data.tutorAge);
-                    setEmail(tutor.data.tutorEmail);
-                    setAvatar(tutor.data.tutorPicture);
-                    setNationality(tutor.data.nationality);
-                    setDescription(tutor.data.tutorDescription);
-                } else if (user.roleId === 'LEARNER') {
-                    const learner = await learnerAPI.get(user.id);
-                    console.log(learner);
-                    setFirstName(learner.data.learnerNavigation.firstName);
-                    setLastName(learner.data.learnerNavigation.lastName);
-                    setAge(learner.data.learnerAge);
-                    setEmail(learner.data.learnerEmail);
-                    setAvatar('https://villagesonmacarthur.com/wp-content/uploads/2020/12/Blank-Avatar.png');
-                    setNationality(null);
-                }
 
-            } catch (error) {
-                console.error("Error fetching user:", error);
-            }
-        };
-        fetchUser();
+        if (userInformation.roleId === 'TUTOR') {
+            setUserId(userInformation.id);
+            setFirstName(userInformation.firstName);
+            setLastName(userInformation.lastName);
+            setAge(userInformation.age);
+            setEmail(userInformation.email);
+            setAvatar(userInformation.avatar);
+            setNationality(userInformation.nationality);
+            setDescription(userInformation.description);
+            console.log("userID>>>>>>>>>", userId)
+            console.log("tutorIn4444444444", userInformation)
 
-    }, [user])
+        } else if (userInformation.roleId === 'LEARNER') {
+            setUserId(userInformation.id);
+            setFirstName(userInformation.firstName);
+            setLastName(userInformation.lastName);
+            setAge(userInformation.age);
+            setEmail(userInformation.email);
+            setDescription(null);
+
+            setNationality(null);
+            console.log("userID>>>>>>>>>", userId)
+            console.log("learnerIn4444444444", userInformation)
+        }
+
+
+
+
+    }, [userInformation])
 
 
     const handlePreviewImage = (e) => {
@@ -65,53 +63,66 @@ const EditProfile = ({ user }) => {
         setAvatar(file)
     }
     const handEditProfile = async () => {
-        const confirmed = window.confirm('Are you sure to edit this course?');
+        const confirmed = window.confirm('Are you sure to edit your profile?');
         if (confirmed) {
-            try {
-                if (user.roleId === 'TUTOR') {
-                    let formData = new FormData();
-                    formData.append('Age', age);
-                    formData.append('FirstName', firstName);
-                    formData.append('LastName', lastName);
-                    formData.append('Email', email);
-                    formData.append('PasswordModel.CurrentPassword', password);
-                    formData.append('PasswordModel.Password', newPassword);
-                    formData.append('PasswordModel.ConfirmPassword', confirmNewPassword);
-                    formData.append('Nationality', nationality);
-                    formData.append('Description', description);
-                    formData.append('Image', avatar)
-                    console.log(formData);
-                    let res = await axios.post("https://localhost:7010/api/Account/update-tutor", formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-                    toast.success(res.message);
 
-                } else if (user.roleId === 'LEARNER') {
-                    console.log("learnerneeee")
-                    let formData = new FormData();
-                    formData.append('Age', age);
-                    formData.append('FirstName', firstName);
-                    formData.append('LastName', lastName);
-                    formData.append('Email', email);
-                    formData.append('PasswordModel.CurrentPassword', password);
-                    formData.append('PasswordModel.Password', newPassword);
-                    formData.append('PasswordModel.ConfirmPassword', confirmNewPassword);
-                    formData.append('Image', avatar)
-                    console.log("formdata>>><<<>><><><>", formData)
-                    let res = await axios.post("https://localhost:7010/api/Account/update-learner", formData, {
+            if (userInformation.roleId === 'TUTOR') {
+                let formData = new FormData();
+                formData.append('Age', age);
+                formData.append('FirstName', firstName);
+                formData.append('LastName', lastName);
+                // formData.append('Email', email);
+                formData.append('PasswordModel.CurrentPassword', password);
+                formData.append('PasswordModel.Password', newPassword);
+                formData.append('PasswordModel.ConfirmPassword', confirmNewPassword);
+                formData.append('Nationality', nationality);
+                formData.append('Description', description);
+                formData.append('Image', avatar)
+                console.log(formData);
+                let url = 'https://localhost:7010/api/Account/update-tutor?accountId=' + userId;
+                let res = await axios.put(url, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                toast.success(res.message);
+
+            } else if (userInformation.roleId === 'LEARNER') {
+                console.log("learnerneeee")
+                let formData = new FormData();
+                formData.append('Age', age);
+                formData.append('Image', null);
+
+                avatar ? formData.append('Image', avatar) : formData.append('Image', 'https://villagesonmacarthur.com/wp-content/uploads/2020/12/Blank-Avatar.png')
+                formData.append('FirstName', firstName);
+                formData.append('LastName', lastName);
+                // formData.append('Email', email);
+                password ? formData.append('PasswordModel.CurrentPassword', password) : formData.append('PasswordModel.CurrentPassword', null);
+                newPassword ? formData.append('PasswordModel.Password', newPassword) : formData.append('PasswordModel.Password', null);
+                confirmNewPassword ? formData.append('PasswordModel.ConfirmPassword', confirmNewPassword) : formData.append('PasswordModel.CurrentPassword', null);
+                console.log("formdata>>><<<>><><><>", formData)
+                console.log(age, avatar, firstName, lastName, password, newPassword, confirmNewPassword)
+                // let url = 'https://localhost:7010/api/Account/update-leaner?accountId=' + userId;
+                // const options = {
+                //     method: 'PUT',
+                //     url: `https://localhost:7010/api/Account/update-leaner?accountId=${userId}`,
+                //     validateStatus: false,
+                // };
+                try {
+                    let leaner = await axios.put(`https://localhost:7010/api/Account/update-leaner?accountId=${userId}`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
                     });
-                    toast.success(res.message);
+                } catch (error) {
+                    toast.error(error.message);
+                    console.error("Edit profile error<><><><><><>:", error);
                 }
 
-            } catch (error) {
-                toast.error(error.message);
-                console.error("Edit profile error<><><><><><>:", error);
+
             }
+
+
         }
 
     }
@@ -153,8 +164,8 @@ const EditProfile = ({ user }) => {
                         <input type='text' placeholder='Last Name' className='form-control' value={lastName} onChange={(event) => setLastName(event.target.value)} />
                         <div className='text'>Age</div>
                         <input type='number' placeholder='Age' className='form-control' value={age} onChange={(event) => setAge(event.target.value)} />
-                        <div className='text'>Email</div>
-                        <input type='text' placeholder='Email' className='form-control' value={email} onChange={(event) => setEmail(event.target.value)} />
+                        {/* <div className='text'>Email</div>
+                        <input type='text' placeholder='Email' className='form-control' value={email} onChange={(event) => setEmail(event.target.value)} /> */}
                         <div className='text'>Current Password</div>
                         <input type='password' placeholder='Current Password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
                         <div className='text'>New Password</div>
