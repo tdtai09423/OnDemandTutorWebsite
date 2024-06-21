@@ -11,3 +11,4 @@ public partial class Wallet
     [JsonIgnore]
     public virtual Account WalletNavigation { get; set; } = null!;
 }
+

@@ -695,7 +695,6 @@ namespace ODTDemoAPI.Controllers
                 account.Status = model.Status;
                 _context.Accounts.Update(account);
                 await _context.SaveChangesAsync();
-
                 return Ok(new { Message = "Account status update successfully!", account });
             }
             catch (Exception ex)
@@ -797,7 +796,6 @@ namespace ODTDemoAPI.Controllers
                 {
                     return BadRequest("Learner Not Found");
                 }
-
                 if (model == null)
                 {
                     return BadRequest(new { message = "Learner model is invalid" });

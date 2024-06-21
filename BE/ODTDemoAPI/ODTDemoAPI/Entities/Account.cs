@@ -37,13 +37,13 @@ public partial class Account
 
     public void NavigateAccount(string roleId)
     {
-        if(roleId == "TUTOR")
+        if (roleId == "TUTOR")
         {
             this.Learner = null;
             this.Tutor = new Tutor();
             Tutor.TutorId = this.Id;
         }
-        if(roleId == "LEARNER")
+        if (roleId == "LEARNER")
         {
             this.Tutor = null;
             this.Learner = new Learner();
