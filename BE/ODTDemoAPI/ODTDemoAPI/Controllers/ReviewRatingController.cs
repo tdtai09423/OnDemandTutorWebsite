@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
+using ODTDemoAPI.OperationModel;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -16,12 +18,12 @@ namespace ODTDemoAPI.Controllers
             _context = context;
         }
 
-        [HttpGet("getReviews/{tutorId}")]
-        public async Task<ActionResult<IEnumerable<ReviewRating>>> GetAllReviewsByTutorId(int tutorId)
+        [HttpGet("getReviews/tutor/{tutorId}")]
+        public async Task<ActionResult<IEnumerable<ReviewRating>>> GetAllReviewsOfTutor(int tutorId)
         {
             try
             {
-                var tutor = await _context.Tutors.FindAsync(tutorId);
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
                 if (tutor == null)
                 {
                     return NotFound("Not found tutor.");
@@ -85,7 +87,7 @@ namespace ODTDemoAPI.Controllers
                 
                 var ratings = await _context.ReviewRatings
                                             .Where(r => r.TutorId == tutorId && r.Rating.HasValue)
-                                            .Select(r => r.Rating.Value)
+                                            .Select(r => r.Rating!.Value)
                                             .ToListAsync();
                 if(ratings == null || ratings.Count == 0)
                 {
@@ -109,7 +111,7 @@ namespace ODTDemoAPI.Controllers
 
         //getAverageRating theo phuong pháp Wilson Score Confident Interval: tính toán độ tin cậy của kết quả đánh giá
         [HttpGet("average-rating-wilson/{tutorId}")]
-        public async Task<ActionResult<double>> GetAverageRatingWilson(int tutorId)
+        public async Task<ActionResult<double>> GetAverageRatingWilson([FromRoute] int tutorId)
         {
             try
             {
@@ -121,7 +123,7 @@ namespace ODTDemoAPI.Controllers
 
                 var ratings = await _context.ReviewRatings
                                             .Where(r => r.TutorId == tutorId && r.Rating.HasValue)
-                                            .Select(r => r.Rating.Value)
+                                            .Select(r => r.Rating!.Value)
                                             .ToListAsync();
 
                 if (ratings == null || ratings.Count == 0)
@@ -146,18 +148,202 @@ namespace ODTDemoAPI.Controllers
         }
 
         //xem review & rating list cua learner
-        //code here
-        //xem review & rating cua learner danh cho moi tutor
-        //code here
-        //them 1 review rating moi
-        [HttpPost]
-        public async Task<ActionResult> CreateNewReviewRating(ReviewRating reviewRating)
+        [HttpGet("getReviews/learner/{learnerId}")]
+        public async Task<ActionResult<IEnumerable<ReviewRating>>> GetAllReviewsOfLearner(int learnerId)
         {
             try
             {
-                _context.ReviewRatings.Add(reviewRating);
+                var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
+                if (learner == null)
+                {
+                    return NotFound("Not found learner.");
+                }
+                else
+                {
+                    var reviewList = await _context.ReviewRatings
+                                                   .Where(r => r.LearnerId == learnerId)
+                                                   .ToListAsync();
+                    if (reviewList == null || reviewList.Count == 0)
+                    {
+                        return Ok("This learner has no reviews yet.");
+                    }
+                    return Ok(reviewList);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        //xem review & rating cua learner danh cho moi tutor
+        [HttpGet("getReview/{learnerId}/{tutorId}")]
+        public async Task<IActionResult> GetReview(int tutorId, int learnerId)
+        {
+            try
+            {
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+                if (tutor == null)
+                {
+                    return NotFound("Not found tutor.");
+                }
+
+                var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
+                if(learner == null)
+                {
+                    return NotFound("Not found learner.");
+                }
+
+                var review = await _context.ReviewRatings.FirstOrDefaultAsync(r => r.TutorId == tutorId && r.LearnerId == learnerId);
+                if (review == null)
+                {
+                    return NotFound("There is no review between this two account.");
+                }
+
+                return Ok(review);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        //them 1 review rating moi
+        [HttpPost("review-tutor")]
+        public async Task<ActionResult> CreateNewReviewRating(ReviewModel model)
+        {
+            try
+            {
+                var newReview = new ReviewRating
+                {
+                    LearnerId = model.LearnerId,
+                    TutorId = model.TutorId,
+                    Rating = model.Rating,
+                    Review = model.Review,
+                    ReviewDate = DateTime.Now,
+                };
+                _context.ReviewRatings.Add(newReview);
                 await _context.SaveChangesAsync();
-                return Ok("Add successfully!");
+
+                return Ok(newReview);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //chỉnh sửa 1 review
+        [HttpPut("edit-review")]
+        public async Task<IActionResult> EditReview(ReviewModel newModel)
+        {
+            try
+            {
+                var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == newModel.LearnerId);
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == newModel.TutorId);
+
+                if (tutor == null)
+                {
+                    return NotFound("Not found tutor.");
+                }
+
+                if (learner == null)
+                {
+                    return NotFound("Not found learner.");
+                }
+
+                var review = await _context.ReviewRatings.FirstOrDefaultAsync(r => r.TutorId == newModel.TutorId && r.LearnerId == newModel.LearnerId);
+                if (review == null)
+                {
+                    return NotFound("There is no review between this two account.");
+                }
+
+                review.Review = newModel.Review;
+                review.Rating = newModel.Rating;
+                review.ReviewDate = DateTime.Now;
+
+                _context.ReviewRatings.Update(review);
+                await _context.SaveChangesAsync();
+
+                return Ok(review);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //review của tutor theo rating
+        [HttpGet("get-all-tutor-reviews-rating")]
+        public async Task<IActionResult> GetAllReviewsOfTutorByRating(int rating, int tutorId)
+        {
+            try
+            {
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+
+                if (tutor == null)
+                {
+                    return NotFound("Not found tutor.");
+                }
+
+                var reviewList = await _context.ReviewRatings.Where(r => r.Rating == rating).ToListAsync();
+                if(reviewList == null || reviewList.Count == 0) 
+                {
+                    return NotFound("No review has this number of rating.");
+                }
+
+                return Ok(reviewList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //xem tất cả review và sắp xếp theo ngày (tính năng quản lí của admin)
+        [HttpGet("get-all-reviews")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetAllReviews()
+        {
+            try
+            {
+                var reviewList = await _context.ReviewRatings.OrderByDescending(r => r.ReviewDate).ToListAsync();
+
+                return Ok(reviewList);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("delete-review")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> DeleteReview(int learnerId, int tutorId)
+        {
+            try
+            {
+                var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+
+                if (tutor == null)
+                {
+                    return NotFound("Not found tutor.");
+                }
+
+                if (learner == null)
+                {
+                    return NotFound("Not found learner.");
+                }
+
+                var review = await _context.ReviewRatings.FirstOrDefaultAsync(r => r.TutorId == tutorId && r.LearnerId == learnerId);
+                if (review == null)
+                {
+                    return NotFound("There is no review between this two account.");
+                }
+
+                _context.ReviewRatings.Remove(review);
+                await _context.SaveChangesAsync();
+
+                return Ok(review);
             }
             catch (Exception ex)
             {

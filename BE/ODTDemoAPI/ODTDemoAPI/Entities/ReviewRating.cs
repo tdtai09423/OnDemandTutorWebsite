@@ -13,6 +13,8 @@ public partial class ReviewRating
 
     public int? Rating { get; set; }
 
+    public DateTime ReviewDate { get; set; }
+
     public virtual Learner? Learner { get; set; }
 
     public virtual Tutor? Tutor { get; set; }
