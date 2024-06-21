@@ -117,6 +117,7 @@ namespace ODTDemoAPI.Controllers
 
                             await _context.SaveChangesAsync();
                         }
+                        account.Wallet = accountWallet;
                     }
                     Response.Cookies.Append("jwt", token, cookieOptions);
                     HttpContext.Session.SetObject("Account", account);
@@ -613,6 +614,8 @@ namespace ODTDemoAPI.Controllers
 
                         await _context.SaveChangesAsync();
                     }
+
+                    account.Wallet = accountWallet;
                 }
 
                 Response.Cookies.Append("jwt", token, cookieOptions);
