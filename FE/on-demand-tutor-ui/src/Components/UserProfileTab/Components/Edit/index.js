@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 const EditProfile = ({ userInformation }) => {
 
     console.log("userInformation>>>>>>>>>>>>>>>>", userInformation);
-    const [userId, setUserId] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [age, setAge] = useState('');
@@ -26,7 +25,6 @@ const EditProfile = ({ userInformation }) => {
     useEffect(() => {
 
         if (userInformation.roleId === 'TUTOR') {
-            setUserId(userInformation.id);
             setFirstName(userInformation.firstName);
             setLastName(userInformation.lastName);
             setAge(userInformation.age);
@@ -34,19 +32,18 @@ const EditProfile = ({ userInformation }) => {
             setAvatar(userInformation.avatar);
             setNationality(userInformation.nationality);
             setDescription(userInformation.description);
-            console.log("userID>>>>>>>>>", userId)
+            console.log("userID>>>>>>>>>", userInformation.id)
             console.log("tutorIn4444444444", userInformation)
 
         } else if (userInformation.roleId === 'LEARNER') {
-            setUserId(userInformation.id);
             setFirstName(userInformation.firstName);
             setLastName(userInformation.lastName);
             setAge(userInformation.age);
             setEmail(userInformation.email);
+            setAvatar(userInformation.avatar);
             setDescription(null);
-
             setNationality(null);
-            console.log("userID>>>>>>>>>", userId)
+            console.log("userID>>>>>>>>>", userInformation.id)
             console.log("learnerIn4444444444", userInformation)
         }
 
@@ -79,7 +76,7 @@ const EditProfile = ({ userInformation }) => {
                 formData.append('Description', description);
                 formData.append('Image', avatar)
                 console.log(formData);
-                let url = 'https://localhost:7010/api/Account/update-tutor?accountId=' + userId;
+                let url = 'https://localhost:7010/api/Account/update-tutor?accountId=' + userInformation.id;
                 let res = await axios.put(url, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -91,25 +88,21 @@ const EditProfile = ({ userInformation }) => {
                 console.log("learnerneeee")
                 let formData = new FormData();
                 formData.append('Age', age);
-                formData.append('Image', null);
 
-                avatar ? formData.append('Image', avatar) : formData.append('Image', 'https://villagesonmacarthur.com/wp-content/uploads/2020/12/Blank-Avatar.png')
+                avatar ? formData.append('Image', avatar) : formData.append('Image', '')
                 formData.append('FirstName', firstName);
                 formData.append('LastName', lastName);
                 // formData.append('Email', email);
-                password ? formData.append('PasswordModel.CurrentPassword', password) : formData.append('PasswordModel.CurrentPassword', null);
-                newPassword ? formData.append('PasswordModel.Password', newPassword) : formData.append('PasswordModel.Password', null);
-                confirmNewPassword ? formData.append('PasswordModel.ConfirmPassword', confirmNewPassword) : formData.append('PasswordModel.CurrentPassword', null);
-                console.log("formdata>>><<<>><><><>", formData)
-                console.log(age, avatar, firstName, lastName, password, newPassword, confirmNewPassword)
-                // let url = 'https://localhost:7010/api/Account/update-leaner?accountId=' + userId;
-                // const options = {
-                //     method: 'PUT',
-                //     url: `https://localhost:7010/api/Account/update-leaner?accountId=${userId}`,
-                //     validateStatus: false,
-                // };
+                password ? formData.append('PasswordModel.CurrentPassword', password) : formData.append('PasswordModel.CurrentPassword', '');
+                newPassword ? formData.append('PasswordModel.Password', newPassword) : formData.append('PasswordModel.Password', '');
+                confirmNewPassword ? formData.append('PasswordModel.ConfirmPassword', confirmNewPassword) : formData.append('PasswordModel.CurrentPassword', '');
+                for (const [key, value] of formData) {
+                    console.log("formdata>>><<<>><><><>", `${key}: ${value}`);
+                }
+
                 try {
-                    let leaner = await axios.put(`https://localhost:7010/api/Account/update-leaner?accountId=${userId}`, formData, {
+                    let url = 'https://localhost:7010/api/Account/update-learner?accountId=' + userInformation.id;
+                    let res = await axios.put(url, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                         },
@@ -124,6 +117,7 @@ const EditProfile = ({ userInformation }) => {
 
 
         }
+        window.location.reload();
 
     }
 

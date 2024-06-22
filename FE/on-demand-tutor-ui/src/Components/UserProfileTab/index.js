@@ -78,7 +78,6 @@ function UserProfileTab({ user }) {
 
     }, [user])
 
-
     return (
         <section className="h-100 gradient-custom-2">
             <div className="containerRoot py-5 h-100">
