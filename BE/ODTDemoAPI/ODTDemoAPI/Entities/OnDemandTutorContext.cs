@@ -178,6 +178,9 @@ public partial class OnDemandTutorContext : DbContext
             entity.HasIndex(e => new { e.TutorId, e.LearnerId }, "UQ_RevewRating").IsUnique();
 
             entity.Property(e => e.Review).HasMaxLength(255);
+            entity.Property(e => e.ReviewDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
 
             entity.HasOne(d => d.Learner).WithMany()
                 .HasForeignKey(d => d.LearnerId)
