@@ -19,9 +19,10 @@ public partial class Curriculum
     public decimal PricePerSection { get; set; }
 
     public int? TutorId { get; set; }
+
     [JsonIgnore]
     public virtual ICollection<LearnerOrder> LearnerOrders { get; set; } = new List<LearnerOrder>();
-    [JsonIgnore]
+
     public virtual ICollection<Section> Sections { get; set; } = new List<Section>();
 
     public virtual Tutor? Tutor { get; set; }

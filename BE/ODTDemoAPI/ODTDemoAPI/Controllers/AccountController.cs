@@ -21,14 +21,12 @@ namespace ODTDemoAPI.Controllers
         private readonly IAuthService _authService;
         private readonly IEmailService _emailService;
         private readonly IMemoryCache _memoryCache;
-        private readonly ILogger<AccountController> _logger;
-        public AccountController(OnDemandTutorContext context, IAuthService authService, IEmailService emailService, IMemoryCache memoryCache, ILogger<AccountController> logger)
+        public AccountController(OnDemandTutorContext context, IAuthService authService, IEmailService emailService, IMemoryCache memoryCache)
         {
             _context = context;
             _authService = authService;
             _emailService = emailService;
             _memoryCache = memoryCache;
-            _logger = logger;
         }
 
         [HttpPost("login-google")]
@@ -635,7 +633,7 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 Response.Cookies.Delete("jwtToken");
-                HttpContext.Session.Remove("Account");
+                HttpContext.Session.Clear();
                 return Ok(new { message = "Logged out successfully!" });
             }
             catch (Exception ex)
@@ -774,6 +772,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPut("update-learner")]
+        [Authorize(Roles = "LEARNER")]
         public async Task<IActionResult> UpdateLearnerInfo([FromForm] UpdateLearnerModel model, int accountId)
         {
             try
@@ -834,6 +833,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPut("update-tutor")]
+        [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> UpdateTutorModel([FromForm] UpdateTutorModel model, int accountId)
         {
             try
@@ -904,6 +904,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPut("update-email")]
+        [Authorize]
         public async Task<IActionResult> UpdateEmail([FromForm] string email, int accountId)
         {
             try

@@ -46,7 +46,12 @@ namespace ODTDemoAPI.Controllers
                         PageSize = pageSize,
                         Items = reviewList,
                     };
-                    return Ok(response);
+                    int numOfPages = totalCount / pageSize;
+                    if(totalCount % pageSize != 0)
+                    {
+                        numOfPages += 1;
+                    }
+                    return Ok(new {Response = response, NumOfPages = numOfPages});
                 }
             }
             catch (Exception ex)
@@ -184,7 +189,12 @@ namespace ODTDemoAPI.Controllers
                         PageSize = pageSize,
                         Items = reviewList,
                     };
-                    return Ok(response);
+                    int numOfPages = totalCount / pageSize;
+                    if (totalCount % pageSize != 0)
+                    {
+                        numOfPages += 1;
+                    }
+                    return Ok(new { Response = response, NumOfPages = numOfPages });
                 }
             }
             catch (Exception ex)
@@ -327,7 +337,12 @@ namespace ODTDemoAPI.Controllers
                     Items = reviewList,
                 };
 
-                return Ok(response);
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -352,7 +367,12 @@ namespace ODTDemoAPI.Controllers
                     PageSize = pageSize,
                     Items = reviewList,
                 };
-                return Ok(response);
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {

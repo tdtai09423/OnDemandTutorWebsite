@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -21,14 +22,16 @@ namespace ODTDemoAPI.Controllers
         private readonly ILogger<LearnerOrderController> _logger;
         private readonly string _stripeSK;
         private readonly IMemoryCache _memoryCache;
+        private readonly IEmailService _emailService;
 
-        public LearnerOrderController(OnDemandTutorContext context, IOptions<StripeSettings> stripeSettings, ILogger<LearnerOrderController> logger, IMemoryCache memoryCache)
+        public LearnerOrderController(OnDemandTutorContext context, IOptions<StripeSettings> stripeSettings, ILogger<LearnerOrderController> logger, IMemoryCache memoryCache, IEmailService emailService)
         {
             _context = context;
             _stripeSK = stripeSettings.Value.SecretKey;
             StripeConfiguration.ApiKey = _stripeSK;
             _logger = logger;
             _memoryCache = memoryCache;
+            _emailService = emailService;
         }
 
         [HttpPost("short-term-booking")]
@@ -273,9 +276,9 @@ namespace ODTDemoAPI.Controllers
                     }
                 }
 
-                //await NotifyTutorAboutBooking(order.Curriculum!.TutorId, order);
+                //await NotifyTutorAboutBooking(order.Curriculum!.TutorId!, order.OrderId);
 
-                //await NotifyLearnerAboutBooking(order.LearnerId, order);
+                //await NotifyLearnerAboutBooking(order.LearnerId, order.OrderId);
 
                 return Ok(new { Order = order });
 
@@ -381,6 +384,41 @@ namespace ODTDemoAPI.Controllers
             return BadRequest("Payment failed!");
         }
 
+        [HttpGet("get-orders-list/{tutorId}")]
+        [Authorize(Roles = "TUTOR")]
+        public async Task<IActionResult> GetOrdersListForTutor([FromRoute] int tutorId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                IQueryable<LearnerOrder> query = _context.LearnerOrders.Where(o => o.Curriculum!.TutorId == tutorId);
+                query = query.OrderByDescending(o => o.OrderDate);
+                var totalCount = await query.CountAsync();
+                var orders = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+                if (orders == null || orders.Count == 0)
+                {
+                    return NotFound("This tutor has no orders yet.");
+                }
+
+                var response = new PaginatedResponse<LearnerOrder>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = orders,
+                };
+                var numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages++;
+                }
+                return Ok(new { TotalCound = totalCount, NumOfPages = numOfPages });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("get-meet-url")]
         public async Task<IActionResult> EnterMeetUrl(string meetUrl)
         {
@@ -418,7 +456,92 @@ namespace ODTDemoAPI.Controllers
             return result;
         }
 
+        //update booking cho learner
+        [HttpPut("update-booking/{orderId}")]
+        [Authorize(Roles = "LEARNER")]
+        public async Task<IActionResult> UpdateShortTermBooking([FromRoute] int orderId, [FromForm] DateTime? startTime)
+        {
+            try
+            {
+                var order =  await _context.LearnerOrders
+                                            .Include(o => o.Curriculum)
+                                            .ThenInclude(c => c!.Sections)
+                                            .FirstOrDefaultAsync(o => o.OrderId == orderId);
+                if (order == null)
+                {
+                    return NotFound("Order not found");
+                }
+
+                if(order.OrderStatus == "Accepted")
+                {
+                    return BadRequest("Tutor has accepted this booing request. Cannot update. Please contact tutor to cancel and try updating again.");
+                }
+
+                if(order.OrderStatus == "Rejected")
+                {
+                    return BadRequest("This booking request has been rejected. Cannot update.");
+                }
+
+                var curriculum = order.Curriculum;
+                if (curriculum == null || curriculum.CurriculumType != "ShortTerm")
+                {
+                    return BadRequest("This order does not belong to a short term curriculum.");
+                }
+
+                var section = curriculum.Sections.FirstOrDefault();
+                if(section == null)
+                {
+                    return NotFound("Not found section.");
+                }
+
+                //TODO: update startTime and duration
+                if(startTime.HasValue)
+                {
+                    section.SectionStart = (DateTime) startTime;
+                }
+
+                _context.Sections.Update(section);
+                await _context.SaveChangesAsync();
+
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //cancel này mới là của admin nha!!!
+        [HttpPost("force-to-cancel-booking")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> ForceToCancelBooking([FromBody] int orderId)
+        {
+            try
+            {
+                var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+                if (order == null)
+                {
+                    return NotFound("Order not found");
+                }
+
+                order.OrderStatus = "Forced to cancel";
+                _context.LearnerOrders.Update(order);
+
+                await _context.SaveChangesAsync();
+
+                //await NotifyLearnerAboutBookingStatus(order.LearnerId, orderId, "forced to cancel by admin");
+                //await NotifyTutorAboutBookingStatus(order.Curriculum!.TutorId, orderId, "forced to cancel by admin");
+                return Ok(new { message = "Cancel booking successfully!", Order = order });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //cancel của learner nha, đừng có lộn
         [HttpPost("cancel-booking")]
+        [Authorize(Roles = "LEARNER")]
         public async Task<IActionResult> CancelBooking([FromForm] int orderId, int learnerId)
         {
             try
@@ -462,6 +585,8 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
+                await NotifyTutorAboutBookingStatus(order.Curriculum!.TutorId, orderId, "cancelled by the learner");
+
                 return Ok(new { message1 = "Cancel booking successfully!", message2 = isPaid ? "Refunded to your wallet!" : null });
             }
             catch (Exception ex)
@@ -472,6 +597,7 @@ namespace ODTDemoAPI.Controllers
 
 
         [HttpPost("accept-booking")]
+        [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> AcceptBooking([FromBody] TutorResponse response)
         {
             try
@@ -494,7 +620,7 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "accepted");
+                //await NotifyLearnerAboutBookingStatus(order.LearnerId, order.OrderId, "accepted");
 
                 //TODO: tạo section cho booking
                 var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
@@ -569,6 +695,106 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
+        [HttpPost("create-cancel-request/{tutorId}")]
+        [Authorize(Roles = "TUTOR")]
+        public async Task<IActionResult> RequireCancelAcceptedOrder([FromRoute] int tutorId, [FromBody] int orderId)
+        {
+            try
+            {
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+                if (tutor == null)
+                {
+                    return NotFound("Tutor not found");
+                }
+
+                var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.Curriculum!.TutorId == tutorId);
+                if (order == null)
+                {
+                    return NotFound("No order can be found with this tutorId.");
+                }
+
+                if (order.OrderStatus != "Accepted")
+                {
+                    if (order.OrderStatus == "Rejected")
+                    {
+                        return BadRequest(new { message = "You have rejected this order before." });
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "You have not accepted this order before." });
+                    }
+                }
+
+                //await NotifyLearnerAboutBookingStatus(order.LearnerId, orderId, "required to cancel by the tutor");
+
+                return Ok(new { message = "Request has been sent to learner.", Order = order });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("accept-cancel-request/{order}/{tutorId}")]
+        [Authorize(Roles = "LEARNER")]
+        public async Task<IActionResult> AcceptCancelRequest([FromRoute] int tutorId, [FromRoute] int orderId)
+        {
+            try
+            {
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+                if (tutor == null)
+                {
+                    return NotFound("Tutor not found");
+                }
+
+                var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.Curriculum!.TutorId == tutorId);
+                if (order == null)
+                {
+                    return NotFound("No order can be found with this tutorId.");
+                }
+
+                order.OrderStatus = "Paid";
+                _context.LearnerOrders.Update(order);
+                await _context.SaveChangesAsync();
+
+                //await NotifyTutorAboutCancelRequest(tutorId, orderId, "accepted");
+
+                return Ok(new { message = "Accept cancel request successfully!", Order = order });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("reject-cancel-request/{order}/{tutorId}")]
+        [Authorize(Roles = "LEARNER")]
+        public async Task<IActionResult> RejectCancelRequest([FromRoute] int tutorId, [FromRoute] int orderId)
+        {
+            try
+            {
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+                if (tutor == null)
+                {
+                    return NotFound("Tutor not found");
+                }
+
+                var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId && o.Curriculum!.TutorId == tutorId);
+                if (order == null)
+                {
+                    return NotFound("No order can be found with this tutorId.");
+                }
+
+                //await NotifyTutorAboutCancelRequest(tutorId, orderId, "rejected");
+
+                return Ok(new { message = "Reject cancel request successfully!", Order = order });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private static DateTime GetDateTimeFromWeek(int year, int weekNumber, DayOfWeek dayOfWeek, TimeSpan timeOfDay)
         {
             var weeks = GetWeeks(year);
@@ -611,6 +837,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("reject-booking")]
+        [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> RejectBooking([FromBody] TutorResponse response)
         {
             try
@@ -633,7 +860,7 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "rejected");
+                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "rejected by the tutor");
 
                 await RefundPayment(order.Total, (int)order.LearnerId!);
 
@@ -675,75 +902,156 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        private void NotifyLearnerAboutBookingStatus(int learnerId, LearnerOrder order, string status)
+        private async Task NotifyTutorAboutCancelRequest(int? tutorId, int orderId, string status)
         {
-            var notification = new UserNotification
-            {
-                Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been {status} by the tutor.",
-                NotificateDay = DateTime.Now,
-                AccountId = learnerId
-            };
-
-            var learner = _context.Learners.Find(learnerId);
-            if (learner != null)
-            {
-                string subject = "Booking Status Update";
-                string message = $"Dear {learner.LearnerNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been {status} by the tutor. Please login to your dashboard for more details.";
-
-                var emailService = new EmailService();
-                emailService.SendMailAsync(learner.LearnerEmail, subject, message);
-            }
-
-            _context.UserNotifications.Add(notification);
-            _context.SaveChanges();
-        }
-
-        private async Task NotifyTutorAboutBooking(int tutorId, LearnerOrder order)
-        {
+            var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
             {
-                return;
+                throw new Exception("Not found order.");
             }
-            var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
-            if (tutor == null)
-            {
-                return;
-            }
+
             var notification = new UserNotification
             {
-                Content = $"You have received a new booking request for curriculum {order.Curriculum!.CurriculumType}.",
+                Content = $"Your cancel request for order having curriculum {order.Curriculum!.CurriculumType} has been {status} by the learner.",
                 NotificateDay = DateTime.Now,
-                AccountId = tutorId
+                AccountId = (int)tutorId!,
             };
-            if (tutor != null && tutor.TutorNavigation != null)
-            {
-                string subject = "New Booking Request";
-                string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nYou have received a new booking request for curriculum {order.Curriculum!.CurriculumType}. Please login to your dhashboard for more details.";
 
-                var emailService = new EmailService();
-                await emailService.SendMailAsync(tutor.TutorEmail, subject, message);
+            var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+            if (tutor != null)
+            {
+                string subject = "Booking Status Update";
+                string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nour cancel request for order having curriculum {order.Curriculum!.CurriculumType} has been {status} by the learner. Please login to your dashboard for more details.";
+
+                await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
+            }
+            else
+            {
+                throw new Exception("Not found learner");
             }
 
             _context.UserNotifications.Add(notification);
             await _context.SaveChangesAsync();
         }
 
-        private async Task NotifyLearnerAboutBooking(int learnerId, LearnerOrder order)
+        private async Task NotifyTutorAboutBookingStatus(int? tutorId, int orderId, string status)
         {
+            var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                throw new Exception("Not found order.");
+            }
+
+            var notification = new UserNotification
+            {
+                Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}.",
+                NotificateDay = DateTime.Now,
+                AccountId = (int)tutorId!,
+            };
+
+            var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+            if (tutor != null)
+            {
+                string subject = "Booking Status Update";
+                string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}. Please login to your dashboard for more details.";
+
+                await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
+            }
+            else
+            {
+                throw new Exception("Not found learner");
+            }
+
+            _context.UserNotifications.Add(notification);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task NotifyLearnerAboutBookingStatus(int? learnerId, int orderId, string status)
+        {
+            var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                throw new Exception("Not found order.");
+            }
+
+            var notification = new UserNotification
+            {
+                Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}.",
+                NotificateDay = DateTime.Now,
+                AccountId = (int)learnerId!,
+            };
+
+            var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
+            if (learner != null)
+            {
+                string subject = "Booking Status Update";
+                string message = $"Dear {learner.LearnerNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}. Please login to your dashboard for more details.";
+
+                await _emailService.SendMailAsync(learner.LearnerEmail, subject, message);
+            }
+            else
+            {
+                throw new Exception("Not found learner");
+            }
+
+            _context.UserNotifications.Add(notification);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task NotifyTutorAboutBooking(int? tutorId, int orderId)
+        {
+            var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                throw new Exception("Not found order");
+            }
+            var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+            if (tutor == null)
+            {
+                throw new Exception("Not found tutor.");
+            }
+            var notification = new UserNotification
+            {
+                Content = $"You have received a new booking request for curriculum {order.Curriculum!.CurriculumType}.",
+                NotificateDay = DateTime.Now,
+                AccountId = (int)tutorId!,
+            };
+            if (tutor != null && tutor.TutorNavigation != null)
+            {
+                string subject = "New Booking Request";
+                string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nYou have received a new booking request for curriculum {order.Curriculum!.CurriculumType}. Please login to your dhashboard for more details.";
+
+                await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
+            }
+
+            _context.UserNotifications.Add(notification);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task NotifyLearnerAboutBooking(int? learnerId, int orderId)
+        {
+            var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                throw new Exception("Not found order");
+            }
             var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
             var notification = new UserNotification
             {
                 Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.",
                 NotificateDay = DateTime.Now,
-                AccountId = learnerId
+                AccountId = (int)learnerId!
             };
             if (learner != null && learner.LearnerNavigation != null)
             {
                 string subject = "Booking Sent";
                 string message = $"Dear {learner.LearnerNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.";
 
-                var emailService = new EmailService();
-                await emailService.SendMailAsync(learner.LearnerEmail, subject, message);
+                await _emailService.SendMailAsync(learner.LearnerEmail, subject, message);
+            }
+            else
+            {
+                throw new Exception("Not found learner");
             }
 
             _context.UserNotifications.Add(notification);
