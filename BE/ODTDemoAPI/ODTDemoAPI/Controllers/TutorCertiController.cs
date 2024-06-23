@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
@@ -16,7 +16,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCertisById(int id)
+        public async Task<IActionResult> GetCertisById([FromRoute] int id)
         {
             try
             {
@@ -36,7 +36,8 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("add-new-certi")]
+        [Authorize(Roles = "TUTOR")]
         public IActionResult AddNewCerti(TutorCerti tutorCerti)
         {
             try
@@ -67,8 +68,9 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost("approved/{tutorId}")]
-        public async Task<IActionResult> ApproveTutor(int tutorId)
+        [HttpPost("approve/{tutorId}")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> ApproveTutor([FromRoute]int tutorId)
         {
             try
             {
@@ -90,8 +92,9 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost("rejected/{tutorId}")]
-        public async Task<IActionResult> RejectTutor(int tutorId)
+        [HttpPost("reject/{tutorId}")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> RejectTutor([FromRoute] int tutorId)
         {
             try
             {
@@ -113,8 +116,9 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost("pending/{tutorId}")]
-        public async Task<IActionResult> ResetTutorCerti(int tutorId)
+        [HttpPost("reset/{tutorId}")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> ResetTutorCerti([FromRoute] int tutorId)
         {
             try
             {

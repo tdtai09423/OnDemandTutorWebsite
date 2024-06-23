@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,7 +9,6 @@ using ODTDemoAPI.OperationModel;
 using ODTDemoAPI.Services;
 using Stripe;
 using Stripe.Checkout;
-using Stripe.Climate;
 
 namespace ODTDemoAPI.Controllers
 {
