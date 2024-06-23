@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
+using ODTDemoAPI.EntityViewModels;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -22,64 +19,93 @@ namespace ODTDemoAPI.Controllers
 
         // GET: api/Major
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Major>>> GetAllMajors()
+        public async Task<ActionResult<IEnumerable<Major>>> GetAllMajors([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            var majors = await _context.Majors.ToListAsync();
-            return Ok(majors);
+            IQueryable<Major> query = _context.Majors.OrderBy(m => m.MajorId);
+            var totalCount = await query.CountAsync();
+            var majors = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            if (majors == null || majors.Count == 0)
+            {
+                return NotFound("No major was found.");
+            }
+            var response = new PaginatedResponse<Major>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                Items = majors,
+            };
+
+            int numOfPages = totalCount / pageSize;
+            if (totalCount % pageSize != 0)
+            {
+                numOfPages += 1;
+            }
+            return Ok(new { Response = response, NumOfPages = numOfPages });
         }
 
         // GET: api/Major/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Major>> GetMajor(string id)
+        [HttpGet("{majorId}")]
+        public async Task<ActionResult<IEnumerable<Tutor>>> GetTutorByMajor([FromRoute] string majorId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            try
+            IQueryable<Tutor> query = _context.Tutors.Where(t => t.MajorId == majorId).OrderBy(t => t.TutorId);
+            var totalCount = await query.CountAsync();
+            var tutors = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            if (tutors == null || tutors.Count == 0)
             {
-                var major = await _context.Majors.FindAsync(id);
-
-                if (major == null)
-                {
-                    return NotFound("No majors can be found with this ID. Please try again.");
-                }
-
-                return Ok(major);
+                return NotFound("No major was found.");
             }
-            catch (Exception ex)
+            var response = new PaginatedResponse<Tutor>
             {
-                return BadRequest(ex.Message);
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                Items = tutors,
+            };
+
+            int numOfPages = totalCount / pageSize;
+            if (totalCount % pageSize != 0)
+            {
+                numOfPages += 1;
             }
+            return Ok(new { Response = response, NumOfPages = numOfPages });
+        }
+
+        [HttpGet("get-major/{majorId}")]
+        public async Task<ActionResult<IEnumerable<Major>>> GetMajorById([FromRoute] string majorId)
+        {
+            var major = await _context.Majors.FirstOrDefaultAsync(m => m.MajorId == majorId);
+            if(major == null)
+            {
+                return NotFound("Not found major.");
+            }
+            return Ok(new {Major = major});
         }
 
         // PUT: api/Major/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMajor(string id, Major major)
+        [HttpPost("add-new-major")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> PutMajor([FromForm] Major major)
         {
             try
             {
-                if (id != major.MajorId)
+                var findMajor1 = await _context.Majors.FindAsync(major.MajorId);
+                var findMajor2 = await _context.Majors.FindAsync(major.MajorName);
+                if(findMajor1 != null)
                 {
-                    return BadRequest();
+                    return BadRequest(new {message = "Existed major Id."});
                 }
 
-                _context.Entry(major).State = EntityState.Modified;
-
-                try
+                if(findMajor2 != null)
                 {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MajorExists(id))
-                    {
-                        return NotFound("No majors can be found with this ID. Please try again.");
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return BadRequest(new { message = "Existed major name." });
                 }
 
-                return NoContent();
+                _context.Majors.Add(major);
+                await _context.SaveChangesAsync();
+
+                return Ok(new {Major = major});
             }
             catch (Exception e)
             {
@@ -89,39 +115,37 @@ namespace ODTDemoAPI.Controllers
 
         // POST: api/Major
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Major>> PostMajor(Major major)
+        [HttpPost("update-major")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<ActionResult<Major>> PostMajor([FromForm] string majorId, [FromForm] string newMajorId, [FromForm] string newMajorName)
         {
             try
             {
-                _context.Majors.Add(major);
-                try
+                var findMajor = await _context.Majors.FirstOrDefaultAsync(m => m.MajorId == majorId);
+                if(findMajor == null)
                 {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException)
-                {
-                    if (MajorExists(major.MajorId))
-                    {
-                        return Conflict();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound("Not found major");
                 }
 
-                return CreatedAtAction("GetMajor", new { id = major.MajorId }, major);
+                if (!string.IsNullOrEmpty(newMajorName))
+                {
+                    findMajor.MajorId = newMajorId;
+                }
+
+                if (!string.IsNullOrEmpty(newMajorName))
+                {
+                    findMajor.MajorName = newMajorName;
+                }
+
+                _context.Majors.Update(findMajor);
+                await _context.SaveChangesAsync();
+
+                return Ok(new {Major = findMajor});
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        private bool MajorExists(string id)
-        {
-            return _context.Majors.Any(e => e.MajorId == id);
         }
     }
 }

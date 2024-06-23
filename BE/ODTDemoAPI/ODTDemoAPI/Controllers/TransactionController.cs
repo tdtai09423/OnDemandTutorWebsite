@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
-using Stripe.Checkout;
-using Stripe;
-using Microsoft.AspNetCore.Authorization;
+using ODTDemoAPI.EntityViewModels;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -21,9 +19,37 @@ namespace ODTDemoAPI.Controllers
             _logger = logger;
         }
 
+        //all transaction
+        [HttpGet("get-all-transactions")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetAllTransactions([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            IQueryable<Transaction> query = _context.Transactions.OrderByDescending(t => t.TransactionDate);
+            var totalCount = await query.CountAsync();
+            var transactions = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            if (transactions == null || transactions.Count == 0)
+            {
+                return NotFound("No transaction was found.");
+            }
+            var response = new PaginatedResponse<Transaction>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                Items = transactions,
+            };
+
+            int numOfPages = totalCount / pageSize;
+            if (totalCount % pageSize != 0)
+            {
+                numOfPages += 1;
+            }
+            return Ok(new { Response = response, NumOfPages = numOfPages });
+        }
+
         //sao kê
         [HttpGet("get-all-transactions/{accountId}")]
-        public async Task<IActionResult> GetAllTransactions(int accountId)
+        public async Task<IActionResult> GetAllTransactionsById(int accountId)
         {
             try
             {
@@ -44,6 +70,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("withdraw")]
+        [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> Withdraw([FromForm] int tutorId, int amount)
         {
             try

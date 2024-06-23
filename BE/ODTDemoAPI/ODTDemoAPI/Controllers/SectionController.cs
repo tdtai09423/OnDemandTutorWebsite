@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
@@ -99,6 +100,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("weekly-schedule-learner")]
+        [Authorize(Roles = "LEARNER")]
         public async Task<IActionResult> GetWeeklyScheduleLearner(int learnerId, [FromQuery] DateTime startTime, DateTime endTime)
         {
             var sections = await _context.Sections
