@@ -12,7 +12,7 @@ function Home() {
         const fetchTutors = async () => {
             try {
                 const tutorList = await tutorAPI.getApproved();
-                setTutors(tutorList.data.$values);
+                setTutors(tutorList.data.response.items.$values);
                 console.log(tutorList);
             } catch (error) {
                 console.error("Error fetching tutors:", error);

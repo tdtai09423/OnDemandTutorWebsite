@@ -15,9 +15,15 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate }) {
     console.log(Jtoken);
     const navigate = useNavigate();
 
-    const handleOnClick = () => {
+    const handleOnClick = (sectionFree) => {
         if (Jtoken) {
-            navigate("/payment?tutorId=" + tutorId + "")
+            const course = 'Basic English Language Course';
+            const time = sectionFree.sectionStart + 'Z';
+            console.log(sectionFree.sectionStart);
+            const searchParams = new URLSearchParams();
+            searchParams.set('course', course);
+            searchParams.set('time', time);
+            navigate("/payment?tutorId=" + tutorId + '&' + searchParams.toString())
         } else {
             navigate("/login")
         }
@@ -128,7 +134,7 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate }) {
                 {free.map((sectionFree) => {
                     if (!sections.some(section => section.sectionStart === sectionFree.sectionStart)) {
                         return (
-                            <div key={free.$id} className="sectionFree" onClick={handleOnClick}>{formatSection(new Date(sectionFree.sectionStart))}</div>
+                            <div key={free.$id} className="sectionFree" onClick={() => handleOnClick(sectionFree)}>{formatSection(new Date(sectionFree.sectionStart))}</div>
                         );
                     } else {
                         return (

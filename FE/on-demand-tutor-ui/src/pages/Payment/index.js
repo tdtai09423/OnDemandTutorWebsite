@@ -9,22 +9,53 @@ import sectionAPI from '../../api/sectionAPI';
 import reviewRatingAPI from '../../api/ReviewRatingAPI';
 import { Image } from 'react-bootstrap';
 import './Payment.scss'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'
 
 
 function Payment() {
 
     const [searchParam] = useSearchParams();
     const tutorId = searchParam.get('tutorId');
+    const curriculumnDescription = searchParam.get('course');
+    const startTime = searchParam.get('time');
 
-    const [key, setKey] = useState('about');
     const [tutor, setTutor] = useState({});
-    const [major, setMajor] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
-    const [certi, setCerti] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const navigate = useNavigate();
+
+    const handleCheckout = async () => {
+        const data = {
+            "tutorId": tutorId,
+            "learnerId": 11,
+            "curriculumDescription": curriculumnDescription,
+            "startTime": startTime,
+            "duration": 50
+        };
+
+        try {
+            const response = await axios.post('https://localhost:7010/api/LearnerOrder/short-term-booking', data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            let orderId = response.order.orderId
+            const formData = new FormData();
+            formData.append('orderId', orderId);
+            const checkout = await axios.post('https://localhost:7010/api/LearnerOrder/checking-out', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(checkout);
+            navigate("/payment-success");
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+    }
 
     useEffect(() => {
         const fetchTutors = async () => {
@@ -33,18 +64,10 @@ function Payment() {
                 const price = await sectionAPI.get(tutorId);
                 const rating = await reviewRatingAPI.getRating(tutorId);
                 const reviews = await reviewRatingAPI.getReview(tutorId);
-                const certi = await tutorAPI.getCerti(tutorId);
                 setTutor(tutor.data);
                 setPrice(price.data);
                 setRating(rating.data);
-                setCerti(certi.data.$values);
-                setReviews(reviews.data.$values);
-                const majorID = tutor.data.majorId;
-                const major = await majorAPI.get(majorID);
-                setMajor(major.data);
-                setFirstName(tutor.data.tutorNavigation.firstName);
-                setLastName(tutor.data.tutorNavigation.lastName);
-
+                setReviews(reviews.data.response.items.$values);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
@@ -53,6 +76,8 @@ function Payment() {
 
 
     }, []);
+
+
 
 
     return (
@@ -124,40 +149,19 @@ function Payment() {
                 <Col md={6}>
                     <Card>
                         <Card.Header>
-                            <h3>Pay with</h3>
+                            <h3>Checkout confirmation</h3>
                         </Card.Header>
                         <Card.Body>
-                            <Form>
-                                <InputGroup className="mb-3">
-                                    <FormControl placeholder="1234 1234 1234 1234" />
-                                </InputGroup>
-                                <Row>
-                                    <Col md={4}>
-                                        <Form.Control type="text" placeholder="MM" />
-                                    </Col>
-                                    <Col md={4}>
-                                        <Form.Control type="text" placeholder="YY" />
-                                    </Col>
-                                    <Col md={4}>
-                                        <Form.Control type="text" placeholder="CVC" />
-                                    </Col>
-                                </Row>
-                                <Form.Check
-                                    type="checkbox"
-                                    label="Save this card for future payments"
-                                    className="mt-3"
-                                />
-                                <Button variant="primary" block className="mt-3" type="submit">
-                                    Confirm payment - $45.30
-                                </Button>
-                                <p className="mt-3 text-muted">
-                                    By pressing the "Confirm payment" button, you agree to
-                                    <a href="#" className="text-muted"> our website's Refund and Payment Policy.</a>
-                                </p>
-                                <p className="mt-1 text-muted">
-                                    It's safe to pay on Preply. All transactions are protected by SSL encryption.
-                                </p>
-                            </Form>
+                            <Button variant="primary" block className="mt-3" type="submit" onClick={handleCheckout}>
+                                Confirm payment - <span><strong>₫</strong>{price}</span>
+                            </Button>
+                            <p className="mt-3 text-muted">
+                                By pressing the "Confirm payment" button, you agree to
+                                <a href="#" className="text-muted"> our website's Refund and Payment Policy.</a>
+                            </p>
+                            <p className="mt-1 text-muted">
+                                It's safe to pay on Preply. All transactions are protected by SSL encryption.
+                            </p>
                         </Card.Body>
                     </Card>
                 </Col>

@@ -17,6 +17,7 @@ import Certificate from "../pages/AdminDashBoard/Components/pages/certificate.js
 import OrderHistory from "../pages/OrderHistory/index.js";
 import FavoriteTutor from "../pages/FavoriteTutor/index.js";
 import Payment from "../pages/Payment/index.js";
+import PaymentSuccess from "../pages/PaymentSuccess/index.js";
 //Public Route
 const publicRoute = [
     { path: '/', component: Home },
@@ -36,7 +37,8 @@ const publicRoute = [
     { path: '/verify-code', component: VerifyCode },
     { path: '/order-history', component: OrderHistory },
     { path: '/favorite-tutor', component: FavoriteTutor },
-    { path: '/payment', component: Payment }
+    { path: '/payment', component: Payment },
+    { path: '/payment-success', component: PaymentSuccess }
 
 
 ];
