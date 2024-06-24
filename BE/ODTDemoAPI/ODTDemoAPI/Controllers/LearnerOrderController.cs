@@ -35,19 +35,28 @@ namespace ODTDemoAPI.Controllers
         [HttpPost("short-term-booking")]
         public async Task<IActionResult> CreateShortTermBooking([FromBody] ShortTermBookingRequest request)
         {
-            //Khai báo biến cho việc lưu trữ thời gian trong memory cache
+
+            var order = await _context.LearnerOrders.OrderByDescending(o => o.OrderId).FirstOrDefaultAsync();
+
+            //Khai báo biến cho việc lưu trữ thời gian trong database
             DateTime startTime = request.startTime;
             int duration = request.Duration;
 
-            //lưu vào memory cache + nếu tutor không chấp nhận trong vòng 48 giờ => auto reject => refund
-            _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_startTime_ST", startTime, TimeSpan.FromHours(48));
-            _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_duration_ST", duration, TimeSpan.FromHours(48));
+            //lưu vào database
+            var stbcondition = new STBCondition
+            {
+                OrderId = order!.OrderId + 1,
+                StartTime = startTime,
+                Duration = duration,
+            };
+            _context.STBConditions.Add(stbcondition);
+            await _context.SaveChangesAsync();
 
             return await CreateBooking(request);
         }
 
         [HttpPost("long-term-booking")]
-        public async Task<IActionResult> CreateLongTermBooking([FromBody] LongTermBookingRequest request)
+        public /*async Task<IActionResult>*/ IActionResult CreateLongTermBooking([FromBody] LongTermBookingRequest request)
         {
             //Khai báo biến cho việc lưu trữ thời gian trong memory cache
             TimeSpan startTime = request.startTime;
@@ -65,7 +74,8 @@ namespace ODTDemoAPI.Controllers
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_weekNumber_LT", weekNumber, TimeSpan.FromHours(48));
             _memoryCache.Set($"{request.LearnerId}request{request.TutorId}_year_LT", year, TimeSpan.FromHours(48));
 
-            return await CreateBooking(request);
+            //return await CreateBooking(request);
+            return Ok("Tính năng đang được phát triển. Nói chung là do team chưa thống nhất được flow của cái này.");
         }
 
         private async Task<IActionResult> CreateBooking([FromForm] BookingRequest request)
@@ -414,7 +424,7 @@ namespace ODTDemoAPI.Controllers
                 {
                     numOfPages++;
                 }
-                return Ok(new { TotalCound = totalCount, NumOfPages = numOfPages });
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -423,10 +433,11 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("get-meet-url")]
+        [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> EnterMeetUrl(string meetUrl)
         {
             //kiểm tra url có hợp lệ hay không
-            if (IsValidUrl(meetUrl))
+            if (!IsValidUrl(meetUrl))
             {
                 return BadRequest("Meet url is invalid!");
             }
@@ -531,9 +542,46 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 order.OrderStatus = "Forced to cancel";
-                _context.LearnerOrders.Update(order);
+                _context.Database.ExecuteSql($"UPDATE dbo.LearnerOrder SET OrderStatus = 'Forced to cancel' WHERE OrderId = {order.OrderId}");
+                var saved = false;
+                while (!saved)
+                {
+                    try
+                    {
+                        // Attempt to save changes to the database
+                        await _context.SaveChangesAsync();
+                        saved = true;
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        foreach (var entry in ex.Entries)
+                        {
+                            if (entry.Entity is LearnerOrder)
+                            {
+                                var proposedValues = entry.CurrentValues;
+                                var databaseValues = entry.GetDatabaseValues();
 
-                await _context.SaveChangesAsync();
+                                foreach (var property in proposedValues.Properties)
+                                {
+                                    var proposedValue = proposedValues[property];
+                                    var databaseValue = databaseValues![property];
+
+                                    // TODO: decide which value should be written to database
+                                    // proposedValues[property] = <value to be saved>;
+                                }
+
+                                // Refresh original values to bypass next concurrency check
+                                entry.OriginalValues.SetValues(databaseValues!);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(
+                                    "Don't know how to handle concurrency conflicts for "
+                                    + entry.Metadata.Name);
+                            }
+                        }
+                    }
+                }
 
                 await NotifyLearnerAboutBookingStatus(order.LearnerId, orderId, "forced to cancel by admin");
                 await NotifyTutorAboutBookingStatus(order.Curriculum!.TutorId, orderId, "forced to cancel by admin");
@@ -609,7 +657,8 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var order = await _context.LearnerOrders
-                    .Include(o => o.Curriculum)
+                    .Include(o => o.Curriculum!)
+                    .ThenInclude(c => c.Sections)
                     .FirstOrDefaultAsync(o => o.OrderId == response.OrderId && o.Curriculum!.TutorId == response.TutorId);
 
                 if (order == null)
@@ -622,19 +671,82 @@ namespace ODTDemoAPI.Controllers
                     return BadRequest("Order status is not at paid status");
                 }
 
+
+                var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
+
+                if (curriculum!.CurriculumType == "ShortTerm")
+                {
+                    var stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
+                    var sectionStart = stbCondition!.StartTime;
+                    var sectionEnd = sectionStart.AddMinutes(stbCondition!.Duration);
+
+                    //check xem có trùng section trong schedule không
+                    var isConflict = await _context.Sections.AnyAsync(s => s.Curriculum!.TutorId == response.TutorId
+                                                            && s.SectionStart <= sectionEnd
+                                                            && s.SectionEnd >= sectionStart);
+
+                    if (isConflict)
+                    {
+                        return Conflict("Section time conflicts with existing sections.");
+                    }
+                }
+                else
+                {
+                    //chưa xử lí
+                }
+
                 order.OrderStatus = "Accepted";
-                _context.LearnerOrders.Update(order);
-                await _context.SaveChangesAsync();
+                _context.Database.ExecuteSql($"UPDATE dbo.LearnerOrder SET OrderStatus = 'Accepted' WHERE OrderId = {order.OrderId}");
+                var saved = false;
+                while (!saved)
+                {
+                    try
+                    {
+                        // Attempt to save changes to the database
+                        await _context.SaveChangesAsync();
+                        saved = true;
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        foreach (var entry in ex.Entries)
+                        {
+                            if (entry.Entity is LearnerOrder)
+                            {
+                                var proposedValues = entry.CurrentValues;
+                                var databaseValues = entry.GetDatabaseValues();
+
+                                foreach (var property in proposedValues.Properties)
+                                {
+                                    var proposedValue = proposedValues[property];
+                                    var databaseValue = databaseValues![property];
+
+                                    // TODO: decide which value should be written to database
+                                    // proposedValues[property] = <value to be saved>;
+                                }
+
+                                // Refresh original values to bypass next concurrency check
+                                entry.OriginalValues.SetValues(databaseValues!);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(
+                                    "Don't know how to handle concurrency conflicts for "
+                                    + entry.Metadata.Name);
+                            }
+                        }
+                    }
+                }
 
                 await NotifyLearnerAboutBookingStatus(order.LearnerId, order.OrderId, "accepted");
 
                 //TODO: tạo section cho booking
-                var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
                 var meetUrl = HttpContext.Session.GetString("MeetUrl");
                 if (curriculum!.CurriculumType == "ShortTerm")
                 {
-                    var sectionStart = _memoryCache.Get<DateTime>($"{order.LearnerId}request{response.TutorId}_startTime_ST");
-                    var sectionEnd = sectionStart.AddMinutes(_memoryCache.Get<int>($"{order.LearnerId}request{response.TutorId}_duration_ST"));
+                    var stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
+                    var sectionStart = stbCondition!.StartTime;
+                    var sectionEnd = sectionStart.AddMinutes(stbCondition!.Duration);
+
                     var section = new Section
                     {
                         SectionStart = sectionStart,
@@ -645,8 +757,6 @@ namespace ODTDemoAPI.Controllers
                     };
                     _context.Sections.Add(section);
                     await _context.SaveChangesAsync();
-                    _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_startTime_ST");
-                    _memoryCache.Remove($"{order.LearnerId}request{response.TutorId}_duration_ST");
                 }
                 if (curriculum!.CurriculumType == "LongTerm")
                 {
@@ -842,9 +952,56 @@ namespace ODTDemoAPI.Controllers
             return weeks;
         }
 
-        [HttpPost("comfirm-order-completion/{orderId}")]
+        [HttpPost("confirm-section-completion")]
         [Authorize(Roles = "TUTOR")]
-        public IActionResult ConfirmOrderCompletion([FromRoute] int orderId)
+        public IActionResult ConfirmSectionCompletion([FromQuery] int orderId, [FromQuery] int sectionId)
+        {
+            var order = _context.LearnerOrders
+                                    .Include(o => o.Curriculum!)
+                                    .ThenInclude(c => c.Sections)
+                                    .FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                return NotFound("Not found order");
+            }
+
+            if (order.OrderStatus != "Accepted")
+            {
+                return BadRequest("Order is not at accepted status. Cannot operate.");
+            }
+
+            if (order.IsCompleted)
+            {
+                return BadRequest("Order has been comfirmed as completed before.");
+            }
+
+            var section = order.Curriculum!.Sections.FirstOrDefault(s => s.SectionId == sectionId);
+
+            if(section == null)
+            {
+                return NotFound("Not found section");
+            }
+
+            if(section.SectionStatus == "Completed")
+            {
+                return BadRequest("This section has been completed before. Cannot operate");
+            }
+
+            if(section.SectionEnd > DateTime.Now)
+            {
+                section.SectionStatus = "Completed";
+                _context.Sections.Update(section);
+                _context.SaveChanges();
+
+                return Ok(new { Section = section });
+            }
+
+            return BadRequest("An error has occurred");
+        }
+
+        [HttpPost("comfirm-order-completion")]
+        [Authorize(Roles = "TUTOR")]
+        public IActionResult ConfirmOrderCompletion([FromQuery] int orderId)
         {
             var order = _context.LearnerOrders
                                     .Include(o => o.Curriculum!)
@@ -866,7 +1023,7 @@ namespace ODTDemoAPI.Controllers
             }
 
             var lastSection = order.Curriculum!.Sections.OrderByDescending(s => s.SectionEnd).FirstOrDefault();
-            if (lastSection == null || lastSection.SectionEnd > DateTime.Now)
+            if (lastSection == null || lastSection.SectionStatus != "Completed")
             {
                 return BadRequest("Cannot confirm order completion. The last section has not ended yet.");
             }
@@ -899,8 +1056,46 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 order.OrderStatus = "Rejected";
-                _context.LearnerOrders.Update(order);
-                await _context.SaveChangesAsync();
+                _context.Database.ExecuteSql($"UPDATE dbo.LearnerOrder SET OrderStatus = 'Rejected' WHERE OrderId = {order.OrderId}");
+                var saved = false;
+                while (!saved)
+                {
+                    try
+                    {
+                        // Attempt to save changes to the database
+                        await _context.SaveChangesAsync();
+                        saved = true;
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        foreach (var entry in ex.Entries)
+                        {
+                            if (entry.Entity is LearnerOrder)
+                            {
+                                var proposedValues = entry.CurrentValues;
+                                var databaseValues = entry.GetDatabaseValues();
+
+                                foreach (var property in proposedValues.Properties)
+                                {
+                                    var proposedValue = proposedValues[property];
+                                    var databaseValue = databaseValues![property];
+
+                                    // TODO: decide which value should be written to database
+                                    // proposedValues[property] = <value to be saved>;
+                                }
+
+                                // Refresh original values to bypass next concurrency check
+                                entry.OriginalValues.SetValues(databaseValues!);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(
+                                    "Don't know how to handle concurrency conflicts for "
+                                    + entry.Metadata.Name);
+                            }
+                        }
+                    }
+                }
 
                 await NotifyLearnerAboutBookingStatus(order.LearnerId, order.OrderId, "rejected by the tutor");
 

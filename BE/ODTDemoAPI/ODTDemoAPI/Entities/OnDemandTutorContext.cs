@@ -33,6 +33,8 @@ public partial class OnDemandTutorContext : DbContext
 
     public virtual DbSet<Section> Sections { get; set; }
 
+    public virtual DbSet<STBCondition> STBConditions { get; set; }
+
     public virtual DbSet<Transaction> Transactions { get; set; }
 
     public virtual DbSet<Tutor> Tutors { get; set; }
@@ -208,12 +210,22 @@ public partial class OnDemandTutorContext : DbContext
                 .HasColumnName("MeetURL");
             entity.Property(e => e.SectionEnd).HasColumnType("datetime");
             entity.Property(e => e.SectionStart).HasColumnType("datetime");
-            entity.Property(e => e.SectionStatus).HasMaxLength(10);
+            entity.Property(e => e.SectionStatus).HasMaxLength(20);
 
             entity.HasOne(d => d.Curriculum).WithMany(p => p.Sections)
                 .HasForeignKey(d => d.CurriculumId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK__Section__Curricu__66603565");
+        });
+
+        modelBuilder.Entity<STBCondition>(entity =>
+        {
+            entity.HasKey(e => e.CID).HasName("PK_STB_Condition");
+
+            entity.ToTable("STBCondition");
+
+            entity.Property(e => e.CID).HasColumnName("CID");
+            entity.Property(e => e.StartTime).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
