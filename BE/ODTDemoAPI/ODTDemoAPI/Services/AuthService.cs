@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using ODTDemoAPI.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -8,20 +9,16 @@ namespace ODTDemoAPI.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IConfiguration _configuration;
+        private readonly JwtSetting _jwtSetting;
 
-        private const string Key = "your-256-bit-secret-your-256-bit-secret";
-        private const string Issuer = "yourIssuer";
-        private const string Audience = "yourAudience";
-
-        public AuthService(IConfiguration configuration)
+        public AuthService(IOptionsMonitor<JwtSetting> optionsMonitor)
         {
-            _configuration = configuration;
+            _jwtSetting = optionsMonitor.CurrentValue;
         }
 
         public string GenerateToken(Account account)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSetting.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -33,8 +30,8 @@ namespace ODTDemoAPI.Services
 
             var token = new JwtSecurityToken
                 (
-                    issuer: Issuer,
-                    audience: Audience,
+                    issuer: _jwtSetting.Issuer,
+                    audience: _jwtSetting.Audience,
                     claims: claims,
                     expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: credentials

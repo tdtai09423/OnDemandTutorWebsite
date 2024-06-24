@@ -171,9 +171,9 @@ public partial class OnDemandTutorContext : DbContext
 
         modelBuilder.Entity<ReviewRating>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("ReviewRating");
+            entity.HasKey(e => e.ReviewId).HasName("PK_Review_Rating");
+
+            entity.ToTable("ReviewRating");
 
             entity.HasIndex(e => new { e.TutorId, e.LearnerId }, "UQ_RevewRating").IsUnique();
 
@@ -185,6 +185,11 @@ public partial class OnDemandTutorContext : DbContext
             entity.HasOne(d => d.Learner).WithMany()
                 .HasForeignKey(d => d.LearnerId)
                 .HasConstraintName("FK__ReviewRat__Learn__6477ECF3");
+
+            entity.HasOne(d => d.Order).WithMany()
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("KF_Order_Review");
 
             entity.HasOne(d => d.Tutor).WithMany()
                 .HasForeignKey(d => d.TutorId)

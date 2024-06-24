@@ -30,7 +30,10 @@ namespace ODTDemoAPI.Controllers
                 }
                 else
                 {
-                    IQueryable<ReviewRating> query = _context.ReviewRatings.Where(r => r.TutorId == tutorId);
+                    IQueryable<ReviewRating> query = _context.ReviewRatings
+                                            .Include(t => t.Learner)
+                                            .Include(t => t.Tutor)
+                                            .Where(r => r.TutorId == tutorId);
                     query = query.OrderByDescending(r => r.ReviewDate);
                     var totalCount = await query.CountAsync();
                     var reviewList = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -162,6 +165,7 @@ namespace ODTDemoAPI.Controllers
 
         //xem review & rating list cua learner
         [HttpGet("getReviews/learner/{learnerId}")]
+        [Authorize(Roles = "LEARNER")]
         public async Task<ActionResult<IEnumerable<ReviewRating>>> GetAllReviewsOfLearner([FromRoute] int learnerId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             try
@@ -173,7 +177,10 @@ namespace ODTDemoAPI.Controllers
                 }
                 else
                 {
-                    IQueryable<ReviewRating> query = _context.ReviewRatings.Where(r => r.LearnerId == learnerId);
+                    IQueryable<ReviewRating> query = _context.ReviewRatings
+                                            .Include(t => t.Learner)
+                                            .Include(t => t.Tutor)
+                                            .Where(r => r.LearnerId == learnerId);
                     query = query.OrderByDescending(r => r.ReviewDate);
                     var totalCount = await query.CountAsync();
                     var reviewList = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -234,19 +241,35 @@ namespace ODTDemoAPI.Controllers
         }
         //them 1 review rating moi
         [HttpPost("review-tutor")]
-        public async Task<ActionResult> CreateNewReviewRating([FromForm] ReviewModel model)
+        [Authorize(Roles = "LEARNER")]
+        public async Task<ActionResult> CreateNewReviewRating([FromForm] ReviewModel model,[FromQuery] int orderId, [FromQuery] int tutorId, [FromQuery] int learnerId)
         {
             try
             {
+                var order = await _context.LearnerOrders
+                            .Include(o => o.Curriculum!)
+                            .ThenInclude(c => c.Sections)
+                            .Where(o => o.LearnerId == learnerId && o.Curriculum!.TutorId == tutorId)
+                            .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+                if(order == null)
+                {
+                    return NotFound("Not found order.");
+                }
+
+                if (!order.IsCompleted)
+                {
+                    return BadRequest("The course has not ended yet.");
+                }
+
                 var newReview = new ReviewRating
                 {
-                    LearnerId = model.LearnerId,
-                    TutorId = model.TutorId,
+                    LearnerId = learnerId,
+                    TutorId = tutorId,
                     Rating = model.Rating,
                     Review = model.Review,
                     ReviewDate = DateTime.Now,
-                    Learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == model.LearnerId),
-                    Tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == model.TutorId),
+                    OrderId = order.OrderId,
                 };
                 _context.ReviewRatings.Add(newReview);
                 await _context.SaveChangesAsync();
@@ -261,12 +284,13 @@ namespace ODTDemoAPI.Controllers
 
         //chỉnh sửa 1 review
         [HttpPut("edit-review")]
-        public async Task<IActionResult> EditReview([FromForm] ReviewModel newModel)
+        [Authorize(Roles = "LEARNER")]
+        public async Task<IActionResult> EditReview([FromForm] ReviewModel newModel, [FromQuery] int tutorId, [FromQuery] int learnerId)
         {
             try
             {
-                var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == newModel.LearnerId);
-                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == newModel.TutorId);
+                var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
 
                 if (tutor == null)
                 {
@@ -278,7 +302,10 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Not found learner.");
                 }
 
-                var review = await _context.ReviewRatings.FirstOrDefaultAsync(r => r.TutorId == newModel.TutorId && r.LearnerId == newModel.LearnerId);
+                var review = await _context.ReviewRatings
+                                    .Include(r => r.Learner)
+                                    .Include(r => r.Tutor)
+                                    .FirstOrDefaultAsync(r => r.TutorId == tutorId && r.LearnerId == learnerId);
                 if (review == null)
                 {
                     return NotFound("There is no review between this two account.");
@@ -320,7 +347,10 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Not found tutor.");
                 }
 
-                IQueryable<ReviewRating> query = _context.ReviewRatings.Where(r => r.TutorId == tutorId && r.Rating == rating);
+                IQueryable<ReviewRating> query = _context.ReviewRatings
+                                        .Include(r => r.Learner)
+                                        .Include(r => r.Tutor)
+                                        .Where(r => r.TutorId == tutorId && r.Rating == rating);
                 query = query.OrderByDescending(r => r.ReviewDate);
                 var totalCount = await query.CountAsync();
                 var reviewList = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -356,7 +386,10 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                IQueryable<ReviewRating> query = _context.ReviewRatings.OrderByDescending(r => r.ReviewDate);
+                IQueryable<ReviewRating> query = _context.ReviewRatings
+                                                    .Include(r => r.Learner)
+                                                    .Include(r => r.Tutor)
+                                                    .OrderByDescending(r => r.ReviewDate);
                 var totalCount = await query.CountAsync();
                 var reviewList = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
                 var response = new PaginatedResponse<ReviewRating>
@@ -398,7 +431,10 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Not found learner.");
                 }
 
-                var review = await _context.ReviewRatings.FirstOrDefaultAsync(r => r.TutorId == tutorId && r.LearnerId == learnerId);
+                var review = await _context.ReviewRatings
+                                            .Include(r => r.Learner)
+                                            .Include(r => r.Tutor)
+                                            .FirstOrDefaultAsync(r => r.TutorId == tutorId && r.LearnerId == learnerId);
                 if (review == null)
                 {
                     return NotFound("There is no review between this two account.");

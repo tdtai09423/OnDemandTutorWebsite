@@ -117,7 +117,7 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 var totalEarnings = await _context.LearnerOrders
-                                        .Where(o => o.Curriculum!.TutorId == tutorId && o.OrderStatus == "Paid")
+                                        .Where(o => o.Curriculum!.TutorId == tutorId && o.OrderStatus == "Paid" && o.IsCompleted == true)
                                         .SumAsync(o => o.Total);
 
                 var totalWithdrawn = await _context.Transactions

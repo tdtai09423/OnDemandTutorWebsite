@@ -17,6 +17,8 @@ public partial class LearnerOrder
 
     public int? CurriculumId { get; set; }
 
+    public bool IsCompleted { get; set; }
+
     public int? LearnerId { get; set; }
     [JsonIgnore]
     public virtual Curriculum? Curriculum { get; set; }

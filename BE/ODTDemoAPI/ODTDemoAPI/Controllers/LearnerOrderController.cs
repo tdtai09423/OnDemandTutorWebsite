@@ -124,6 +124,7 @@ namespace ODTDemoAPI.Controllers
                         Total = curriculum.PricePerSection,
                         CurriculumId = curriculum.CurriculumId,
                         LearnerId = request.LearnerId,
+                        IsCompleted = false,
                     };
                 }
                 else
@@ -136,6 +137,7 @@ namespace ODTDemoAPI.Controllers
                         Total = total,
                         CurriculumId = curriculum.CurriculumId,
                         LearnerId = request.LearnerId,
+                        IsCompleted = false,
                     };
                 }
 
@@ -155,7 +157,10 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+                var order = await _context.LearnerOrders
+                    .Include(o => o.Curriculum!)
+                    .ThenInclude(c => c.Sections)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
                 if (order == null)
                 {
                     return NotFound("Order not found!");
@@ -215,7 +220,7 @@ namespace ODTDemoAPI.Controllers
                 if (balance < total)
                 {
                     var session = await CreateStripeSession(total - balance, learner.Id);
-                    return Ok(new { url = session.Url });
+                    return Ok(new { message = "Hết tiền rồi má ơi, nạp vô rồi hẳn đặt. Tui để link ở dưới cho má nạp nè mệt ghê. Trông chán thiệt sự!", url = session.Url });
                 }
 
                 balance -= total;
@@ -274,9 +279,9 @@ namespace ODTDemoAPI.Controllers
                     }
                 }
 
-                //await NotifyTutorAboutBooking(order.Curriculum!.TutorId!, order.OrderId);
+                await NotifyTutorAboutBooking(order.Curriculum!.TutorId!, order.OrderId);
 
-                //await NotifyLearnerAboutBooking(order.LearnerId, order.OrderId);
+                await NotifyLearnerAboutBooking(order.LearnerId, order.OrderId);
 
                 return Ok(new { Order = order });
 
@@ -388,7 +393,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                IQueryable<LearnerOrder> query = _context.LearnerOrders.Where(o => o.Curriculum!.TutorId == tutorId);
+                IQueryable<LearnerOrder> query = _context.LearnerOrders.Include(o => o.Curriculum).Where(o => o.Curriculum!.TutorId == tutorId);
                 query = query.OrderByDescending(o => o.OrderDate);
                 var totalCount = await query.CountAsync();
                 var orders = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -427,7 +432,7 @@ namespace ODTDemoAPI.Controllers
             }
 
             //không để cho các learner cũ vào meeting khi không order
-            var existingCurri = await _context.Curricula.AnyAsync(c => c.Sections.FirstOrDefault(s => s.MeetUrl == meetUrl)!.MeetUrl == meetUrl);
+            var existingCurri = await _context.Curricula.Include(c => c.Sections).AnyAsync(c => c.Sections.FirstOrDefault(s => s.MeetUrl == meetUrl)!.MeetUrl == meetUrl);
 
             if (existingCurri)
             {
@@ -461,7 +466,7 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                var order =  await _context.LearnerOrders
+                var order = await _context.LearnerOrders
                                             .Include(o => o.Curriculum)
                                             .ThenInclude(c => c!.Sections)
                                             .FirstOrDefaultAsync(o => o.OrderId == orderId);
@@ -470,12 +475,12 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Order not found");
                 }
 
-                if(order.OrderStatus == "Accepted")
+                if (order.OrderStatus == "Accepted")
                 {
                     return BadRequest("Tutor has accepted this booing request. Cannot update. Please contact tutor to cancel and try updating again.");
                 }
 
-                if(order.OrderStatus == "Rejected")
+                if (order.OrderStatus == "Rejected")
                 {
                     return BadRequest("This booking request has been rejected. Cannot update.");
                 }
@@ -487,15 +492,15 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 var section = curriculum.Sections.FirstOrDefault();
-                if(section == null)
+                if (section == null)
                 {
                     return NotFound("Not found section.");
                 }
 
                 //TODO: update startTime and duration
-                if(startTime.HasValue)
+                if (startTime.HasValue)
                 {
-                    section.SectionStart = (DateTime) startTime;
+                    section.SectionStart = (DateTime)startTime;
                 }
 
                 _context.Sections.Update(section);
@@ -516,7 +521,10 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                var order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+                var order = await _context.LearnerOrders
+                    .Include(o => o.Curriculum!)
+                    .ThenInclude(c => c.Sections)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
                 if (order == null)
                 {
                     return NotFound("Order not found");
@@ -527,8 +535,8 @@ namespace ODTDemoAPI.Controllers
 
                 await _context.SaveChangesAsync();
 
-                //await NotifyLearnerAboutBookingStatus(order.LearnerId, orderId, "forced to cancel by admin");
-                //await NotifyTutorAboutBookingStatus(order.Curriculum!.TutorId, orderId, "forced to cancel by admin");
+                await NotifyLearnerAboutBookingStatus(order.LearnerId, orderId, "forced to cancel by admin");
+                await NotifyTutorAboutBookingStatus(order.Curriculum!.TutorId, orderId, "forced to cancel by admin");
                 return Ok(new { message = "Cancel booking successfully!", Order = order });
             }
             catch (Exception ex)
@@ -618,7 +626,7 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                //await NotifyLearnerAboutBookingStatus(order.LearnerId, order.OrderId, "accepted");
+                await NotifyLearnerAboutBookingStatus(order.LearnerId, order.OrderId, "accepted");
 
                 //TODO: tạo section cho booking
                 var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
@@ -723,7 +731,7 @@ namespace ODTDemoAPI.Controllers
                     }
                 }
 
-                //await NotifyLearnerAboutBookingStatus(order.LearnerId, orderId, "required to cancel by the tutor");
+                await NotifyLearnerAboutBookingStatus(order.LearnerId, orderId, "required to cancel by the tutor");
 
                 return Ok(new { message = "Request has been sent to learner.", Order = order });
             }
@@ -755,7 +763,7 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                //await NotifyTutorAboutCancelRequest(tutorId, orderId, "accepted");
+                await NotifyTutorAboutCancelRequest(tutorId, orderId, "accepted");
 
                 return Ok(new { message = "Accept cancel request successfully!", Order = order });
             }
@@ -783,7 +791,7 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("No order can be found with this tutorId.");
                 }
 
-                //await NotifyTutorAboutCancelRequest(tutorId, orderId, "rejected");
+                await NotifyTutorAboutCancelRequest(tutorId, orderId, "rejected");
 
                 return Ok(new { message = "Reject cancel request successfully!", Order = order });
             }
@@ -834,6 +842,42 @@ namespace ODTDemoAPI.Controllers
             return weeks;
         }
 
+        [HttpPost("comfirm-order-completion/{orderId}")]
+        [Authorize(Roles = "TUTOR")]
+        public IActionResult ConfirmOrderCompletion([FromRoute] int orderId)
+        {
+            var order = _context.LearnerOrders
+                                    .Include(o => o.Curriculum!)
+                                    .ThenInclude(c => c.Sections)
+                                    .FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                return NotFound("Not found order");
+            }
+
+            if (order.OrderStatus != "Accepted")
+            {
+                return BadRequest("Order is not at accepted status. Cannot operate.");
+            }
+
+            if (order.IsCompleted)
+            {
+                return BadRequest("Order has been comfirmed as completed before.");
+            }
+
+            var lastSection = order.Curriculum!.Sections.OrderByDescending(s => s.SectionEnd).FirstOrDefault();
+            if (lastSection == null || lastSection.SectionEnd > DateTime.Now)
+            {
+                return BadRequest("Cannot confirm order completion. The last section has not ended yet.");
+            }
+
+            order.IsCompleted = true;
+            _context.LearnerOrders.Update(order);
+            _context.SaveChanges();
+
+            return Ok(new { message = "Confirmed successfully!", Order = order });
+        }
+
         [HttpPost("reject-booking")]
         [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> RejectBooking([FromBody] TutorResponse response)
@@ -841,7 +885,7 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var order = await _context.LearnerOrders
-                    .Include(o => o.Curriculum)
+                    .Include(o => o.Curriculum!)
                     .FirstOrDefaultAsync(o => o.OrderId == response.OrderId && o.Curriculum!.TutorId == response.TutorId);
 
                 if (order == null)
@@ -849,16 +893,16 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("Order not found");
                 }
 
-                if (order.OrderStatus != "Pending")
+                if (order.OrderStatus != "Paid")
                 {
-                    return BadRequest("Order status is not at pending status");
+                    return BadRequest("Order status is not at paid status");
                 }
 
                 order.OrderStatus = "Rejected";
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
-                //NotifyLearnerAboutBookingStatus(order.LearnerId, order, "rejected by the tutor");
+                await NotifyLearnerAboutBookingStatus(order.LearnerId, order.OrderId, "rejected by the tutor");
 
                 await RefundPayment(order.Total, (int)order.LearnerId!);
 
@@ -918,8 +962,9 @@ namespace ODTDemoAPI.Controllers
             var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
             if (tutor != null)
             {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == tutorId);
                 string subject = "Booking Status Update";
-                string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nour cancel request for order having curriculum {order.Curriculum!.CurriculumType} has been {status} by the learner. Please login to your dashboard for more details.";
+                string message = $"Dear {account!.FirstName}, \n\nour cancel request for order having curriculum {order.Curriculum!.CurriculumType} has been {status} by the learner. Please login to your dashboard for more details.";
 
                 await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
             }
@@ -950,8 +995,9 @@ namespace ODTDemoAPI.Controllers
             var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
             if (tutor != null)
             {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == tutorId);
                 string subject = "Booking Status Update";
-                string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}. Please login to your dashboard for more details.";
+                string message = $"Dear {account!.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}. Please login to your dashboard for more details.";
 
                 await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
             }
@@ -982,8 +1028,9 @@ namespace ODTDemoAPI.Controllers
             var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
             if (learner != null)
             {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == learnerId);
                 string subject = "Booking Status Update";
-                string message = $"Dear {learner.LearnerNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}. Please login to your dashboard for more details.";
+                string message = $"Dear {account!.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}. Please login to your dashboard for more details.";
 
                 await _emailService.SendMailAsync(learner.LearnerEmail, subject, message);
             }
@@ -1016,8 +1063,9 @@ namespace ODTDemoAPI.Controllers
             };
             if (tutor != null && tutor.TutorNavigation != null)
             {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == tutorId);
                 string subject = "New Booking Request";
-                string message = $"Dear {tutor.TutorNavigation.FirstName}, \n\nYou have received a new booking request for curriculum {order.Curriculum!.CurriculumType}. Please login to your dhashboard for more details.";
+                string message = $"Dear {account!.FirstName}, \n\nYou have received a new booking request for curriculum {order.Curriculum!.CurriculumType}. Please login to your dhashboard for more details.";
 
                 await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
             }
@@ -1042,8 +1090,9 @@ namespace ODTDemoAPI.Controllers
             };
             if (learner != null && learner.LearnerNavigation != null)
             {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == learnerId);
                 string subject = "Booking Sent";
-                string message = $"Dear {learner.LearnerNavigation.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.";
+                string message = $"Dear {account!.FirstName}, \n\nYour booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.";
 
                 await _emailService.SendMailAsync(learner.LearnerEmail, subject, message);
             }
