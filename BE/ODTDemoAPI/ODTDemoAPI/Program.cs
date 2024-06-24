@@ -23,6 +23,7 @@ namespace ODTDemoAPI
             //builder.Services.AddScoped(Timer);
             //builder.Services.AddHostedService<AutomaticCleanUpService>();
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("Jwt"));
             builder.Services.AddScoped<SessionService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
@@ -89,7 +90,12 @@ namespace ODTDemoAPI
             });
             builder.Services.AddScoped<ILearnerFavouriteService, LearnerFavouriteService>();
             builder.Services.AddTransient<IEmailService, EmailService>();
-            builder.Services.AddAuthorization();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireLearnerRole", policy => policy.RequireRole("LEARNER"));
+                options.AddPolicy("RequireTutorRole", policy => policy.RequireRole("TUTOR"));
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("ADMIN"));
+            });
             builder.Services.AddScoped<IAuthService,AuthService>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
