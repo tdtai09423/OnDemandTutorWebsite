@@ -414,7 +414,7 @@ namespace ODTDemoAPI.Controllers
                 {
                     numOfPages++;
                 }
-                return Ok(new { TotalCound = totalCount, NumOfPages = numOfPages });
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
