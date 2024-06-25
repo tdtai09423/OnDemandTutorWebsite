@@ -596,12 +596,12 @@ namespace ODTDemoAPI.Controllers
         //cancel của learner nha, đừng có lộn
         [HttpPost("cancel-booking")]
         [Authorize(Roles = "LEARNER")]
-        public async Task<IActionResult> CancelBooking([FromForm] int orderId, int learnerId)
+        public async Task<IActionResult> CancelBooking(int orderId, int learnerId)
         {
             try
             {
                 var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
-                if (learner == null)
+                if (learner == null) 
                 {
                     return NotFound("Learner not found!");
                 }

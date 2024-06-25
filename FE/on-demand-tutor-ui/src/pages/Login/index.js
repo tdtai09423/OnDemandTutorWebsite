@@ -62,7 +62,7 @@ function Login() {
 
                 <div className='text'>Password</div>
                 <input type='password' placeholder='Your password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
-                <a className='forgot-password' href="forgot_password.html">Forgot Password?</a>
+                <Link className="forgot-password" as={Link} to={"/forgot-password"}> Forgot your password</Link>
                 <div className='checkBox' style={{ marginTop: '10px' }}>
                     <input type="checkbox" id="rememberMe" name="rememberMe" checked={rememberMe} onChange={handleRememberMeChange} />
                     <label for="rememberMe" style={{ marginLeft: '5px' }}>Remember me</label>

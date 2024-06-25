@@ -970,7 +970,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public IActionResult HandleForgotPassword(string email)
+        public async Task<IActionResult> HandleForgotPassword(string email)
         {
             try
             {
@@ -979,7 +979,20 @@ namespace ODTDemoAPI.Controllers
                 {
                     return NotFound(new { message = "Not found account" });
                 }
-                return Ok(new { message = "Verification code has been sent to you." });//chuyển hướng đến action SendVerificationCode
+
+                var verificationCode = GenerateVerificationCode();
+
+                if (verificationCode == null)
+                {
+                    return BadRequest("Failed to generate verification code.");
+                }
+
+                _memoryCache.Set($"{email}_verificationCode", verificationCode, TimeSpan.FromMinutes(30));
+                _memoryCache.Set("FGPW_Email", email, TimeSpan.FromMinutes(30));
+
+                await _emailService.SendMailAsync(email, "Verification Code", $"Your verification code is: {verificationCode}");
+
+                return Ok(new { message = "Verification code has been sent to you." });
             }
             catch (Exception ex)
             {
@@ -1014,7 +1027,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("reset-password")]
-        public IActionResult ResetPassword(string newPassword, string confirmPassword)
+        public async Task<IActionResult> ResetPassword(string newPassword, string confirmPassword)
         {
             try
             {
@@ -1023,7 +1036,7 @@ namespace ODTDemoAPI.Controllers
                     return BadRequest("Password and confirm password do not match.");
                 }
 
-                var email = User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value;
+                var email = _memoryCache.Get<string>("FGPW_Email");
                 if (email == null)
                 {
                     return Unauthorized(new { message = "You are logging out or your session is out. Please check your login status." });
@@ -1032,6 +1045,9 @@ namespace ODTDemoAPI.Controllers
                 var account = FindAccountByEmail(email!);
 
                 account!.Password = BCrypt.Net.BCrypt.HashPassword(newPassword, BCrypt.Net.BCrypt.GenerateSalt());
+
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
                 return Ok(new { message = "Your password has been changed." });
             }
             catch (Exception ex)
