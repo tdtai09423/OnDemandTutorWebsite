@@ -19,6 +19,7 @@ import FavoriteTutor from "../pages/FavoriteTutor/index.js";
 import Payment from "../pages/Payment/index.js";
 import PaymentSuccess from "../pages/PaymentSuccess/index.js";
 import OrderListTutor from "../pages/OrderListTutor/index.js";
+import PersonalSchedule from "../pages/PersonalSchedule/index.js";
 //Public Route
 const publicRoute = [
     { path: '/', component: Home },
@@ -40,7 +41,8 @@ const publicRoute = [
     { path: '/favorite-tutor', component: FavoriteTutor },
     { path: '/payment', component: Payment },
     { path: '/payment-success', component: PaymentSuccess },
-    { path: '/order-list', component: OrderListTutor }
+    { path: '/order-list', component: OrderListTutor },
+    { path: '/personal-schedule', component: PersonalSchedule },
 
 
 ];

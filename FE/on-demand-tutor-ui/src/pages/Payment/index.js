@@ -19,6 +19,7 @@ function Payment() {
     const tutorId = searchParam.get('tutorId');
     const curriculumnDescription = searchParam.get('course');
     const startTime = searchParam.get('time');
+    console.log(startTime)
 
     const [tutor, setTutor] = useState({});
     const [price, setPrice] = useState();

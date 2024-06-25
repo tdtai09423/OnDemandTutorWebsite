@@ -19,7 +19,6 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate }) {
         if (Jtoken) {
             const course = 'Basic English Language Course';
             const time = sectionFree.sectionStart + 'Z';
-            console.log(sectionFree.sectionStart);
             const searchParams = new URLSearchParams();
             searchParams.set('course', course);
             searchParams.set('time', time);
