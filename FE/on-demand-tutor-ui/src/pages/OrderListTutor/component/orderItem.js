@@ -8,8 +8,9 @@ import { useState, useEffect } from "react";
 import learnerAPI from "../../../api/learnerAPI";
 import './orderItem.scss'
 import { Button } from 'react-bootstrap';
+import orderHistoryAPI from "../../../api/orderHistoryAPI";
 
-function OrderItem({ orderItem }) {
+function OrderItem({ orderItem, id }) {
 
     const [learner, setLearner] = useState({});
     const [orders, setOrders] = useState([]);
@@ -44,12 +45,20 @@ function OrderItem({ orderItem }) {
     const formattedOrderDate = formatDate(new Date(orderItem.orderDate));
 
 
-    const handleAccept = () => {
-        console.log('accept')
+    const handleAccept = async () => {
+        console.log(id)
+        const token = localStorage.getItem('token');
+        const res = await orderHistoryAPI.postAcceptOrder(id, orderItem.orderId, token);
+        console.log(res);
+        window.location.reload();
     }
 
-    const handleReject = () => {
-        console.log('reject')
+    const handleReject = async () => {
+        console.log(id)
+        const token = localStorage.getItem('token');
+        const res = await orderHistoryAPI.postRejectOrder(id, orderItem.orderId, token);
+        console.log(res);
+        window.location.reload();
     }
 
     return (
@@ -108,7 +117,7 @@ function OrderItem({ orderItem }) {
                         <MDBCol md="4">
                         </MDBCol>
                         <MDBCol md="4">
-                            {(orderItem.isComplete) ? <p className="orderComplete">Completed</p> :
+                            {(orderItem.isComplete || orderItem.orderStatus !== 'Paid') ? <p></p> :
                                 (
                                     <div className="d-flex justify-content-around mb-1">
                                         <Button className="text-muted mt-1 mb-0 small ms-xl-5 custom-button-text-order-item" onClick={handleAccept} variant="primary" style={{ color: 'white' }}>

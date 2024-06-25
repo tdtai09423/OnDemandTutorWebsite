@@ -19,6 +19,7 @@ function OrderListTutor() {
 
     const [user, setUser] = useState({});
     const [orders, setOrders] = useState([]);
+    const [tutorId, setTutorId] = useState('')
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -30,6 +31,7 @@ function OrderListTutor() {
                 const orderList = await orderHistoryAPI.getOrderListByTutorId(user.data.id, token);
                 console.log(orderList.data.response.items.$values);
                 setOrders(orderList.data.response.items.$values);
+                setTutorId(user.data.id);
             } catch (error) {
                 console.error("Error fetching user:", error);
             }
@@ -113,7 +115,11 @@ function OrderListTutor() {
 
                                     {orders.map((orderItem) => {
 
-                                        return <OrderItem orderItem={orderItem} key={orderItem.$id} />
+                                        return <OrderItem
+                                            orderItem={orderItem}
+                                            id={tutorId}
+                                            key={orderItem.$id}
+                                        />
                                     })}
 
                                     <div className="d-flex justify-content-between pt-2">

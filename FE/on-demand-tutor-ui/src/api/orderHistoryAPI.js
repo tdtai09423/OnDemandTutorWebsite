@@ -13,6 +13,28 @@ const orderHistoryAPI = {
                 Authorization: `Bearer ${token}`
             }
         });
+    },
+    postAcceptOrder(tutorId, orderId, token) {
+        const url = '/LearnerOrder/accept-booking';
+        return apiClient.post(url, {
+            tutorId: tutorId,
+            orderId: orderId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    },
+    postRejectOrder(tutorId, orderId, token) {
+        const url = '/LearnerOrder/reject-booking';
+        return apiClient.post(url, {
+            tutorId: tutorId,
+            orderId: orderId
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 }
 
