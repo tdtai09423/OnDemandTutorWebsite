@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ODTDemoAPI.Entities;
 
@@ -127,9 +125,9 @@ public partial class OnDemandTutorContext : DbContext
 
         modelBuilder.Entity<LearnerFavourite>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("LearnerFavourite");
+            entity.HasKey(e => e.FavoId).HasName("PK_Learner_Favour");
+
+            entity.ToTable("LearnerFavourite");
 
             entity.HasIndex(e => new { e.LearnerId, e.TutorId }, "UQ_Favourite").IsUnique();
 
