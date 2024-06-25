@@ -18,6 +18,7 @@ import OrderHistory from "../pages/OrderHistory/index.js";
 import FavoriteTutor from "../pages/FavoriteTutor/index.js";
 import Payment from "../pages/Payment/index.js";
 import PaymentSuccess from "../pages/PaymentSuccess/index.js";
+import OrderListTutor from "../pages/OrderListTutor/index.js";
 //Public Route
 const publicRoute = [
     { path: '/', component: Home },
@@ -38,7 +39,8 @@ const publicRoute = [
     { path: '/order-history', component: OrderHistory },
     { path: '/favorite-tutor', component: FavoriteTutor },
     { path: '/payment', component: Payment },
-    { path: '/payment-success', component: PaymentSuccess }
+    { path: '/payment-success', component: PaymentSuccess },
+    { path: '/order-list', component: OrderListTutor }
 
 
 ];
