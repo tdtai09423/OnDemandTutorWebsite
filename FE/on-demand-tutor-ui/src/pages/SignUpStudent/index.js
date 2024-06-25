@@ -58,13 +58,7 @@ function SignUpStudent() {
 
     const handleSendVerifyCode = async () => {
         try {
-            // const formData = new FormData();
-            // formData.append('toEmail', email);
-            // let res1 = await axios.post("https://localhost:7010/api/Account/send-verification-code", formData, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //     },
-            // });
+            
             let sendCode = await sendVerifyCode.sendCodeToEmail(email);
             toast.success("Sent verification code to your email!");
             navigate("/verify-code", { state: { email: email } });

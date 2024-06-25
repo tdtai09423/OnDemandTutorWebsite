@@ -2,27 +2,29 @@ import Table from 'react-bootstrap/Table';
 import { useEffect, useState } from 'react';
 import orderHistoryAPI from '../../../../api/orderHistoryAPI';
 import CancelOrder from '../../CancelOrder';
-function OrderHistoryList({ user }) {
+const OrderHistoryList=({ learnerId })=> {
+  
   const [listOrder, setListOrder] = useState([]);
-  console.log("userID>>>>>>>>>>>>>>>>>", user.id)
-
-  useEffect(() => {
-    getOrderHistory();
-  }, [])
-  const getOrderHistory = async () => {
-    try {
-      console.log("try order history")
-      let res = await orderHistoryAPI.getOrderHistoryById(user.id);
-      console.log("res>>>>>>>>>>>>>>>>", res.data.$values)
-      setListOrder(res.data.$values);
-      console.log("try order history finish")
-
-    } catch (error) {
-      console.log("try order history failed", error)
-
+  
+  useEffect( () => {
+    const getOrderHistory = async () => {
+      try {
+        console.log("try order history")
+        // let userId = learnerId;
+        let res = await orderHistoryAPI.getOrderHistoryById(learnerId);
+        console.log("res>>>>>>>>>>>>>>>>", res.data.$values)
+        setListOrder(res.data.$values);
+        console.log("try order history finish")
+  
+      } catch (error) {
+        console.log("try order history failed", error)
+  
+      }
+  
     }
-
-  }
+    getOrderHistory(); 
+  }, [learnerId])
+  
 
 
   return (
@@ -39,12 +41,13 @@ function OrderHistoryList({ user }) {
             <th>More</th>
           </tr>
         </thead>
-        {/* <tbody>
+        <tbody>
           {listOrder && listOrder.length > 0 ? (
             listOrder.map((item, index) => {
               const timeDiff = new Date() - new Date(item.orderDate);
-              const isCancellable = item.orderStatus === "pending" && timeDiff < 48 * 60 * 60 * 1000;
-              const isCompleted = item.orderStatus === "completed"
+              const avail = item.orderStatus === "Pending" || item.orderStatus === "Paid"
+              const isCancellable =  avail && timeDiff < 48 * 60 * 60 * 1000;
+              const isCompleted = item.orderStatus === "Completed"
               return (
                 <tr key={`order-${index}`}>
                   <td>{item.orderId}</td>
@@ -54,17 +57,18 @@ function OrderHistoryList({ user }) {
                   <td>{item.curriculumId}</td>
                   {isCancellable ? (
                     <td>
-                      <CancelOrder order={item} />
+                      <CancelOrder order={item} learnerId={learnerId}/>
                     </td>
                   ) : (
                     <td></td>
-                  )}{isCompleted ? (
+                  )}
+                  {/* {isCompleted ? (
                     <td>
                       <Feedback order={item} /> 
                     </td>
                   ) : (
                     <td></td>
-                  )}
+                  )} */}
 
                 </tr>
               );
@@ -74,41 +78,6 @@ function OrderHistoryList({ user }) {
               <td colSpan="6">No orders available</td>
             </tr>
           )}
-        </tbody> */}
-        <tbody>
-          <tr>
-            <td>11</td>
-            <td>2024-06-12 08:39:07.633</td>
-            <td>Pending</td>
-            <td>232</td>
-            <td>4</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>12</td>
-            <td>2024-06-11 08:39:07.633</td>
-            <td>Completed</td>
-            <td>321</td>
-            <td>5</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>13</td>
-            <td>2024-06-18 08:39:07.633</td>
-            <td>Pending</td>
-            <td>321</td>
-            <td>5</td>
-            <td><CancelOrder /></td>
-          </tr>
-          <tr>
-            <td>15</td>
-            <td>2024-06-19 08:39:07.633</td>
-            <td>Pending</td>
-            <td>221</td>
-            <td>5</td>
-            <td><CancelOrder /></td>
-          </tr>
-
         </tbody>
       </Table>
     </div>

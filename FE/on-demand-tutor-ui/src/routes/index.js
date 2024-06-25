@@ -19,6 +19,9 @@ import FavoriteTutor from "../pages/FavoriteTutor/index.js";
 import Payment from "../pages/Payment/index.js";
 import PaymentSuccess from "../pages/PaymentSuccess/index.js";
 import OrderListTutor from "../pages/OrderListTutor/index.js";
+import ForgotPassword from "../pages/ForgotPassword/index.js";
+import VerifyAccount from "../pages/ForgotPassword/VerifyAccount/index.js";
+import ChangePassword from "../pages/ForgotPassword/ChangePassword/index.js";
 //Public Route
 const publicRoute = [
     { path: '/', component: Home },
@@ -40,7 +43,13 @@ const publicRoute = [
     { path: '/favorite-tutor', component: FavoriteTutor },
     { path: '/payment', component: Payment },
     { path: '/payment-success', component: PaymentSuccess },
-    { path: '/order-list', component: OrderListTutor }
+    { path: '/order-list', component: OrderListTutor },
+    { path: '/forgot-password', component: ForgotPassword },
+    { path: '/verify-account', component: VerifyAccount },
+    { path: '/change-password', component: ChangePassword },
+
+
+
 
 
 ];
