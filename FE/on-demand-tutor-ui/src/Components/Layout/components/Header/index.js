@@ -5,11 +5,16 @@ import { Link, useNavigate } from 'react-router-dom'
 import { BoxArrowInRight, PersonCircle } from 'react-bootstrap-icons'
 import images from '../../../../assets/images';
 import logoutAPI from '../../../../api/logoutAPI';
+import { useEffect, useState } from 'react';
+import userAPI from '../../../../api/userAPI';
 
 
 function Header() {
 
+    const [userRole, setUserRole] = useState();
+
     const Jtoken = localStorage.getItem('token');
+    const email = localStorage.getItem('email');
     console.log(Jtoken);
     const navigate = useNavigate();
 
@@ -22,6 +27,19 @@ function Header() {
         navigate("/");
 
     }
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await userAPI.getUserByEmail(email);
+                setUserRole(user.data.roleId)
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            }
+        };
+        fetchUser();
+
+    }, [])
 
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
@@ -58,8 +76,28 @@ function Header() {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu className="dropdown-menu" align="end">
                                     <Dropdown.Item><Link as={Link} to={"/user-profile"}>User profile</Link></Dropdown.Item>
-                                    <Dropdown.Item><Link as={Link} to={"/order-history"}>View history</Link></Dropdown.Item>
-                                    <Dropdown.Item><Link as={Link} to={"/favorite-tutor"}>Favorite tutor</Link></Dropdown.Item>
+                                    <Dropdown.Item>
+                                        {(userRole === 'LEARNER') ?
+                                            <Link as={Link} to={"/order-history"}>View history</Link>
+                                            :
+                                            <Link as={Link} to={"/order-list"}>Order list</Link>
+                                        }
+
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        {(userRole === 'LEARNER') ?
+                                            <Link as={Link} to={"/favorite-tutor"}>Favorite tutor</Link>
+                                            :
+                                            <Link as={Link} to={"/personal-schedule"}>Schedule</Link>
+                                        }
+                                    </Dropdown.Item>
+                                    <Dropdown.Item>
+                                        {(userRole === 'LEARNER') ?
+                                            <Link as={Link} to={"/personal-schedule"}>Schedule</Link>
+                                            :
+                                            <div></div>
+                                        }
+                                    </Dropdown.Item>
                                     <Dropdown.Divider />
                                     <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
                                         <span className="loginContent">Log Out</span>
