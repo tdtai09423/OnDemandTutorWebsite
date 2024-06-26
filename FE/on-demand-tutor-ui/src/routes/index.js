@@ -17,7 +17,15 @@ import Certificate from "../pages/AdminDashBoard/Components/pages/certificate.js
 import OrderHistory from "../pages/OrderHistory/index.js";
 import FavoriteTutor from "../pages/FavoriteTutor/index.js";
 import Payment from "../pages/Payment/index.js";
-//Public Route
+import PaymentSuccess from "../pages/PaymentSuccess/index.js";
+import OrderListTutor from "../pages/OrderListTutor/index.js";
+
+import ForgotPassword from "../pages/ForgotPassword/index.js";
+import VerifyAccount from "../pages/ForgotPassword/VerifyAccount/index.js";
+import ChangePassword from "../pages/ForgotPassword/ChangePassword/index.js";
+
+import PersonalSchedule from "../pages/PersonalSchedule/index.js";
+
 const publicRoute = [
     { path: '/', component: Home },
     { path: '/following', component: Following },
@@ -36,7 +44,19 @@ const publicRoute = [
     { path: '/verify-code', component: VerifyCode },
     { path: '/order-history', component: OrderHistory },
     { path: '/favorite-tutor', component: FavoriteTutor },
-    { path: '/payment', component: Payment }
+    { path: '/payment', component: Payment },
+    { path: '/payment-success', component: PaymentSuccess },
+    { path: '/order-list', component: OrderListTutor },
+
+    { path: '/forgot-password', component: ForgotPassword },
+    { path: '/verify-account', component: VerifyAccount },
+    { path: '/change-password', component: ChangePassword },
+
+
+
+
+    { path: '/personal-schedule', component: PersonalSchedule },
+
 
 
 ];

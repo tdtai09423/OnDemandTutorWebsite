@@ -4,24 +4,29 @@ import './home.scss';
 import tutorAPI from "../../api/tutorAPI";
 import { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
+import userAPI from "../../api/userAPI";
 
 function Home() {
     const [tutors, setTutors] = useState([]);
+    const [user, setUser] = useState({});
 
     useEffect(() => {
         const fetchTutors = async () => {
             try {
+                const email = localStorage.getItem('email');
+                const user = await userAPI.getUserByEmail(email);
+                setUser(user.data);
+
                 const tutorList = await tutorAPI.getApproved();
-                setTutors(tutorList.data.$values);
+                setTutors(tutorList.data.response.items.$values);
                 console.log(tutorList);
+
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
         };
         fetchTutors();
     }, []);
-
-
 
     return (
         <div>

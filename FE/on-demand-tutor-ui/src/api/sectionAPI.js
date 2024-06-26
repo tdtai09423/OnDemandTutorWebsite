@@ -9,6 +9,14 @@ const sectionAPI = {
     getTutorSection(id, start, end) {
         const url = '/Section/weekly-schedule-tutor?tutorId=' + id + '&startTime=' + start + '&endTime=' + end
         return apiClient.get(url);
+    },
+    getLearnerSection(learnerId, formattedStartDate, formattedEndDate, token) {
+        const url = '/Section/weekly-schedule-learner?learnerId=' + learnerId + '&startTime=' + formattedStartDate + '&endTime=' + formattedEndDate;
+        return apiClient.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 }
 

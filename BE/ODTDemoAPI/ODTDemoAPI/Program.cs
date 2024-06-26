@@ -86,7 +86,6 @@ namespace ODTDemoAPI
                     }
                 };
             });
-           
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddAuthorization(options =>
             {

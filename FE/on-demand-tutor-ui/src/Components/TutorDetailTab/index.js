@@ -40,12 +40,13 @@ function TutorDetailTab({ tutorId }) {
                 setPrice(price.data);
                 setRating(rating.data);
                 setCerti(certi.data.$values);
-                setReviews(reviews.data.$values);
+                setReviews(reviews.data.response.items.$values);
                 const majorID = tutor.data.majorId;
                 const major = await majorAPI.get(majorID);
                 setMajor(major.data);
                 setFirstName(tutor.data.tutorNavigation.firstName);
                 setLastName(tutor.data.tutorNavigation.lastName);
+                console.log(rating)
 
             } catch (error) {
                 console.error("Error fetching tutors:", error);

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import orderHistoryAPI from '../../../api/orderHistoryAPI';
 // import { deleteUpdateCourse } from '../api/CourseService';
 
-function CancelOrder({ order }) {
+function CancelOrder({ order, learnerId }) {
 
 
-
+    const token = localStorage.getItem('token');
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -14,12 +15,14 @@ function CancelOrder({ order }) {
     const handleCancelOrder = async () => {
         try {
             const confirmed = window.confirm('Are you sure to cancel this order?');
-            // if (confirmed) {
-            //     let res = await deleteUpdateCourse(order.OrderId);
-            //     handleClose();
+            if (confirmed) {
                 
-            //     console.log("check  res", res);
-            // }
+                let res = orderHistoryAPI.postCancelBooking(learnerId, order.orderId, token);
+                handleClose();
+                
+                console.log("check  res", res);
+                window.location.reload();
+            }
         } catch (error) {
             console.log("error when cancel order", error);
         }
@@ -45,6 +48,7 @@ function CancelOrder({ order }) {
                 </Modal.Header>
                 <Modal.Body>
                     <div className='body-add-new'>
+                        <h3>Do you want to cancel this order?</h3>
                         {/* <div className='text'>Description</div>
                         <input type='text' placeholder='Course description' className='form-control' value={desc} onChange={(event) => setDesc(event.target.value)} />
                          */}

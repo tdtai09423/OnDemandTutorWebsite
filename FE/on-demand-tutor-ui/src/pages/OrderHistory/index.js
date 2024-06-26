@@ -7,13 +7,13 @@ import './orderHistory.scss'
 
 function OrderHistory() {
   const [user, setUser] = useState({});
-
+  
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const email = localStorage.getItem('email');
-        const user = await userAPI.getUserByEmail(email);
-        setUser(user.data);
+        const res = await userAPI.getUserByEmail(email);
+        setUser(res.data);
         console.log("user>>>>>>>>>>>>>>>>>>>>>>>>>>", user)
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -25,7 +25,7 @@ function OrderHistory() {
     <div className='Container' style={{ marginTop: '50px' }}>
 
       <OrderHistoryList
-        user={user}
+        learnerId={user.id}
       />
     </div>
   );
