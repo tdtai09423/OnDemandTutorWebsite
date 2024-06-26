@@ -1200,5 +1200,27 @@ namespace ODTDemoAPI.Controllers
 
             return session;
         }
+        // GET: api/OrderHistory
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<LearnerOrder>>> GetOrderHistory()
+        {
+            return await _context.LearnerOrders.ToListAsync();
+        }
+
+        // GET: api/OrderHistory/Learner/5
+        [HttpGet("Learner/{learnerId}")]
+        public async Task<ActionResult<IEnumerable<LearnerOrder>>> GetOrdersByLearnerId([FromRoute]int learnerId)
+        {
+            var orders = await _context.LearnerOrders
+                                       .Where(order => order.LearnerId == learnerId)
+                                       .ToListAsync();
+
+            if (orders == null || !orders.Any())
+            {
+                return NotFound();
+            }
+
+            return orders;
+        }
     }
 }
