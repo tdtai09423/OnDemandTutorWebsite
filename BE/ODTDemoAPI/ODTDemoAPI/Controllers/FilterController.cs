@@ -256,9 +256,6 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-    }
-
-
         [HttpGet("get-available-tutors-by-date")]
         public async Task<ActionResult<IEnumerable<Tutor>>> GetAvailableTutorsByDate([FromQuery] DateTime date, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
