@@ -69,9 +69,9 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost("withdraw")]
+        [HttpPost("receive-wage")]
         [Authorize(Roles = "TUTOR")]
-        public async Task<IActionResult> Withdraw([FromForm] int tutorId, int amount)
+        public async Task<IActionResult> ReceiveWage([FromForm] int tutorId, int amount)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace ODTDemoAPI.Controllers
                                         .SumAsync(o => o.Total);
 
                 var totalWithdrawn = await _context.Transactions
-                                        .Where(t => t.AccountId == tutorId && t.TransactionType == "Withdraw")
+                                        .Where(t => t.AccountId == tutorId && t.TransactionType == "Receive Wage")
                                         .SumAsync(t => t.Amount);
 
                 var availableAmount = totalEarnings - totalWithdrawn;
@@ -145,18 +145,47 @@ namespace ODTDemoAPI.Controllers
                     AccountId = tutorId,
                     Amount = amount,
                     TransactionDate = DateTime.Now,
-                    TransactionType = "Withdraw",
+                    TransactionType = "Receive Wage",
                 };
 
                 _context.Transactions.Add(transaction);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { balance = tutorWallet.Balance, message1 = "Withdrawal successfull!", message2 = totalEarnings == totalWithdrawn ? "Your funds has reached limit. No more withdrawal until your next booking." : null });
+                return Ok(new 
+                { 
+                    balance = tutorWallet.Balance, 
+                    message1 = "Reeive successfull!", 
+                    message2 = totalEarnings == totalWithdrawn ? "Your funds has reached limit. No more withdrawal until your next booking." : null, 
+                    message3 = $"Available funds: {totalEarnings - totalWithdrawn}" 
+                });
             }
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("revenue-monthly")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetMonthlyRevenue(int year, int month)
+        {
+            var revenue = await _context.Transactions
+                .Where(t => t.TransactionDate.Year == year 
+                            && t.TransactionDate.Month == month 
+                            &&( t.TransactionType == "Membership SILVER" || t.TransactionType == "Membership PRENIUM"))
+                .SumAsync(t => t.Amount);
+            return Ok(new {Year = year, Month = month, Revenue = revenue});
+        }
+
+        [HttpGet("revenue-yearly")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetYearlyRevenue(int year)
+        {
+            var revenue = await _context.Transactions
+                .Where(t => t.TransactionDate.Year == year
+                            && (t.TransactionType == "Membership SILVER" || t.TransactionType == "Membership PRENIUM"))
+                .SumAsync(t => t.Amount);
+            return Ok(new { Year = year, Revenue = revenue });
         }
     }
 }

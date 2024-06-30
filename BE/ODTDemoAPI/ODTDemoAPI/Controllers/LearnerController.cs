@@ -43,13 +43,13 @@ namespace ODTDemoAPI.Controllers
             return learner;
         }
 
-        private Learner? FindLearnerByEmail(string email)
-        {
-            var learner = _context.Learners
-                                .Include(l => l.LearnerNavigation) //include account
-                                .FirstOrDefault(l => l.LearnerEmail == email
-                                                    && l.LearnerNavigation.Status == true);
-            return learner;
-        }
+        //private Learner? FindLearnerByEmail(string email)
+        //{
+        //    var learner = _context.Learners
+        //                        .Include(l => l.LearnerNavigation) //include account
+        //                        .FirstOrDefault(l => l.LearnerEmail == email
+        //                                            && l.LearnerNavigation.Status == true);
+        //    return learner;
+        //}
     }
 }

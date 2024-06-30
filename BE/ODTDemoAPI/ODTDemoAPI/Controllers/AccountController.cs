@@ -217,7 +217,8 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("register-tutor-google-account")]
-        public async Task<IActionResult> RegisterTutorGoogleAccount([FromForm] GoogleTutorModel model)
+        [Authorize(Roles = "LEARNER")]
+        public async Task<IActionResult> RegisterTutorGoogleAccount([FromForm] BecomeTutorModel model)
         {
             try
             {
@@ -232,15 +233,18 @@ namespace ODTDemoAPI.Controllers
                 {
                     var account = FindAccountByEmail(email!);
 
+                    var age = account!.Learner!.LearnerAge;
+
                     account!.RoleId = "TUTOR";
 
+                    _context.Accounts.Update(account);
                     await _context.SaveChangesAsync();
 
                     account.NavigateAccount(account.RoleId);
 
                     if (account.Tutor != null)
                     {
-                        account.Tutor.TutorAge = model.TutorAge;
+                        account.Tutor.TutorAge = age;
                         account.Tutor.TutorEmail = account.Email;
                         account.Tutor.Nationality = model.Nationality;
                         account.Tutor.TutorDescription = model.TutorDescription;
@@ -265,7 +269,7 @@ namespace ODTDemoAPI.Controllers
                             account.Tutor.TutorPicture = "/images/" + fileName;
 
                             _context.Tutors.Add(account.Tutor);
-                            _context.SaveChanges();
+                            await _context.SaveChangesAsync();
 
                             return Ok(new { tutor = account.Tutor });
                         }
@@ -544,6 +548,93 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
+        [HttpPost("become-tutor-by-learner")]
+        [Authorize(Roles = "LEARNER")]
+        public async Task<IActionResult> RegisterTutorFromLearnerAccount([FromForm] BecomeTutorModel model, [FromQuery] string email)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if (FindTutorByEmail(email!) == null)
+                {
+                    var account = FindAccountByEmail(email!);
+
+                    var age = account!.Learner!.LearnerAge;
+
+                    account!.RoleId = "TUTOR";
+
+                    _context.Accounts.Update(account);
+                    await _context.SaveChangesAsync();
+
+                    account.NavigateAccount(account.RoleId);
+
+                    if (account.Tutor != null)
+                    {
+                        account.Tutor.TutorAge = age;
+                        account.Tutor.TutorEmail = account.Email;
+                        account.Tutor.Nationality = model.Nationality;
+                        account.Tutor.TutorDescription = model.TutorDescription;
+                        account.Tutor.CertiStatus = CertiStatus.Pending;
+                        account.Tutor.MajorId = model.MajorId;
+
+                        TutorCerti tutorCerti = new()
+                        {
+                            TutorId = account.Tutor.TutorId,
+                            TutorCertificate = model.CertificateLink
+                        };
+
+                        if (model.TutorImage.Length > 0)
+                        {
+                            var extension = Path.GetExtension(model.TutorImage.FileName);
+                            var fileName = $"{account.Id}_{account.FirstName}{account.LastName}{extension}";
+                            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                            using (var stream = System.IO.File.Create(path))
+                            {
+                                await model.TutorImage.CopyToAsync(stream);
+                            }
+                            account.Tutor.TutorPicture = "/images/" + fileName;
+
+                            _context.Tutors.Add(account.Tutor);
+                            await _context.SaveChangesAsync();
+
+                            return Ok(new { tutor = account.Tutor });
+                        }
+                        else
+                        {
+                            account!.RoleId = "LEARNER";
+
+                            _context.Accounts.Update(account);
+                            await _context.SaveChangesAsync();
+
+                            account.NavigateAccount(account.RoleId);
+                            return BadRequest("YOU MUST UPLOAD YOUR PHOTO WHEN REGISTERING AS A TUTOR!!");
+                        }
+                    }
+
+                    if (FindTutorByEmail(email!) == null && account.Tutor != null)
+                    {
+                        await _context.Tutors.AddAsync(account.Tutor);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    return BadRequest(new { message = "Failed to register." });
+                }
+                else
+                {
+                    return BadRequest("Existed tutor! Please try again.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
@@ -564,16 +655,12 @@ namespace ODTDemoAPI.Controllers
                 }
                 var token = _authService.GenerateToken(account);
 
-                //if(loginModel.RememberMe)
-                //{
-                //    var cookieOption = new CookieOptions
-                //    {
-                //        Expires = DateTime.UtcNow.AddDays(7),
-                //        HttpOnly = true,
-                //        Secure = true
-                //    };
-                //    Response.Cookies.Append("jwt", token, cookieOption);
-                //}
+                if(account.RoleId == "LEARNER")
+                {
+                    account.Learner?.CheckAndUpdateMembership();
+                    _context.Learners.Update(account.Learner!);
+                    await _context.SaveChangesAsync();
+                }
 
                 var cookieOptions = new CookieOptions
                 {

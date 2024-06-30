@@ -35,6 +35,44 @@ namespace ODTDemoAPI.Controllers
         [HttpPost("short-term-booking")]
         public async Task<IActionResult> CreateShortTermBooking([FromBody] ShortTermBookingRequest request)
         {
+            var learner = await _context.Learners.Include(l => l.Membership).FirstOrDefaultAsync(l => l.LearnerId == request.LearnerId);
+
+            if(learner == null)
+            {
+                return NotFound("Not found learner");
+            }
+
+            learner.CheckAndUpdateMembership();
+            _context.Learners.Update(learner);
+            await _context.SaveChangesAsync();
+
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+            var orders = await _context.LearnerOrders
+                                            .Where(o => o.LearnerId == request.LearnerId
+                                                        && o.OrderDate.Month == currentMonth
+                                                        && o.OrderDate.Year == currentYear)
+                                            .ToListAsync();
+            int maxOrdersPerMonth = 5;
+
+            if(learner.Membership != null)
+            {
+                if(learner.Membership.MembershipLevel == "SILVER")
+                {
+                    maxOrdersPerMonth = 15;
+                }
+                else
+                {
+                    maxOrdersPerMonth = int.MaxValue;
+                }
+            }
+
+            if(orders.Count >= maxOrdersPerMonth)
+            {
+                return BadRequest("You have reached the limit booking in this month. Upgrade your membership for more benefits.");
+            }
+
+            var learnDate = request.startTime.Date;
 
             var order = await _context.LearnerOrders.OrderByDescending(o => o.OrderId).FirstOrDefaultAsync();
 
@@ -56,8 +94,44 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("long-term-booking")]
-        public /*async Task<IActionResult>*/ IActionResult CreateLongTermBooking([FromBody] LongTermBookingRequest request)
+        public async Task<IActionResult> CreateLongTermBooking([FromBody] LongTermBookingRequest request)
         {
+            var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == request.LearnerId);
+
+            if (learner == null)
+            {
+                return NotFound("Not found learner");
+            }
+
+            learner.CheckAndUpdateMembership();
+            _context.Learners.Update(learner);
+            await _context.SaveChangesAsync();
+
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+            var orders = await _context.LearnerOrders
+                                            .Where(o => o.LearnerId == request.LearnerId
+                                                        && o.OrderDate.Month == currentMonth
+                                                        && o.OrderDate.Year == currentYear)
+                                            .ToListAsync();
+            int maxOrdersPerMonth = 5;
+
+            if (learner.Membership != null)
+            {
+                if (learner.Membership.MembershipLevel == "SILVER")
+                {
+                    maxOrdersPerMonth = 15;
+                }
+                else
+                {
+                    maxOrdersPerMonth = int.MaxValue;
+                }
+            }
+
+            if (orders.Count >= maxOrdersPerMonth)
+            {
+                return BadRequest("You have reached the limit booking in this month. Upgrade your membership for more benefits.");
+            }
             //Khai báo biến cho việc lưu trữ thời gian trong memory cache
             TimeSpan startTime = request.startTime;
             DayOfWeek day1 = request.Day1;
@@ -502,20 +576,21 @@ namespace ODTDemoAPI.Controllers
                     return BadRequest("This order does not belong to a short term curriculum.");
                 }
 
-                var section = curriculum.Sections.FirstOrDefault();
-                if (section == null)
+                var stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
+                if(stbCondition == null)
                 {
-                    return NotFound("Not found section.");
+                    return NotFound("Not found short term booking condition.");
                 }
 
-                //TODO: update startTime and duration
-                if (startTime.HasValue)
+                if(startTime.HasValue)
                 {
-                    section.SectionStart = (DateTime)startTime;
+                    stbCondition.StartTime = startTime.Value;
                 }
 
-                _context.Sections.Update(section);
+                _context.STBConditions.Update(stbCondition);
                 await _context.SaveChangesAsync();
+
+                await NotifyLearnerAboutBookingStatus(order.LearnerId, order.OrderId, "updated");
 
                 return Ok(order);
             }
@@ -639,6 +714,7 @@ namespace ODTDemoAPI.Controllers
                 _context.LearnerOrders.Update(order);
                 await _context.SaveChangesAsync();
 
+                await NotifyLearnerAboutBookingStatus(learnerId, order.OrderId, "cancelled and refunded");
                 await NotifyTutorAboutBookingStatus(order.Curriculum!.TutorId, orderId, "cancelled by the learner");
 
                 return Ok(new { message1 = "Cancel booking successfully!", message2 = isPaid ? "Refunded to your wallet!" : null });
@@ -1152,6 +1228,7 @@ namespace ODTDemoAPI.Controllers
                 Content = $"Your cancel request for order having curriculum {order.Curriculum!.CurriculumType} has been {status} by the learner.",
                 NotificateDay = DateTime.Now,
                 AccountId = (int)tutorId!,
+                NotiStatus = "NEW",
             };
 
             var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
@@ -1185,6 +1262,7 @@ namespace ODTDemoAPI.Controllers
                 Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}.",
                 NotificateDay = DateTime.Now,
                 AccountId = (int)tutorId!,
+                NotiStatus = "NEW",
             };
 
             var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
@@ -1218,6 +1296,7 @@ namespace ODTDemoAPI.Controllers
                 Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been {status}.",
                 NotificateDay = DateTime.Now,
                 AccountId = (int)learnerId!,
+                NotiStatus = "NEW",
             };
 
             var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
@@ -1255,6 +1334,7 @@ namespace ODTDemoAPI.Controllers
                 Content = $"You have received a new booking request for curriculum {order.Curriculum!.CurriculumType}.",
                 NotificateDay = DateTime.Now,
                 AccountId = (int)tutorId!,
+                NotiStatus = "NEW",
             };
             if (tutor != null && tutor.TutorNavigation != null)
             {
@@ -1281,7 +1361,8 @@ namespace ODTDemoAPI.Controllers
             {
                 Content = $"Your booking request for curriculum {order.Curriculum!.CurriculumType} has been sent to the tutor.",
                 NotificateDay = DateTime.Now,
-                AccountId = (int)learnerId!
+                AccountId = (int)learnerId!,
+                NotiStatus = "NEW",
             };
             if (learner != null && learner.LearnerNavigation != null)
             {
@@ -1363,7 +1444,7 @@ namespace ODTDemoAPI.Controllers
                             Currency = "usd",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
-                                Name = "Top-up Wallet",
+                                Name = "Top-up remain",
                             },
                         },
                         Quantity = 1,
@@ -1371,7 +1452,7 @@ namespace ODTDemoAPI.Controllers
                 },
                 PaymentIntentData = new SessionPaymentIntentDataOptions
                 {
-                    Description = "Top-up wallet to complete booking payment",
+                    Description = "Top-up remain to complete booking payment",
                 },
                 Mode = "payment",
                 SuccessUrl = $"https://localhost:7010/api/LearnerOrder/payment-success?session_id={{CHECKOUT_SESSION_ID}}",

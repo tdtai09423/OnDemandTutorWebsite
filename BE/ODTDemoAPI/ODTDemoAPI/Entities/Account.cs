@@ -47,7 +47,7 @@ public partial class Account
         {
             this.Tutor = null;
             this.Learner = new Learner();
-            this.Learner.LearnerId = this.Id;
+            Learner.LearnerId = this.Id;
         }
     }
 }

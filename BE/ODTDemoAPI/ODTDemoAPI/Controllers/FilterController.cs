@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.EntityViewModels;
+using System.Drawing.Printing;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -18,7 +19,7 @@ namespace ODTDemoAPI.Controllers
         }
         //filter nationality
         [HttpGet("get-by-nationality")]
-        public async Task<IActionResult> GetTutorByNationality([FromQuery] string? nationality)
+        public async Task<IActionResult> GetTutorByNationality([FromQuery] string? nationality, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             if (string.IsNullOrWhiteSpace(nationality))
             {
@@ -26,11 +27,27 @@ namespace ODTDemoAPI.Controllers
             }
 
             var tutors = await _context.Tutors.Where(t => t.Nationality.Contains(nationality)).ToListAsync();
-            return Ok(tutors);
+            var totalCount = tutors.Count();
+            var pagedTutor = tutors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var response = new PaginatedResponse<Tutor>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                Items = pagedTutor
+            };
+
+            int numOfPages = totalCount / pageSize;
+            if (totalCount % pageSize != 0)
+            {
+                numOfPages += 1;
+            }
+            return Ok(new { Response = response, NumOfPages = numOfPages });
         }
         //filter major
         [HttpGet("get-by-major")]
-        public async Task<IActionResult> GetTutorByMajor([FromQuery] string? major)
+        public async Task<IActionResult> GetTutorByMajor([FromQuery] string? major, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             if (string.IsNullOrWhiteSpace(major))
             {
@@ -42,11 +59,27 @@ namespace ODTDemoAPI.Controllers
                 .Where(t => t.Major != null && t.Major.MajorName.Contains(major))
                 .ToListAsync();
 
-            return Ok(tutors);
+            var totalCount = tutors.Count();
+            var pagedTutor = tutors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var response = new PaginatedResponse<Tutor>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                Items = pagedTutor
+            };
+
+            int numOfPages = totalCount / pageSize;
+            if (totalCount % pageSize != 0)
+            {
+                numOfPages += 1;
+            }
+            return Ok(new { Response = response, NumOfPages = numOfPages });
         }
         //filter range price
         [HttpGet("tutors-by-price-range")]
-        public async Task<IActionResult> GetTutorsByPriceRange([FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice)
+        public async Task<IActionResult> GetTutorsByPriceRange([FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             if (minPrice == null && maxPrice == null)
             {
@@ -70,7 +103,23 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 var tutors = await query.ToListAsync();
-                return Ok(tutors);
+                var totalCount = tutors.Count();
+                var pagedTutor = tutors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -79,9 +128,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("tutors-by-price-range-desc")]
-        public async Task<IActionResult> GetTutorsByPriceRangeDesc(
-    [FromQuery] decimal? minPrice,
-    [FromQuery] decimal? maxPrice)
+        public async Task<IActionResult> GetTutorsByPriceRangeDesc([FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             if (minPrice == null && maxPrice == null)
             {
@@ -90,9 +137,7 @@ namespace ODTDemoAPI.Controllers
 
             try
             {
-                var query = _context.Tutors
-                    .Include(t => t.Curricula)
-                    .AsQueryable();
+                var query = _context.Tutors.Include(t => t.Curricula).AsQueryable();
 
                 if (minPrice.HasValue)
                 {
@@ -107,7 +152,23 @@ namespace ODTDemoAPI.Controllers
                 query = query.OrderByDescending(t => t.Curricula.Max(c => c.PricePerSection));
 
                 var tutors = await query.ToListAsync();
-                return Ok(tutors);
+                var totalCount = tutors.Count();
+                var pagedTutor = tutors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -116,9 +177,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("tutors-by-price-range-asc")]
-        public async Task<IActionResult> GetTutorsByPriceRangeAsc(
-        [FromQuery] decimal? minPrice,
-        [FromQuery] decimal? maxPrice)
+        public async Task<IActionResult> GetTutorsByPriceRangeAsc([FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             if (minPrice == null && maxPrice == null)
             {
@@ -144,7 +203,23 @@ namespace ODTDemoAPI.Controllers
                 query = query.OrderBy(t => t.Curricula.Min(c => c.PricePerSection));
 
                 var tutors = await query.ToListAsync();
-                return Ok(tutors);
+                var totalCount = tutors.Count();
+                var pagedTutor = tutors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -153,7 +228,7 @@ namespace ODTDemoAPI.Controllers
         }
         //filter rating-tutor tang dan
         [HttpGet("tutors-by-rating-asc")]
-        public async Task<IActionResult> GetTutorsByRatingAsc()
+        public async Task<IActionResult> GetTutorsByRatingAsc([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
@@ -168,7 +243,23 @@ namespace ODTDemoAPI.Controllers
                     .OrderBy(t => t.AverageRating)
                     .ToListAsync();
 
-                return Ok(tutorsWithRatings);
+                var totalCount = tutorsWithRatings.Count();
+                var pagedTutor = tutorsWithRatings.Skip((page - 1) * pageSize).Take(pageSize).Select(t => t.Tutor).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -177,7 +268,7 @@ namespace ODTDemoAPI.Controllers
         }
         //filter rating-tutor giam dan
         [HttpGet("tutors-by-rating-desc")]
-        public async Task<IActionResult> GetTutorsByRatingDesc()
+        public async Task<IActionResult> GetTutorsByRatingDesc([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
@@ -192,7 +283,23 @@ namespace ODTDemoAPI.Controllers
                     .OrderByDescending(t => t.AverageRating)
                     .ToListAsync();
 
-                return Ok(tutorsWithRatings);
+                var totalCount = tutorsWithRatings.Count();
+                var pagedTutor = tutorsWithRatings.Skip((page - 1) * pageSize).Take(pageSize).Select(t => t.Tutor).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -201,7 +308,7 @@ namespace ODTDemoAPI.Controllers
         }
         // filter number of rating
         [HttpGet("tutors-by-rating-count-desc")]
-        public async Task<IActionResult> GetTutorsByRatingCountDesc()
+        public async Task<IActionResult> GetTutorsByRatingCountDesc([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
@@ -215,7 +322,23 @@ namespace ODTDemoAPI.Controllers
                     .OrderByDescending(t => t.RatingCount)
                     .ToListAsync();
 
-                return Ok(tutorsWithRatingCounts);
+                var totalCount = tutorsWithRatingCounts.Count();
+                var pagedTutor = tutorsWithRatingCounts.Skip((page - 1) * pageSize).Take(pageSize).Select(t => t.Tutor).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -224,7 +347,7 @@ namespace ODTDemoAPI.Controllers
         }
         // search tutor name
         [HttpGet("search-tutors-by-name")]
-        public async Task<IActionResult> SearchTutorsByName([FromQuery] string name)
+        public async Task<IActionResult> SearchTutorsByName([FromQuery] string name, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -248,7 +371,23 @@ namespace ODTDemoAPI.Controllers
                     return NotFound("No tutors found matching the provided name.");
                 }
 
-                return Ok(filteredTutors);
+                var totalCount = filteredTutors.Count();
+                var pagedTutor = filteredTutors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
@@ -283,9 +422,9 @@ namespace ODTDemoAPI.Controllers
                 DateTime previousEnd = startOfDay;
                 bool hasAtLeastOneHourFree = false;
 
-                foreach(var section in sections)
+                foreach (var section in sections)
                 {
-                    if((section.SectionStart - previousEnd).TotalSeconds >= 60 * 60) //rảnh ít nhất 1 giờ
+                    if ((section.SectionStart - previousEnd).TotalSeconds >= 60 * 60) //rảnh ít nhất 1 giờ
                     {
                         hasAtLeastOneHourFree = true;
                         break;
@@ -294,12 +433,12 @@ namespace ODTDemoAPI.Controllers
                     previousEnd = section.SectionEnd;
                 }
 
-                if(!hasAtLeastOneHourFree && (endOfDay - previousEnd).TotalSeconds >= 60 * 60)
+                if (!hasAtLeastOneHourFree && (endOfDay - previousEnd).TotalSeconds >= 60 * 60)
                 {
                     hasAtLeastOneHourFree = true;
                 }
 
-                if(hasAtLeastOneHourFree)
+                if (hasAtLeastOneHourFree)
                 {
                     availableTutors.Add(tutor);
                 }

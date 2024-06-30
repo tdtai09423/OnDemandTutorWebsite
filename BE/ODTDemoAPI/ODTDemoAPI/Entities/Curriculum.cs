@@ -24,6 +24,6 @@ public partial class Curriculum
     public virtual ICollection<LearnerOrder> LearnerOrders { get; set; } = new List<LearnerOrder>();
 
     public virtual ICollection<Section> Sections { get; set; } = new List<Section>();
-
+    [JsonIgnore]
     public virtual Tutor? Tutor { get; set; }
 }
