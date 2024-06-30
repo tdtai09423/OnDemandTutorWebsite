@@ -16,9 +16,25 @@ public partial class Learner
 
     public string? MembershipId { get; set; }
 
+    public DateTime? MembershipCreatedDate { get; set; }
+
     public virtual Account LearnerNavigation { get; set; } = null!;
     [JsonIgnore]
     public virtual ICollection<LearnerOrder> LearnerOrders { get; set; } = new List<LearnerOrder>();
 
     public virtual Membership? Membership { get; set; }
+
+    public void CheckAndUpdateMembership()
+    {
+        if(Membership != null)
+        {
+            var date = (DateTime)MembershipCreatedDate!;
+            DateTime membershipEndDate = date.AddDays(Membership.DurationInDays);
+            if(membershipEndDate < DateTime.Now)
+            {
+                Membership = null;
+                MembershipId = null;
+            }
+        }
+    }
 }

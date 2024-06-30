@@ -93,6 +93,9 @@ public partial class OnDemandTutorContext : DbContext
             entity.Property(e => e.LearnerEmail).HasMaxLength(50);
             entity.Property(e => e.LearnerPicture).HasMaxLength(255);
             entity.Property(e => e.MembershipId).HasMaxLength(10);
+            entity.Property(e => e.MembershipCreatedDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
 
             entity.HasOne(d => d.LearnerNavigation).WithOne(p => p.Learner)
                 .HasForeignKey<Learner>(d => d.LearnerId)
@@ -167,6 +170,7 @@ public partial class OnDemandTutorContext : DbContext
             entity.Property(e => e.MembershipId).HasMaxLength(10);
             entity.Property(e => e.MembershipDescription).HasMaxLength(255);
             entity.Property(e => e.MembershipLevel).HasMaxLength(50);
+            entity.Property(e => e.DurationInDays).HasDefaultValue(30);
         });
 
         modelBuilder.Entity<ReviewRating>(entity =>
@@ -295,6 +299,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.Property(e => e.Content).HasMaxLength(300);
             entity.Property(e => e.NotificateDay).HasColumnType("datetime");
+            entity.Property(e => e.NotiStatus).HasDefaultValue("NEW");
 
             entity.HasOne(d => d.Account).WithMany(p => p.UserNotifications)
                 .HasForeignKey(d => d.AccountId)

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.EntityViewModels;
-using ODTDemoAPI.OperationModel;
-using ODTDemoAPI.Services;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -103,12 +100,42 @@ namespace ODTDemoAPI.Controllers
         [Authorize(Roles = "LEARNER")]
         public async Task<IActionResult> GetWeeklyScheduleLearner(int learnerId, [FromQuery] DateTime startTime, DateTime endTime)
         {
-            var sections = await _context.Sections
-                                         .Include(s => s.Curriculum!)
-                                         .ThenInclude(c => c.LearnerOrders)
-                                         .Where(s => s.Curriculum!.LearnerOrders.Any(o => o.LearnerId == learnerId) && s.SectionStart >= startTime && s.SectionEnd <= endTime)
-                                         .OrderBy(s => s.SectionStart)
-                                         .ToListAsync();
+            var orders = await _context.LearnerOrders
+                                .Where(o => o.LearnerId == learnerId)
+                                .ToListAsync();
+            STBCondition? stbCondition = null;
+
+            List<Section> sections = new List<Section>();
+            foreach (var order in orders)
+            {
+                var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
+                if (curriculum == null)
+                {
+                    continue;
+                }
+                if(curriculum.CurriculumType == "ShortTerm")
+                {
+                    stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
+                    if (stbCondition == null)
+                    {
+                        continue;
+                    }
+                    var sectionByOrder = await _context.Sections
+                                                        .Where(s => s.CurriculumId == order.CurriculumId
+                                                                    && s.SectionStart.Date >= startTime.Date
+                                                                    && s.SectionEnd.Date <= endTime.Date)
+                                                        .ToListAsync();
+                    sectionByOrder = sectionByOrder.Where(s => s.SectionStart == stbCondition.StartTime).ToList();
+                    sections.AddRange(sectionByOrder);
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            sections = sections.OrderBy(s => s.SectionStart).ToList();
+
             var schedule = sections.GroupBy(s => s.SectionStart.Date).Select(g => new ScheduleViewModel
             {
                 Date = g.Key,
@@ -122,7 +149,7 @@ namespace ODTDemoAPI.Controllers
                 }).ToList()
             }).ToList();
 
-            return Ok(schedule);
+            return Ok(new { Schedule = schedule, Condition = stbCondition });
         }
     }
 }

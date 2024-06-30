@@ -16,6 +16,7 @@ namespace ODTDemoAPI.OperationModel
 
         [Required]
         [DataType(DataType.Password)]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$", ErrorMessage = "The password must be at least 6 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.")]
         public virtual string Password { get; set; } = null!;
 
         [Required]
