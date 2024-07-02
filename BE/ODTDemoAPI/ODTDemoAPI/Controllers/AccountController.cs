@@ -644,7 +644,7 @@ namespace ODTDemoAPI.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var account = await _context.Accounts.SingleOrDefaultAsync(acc => acc.Email == loginModel.Email);
+                var account = await _context.Accounts.Include(a => a.Learner).Include(a => a.Tutor).SingleOrDefaultAsync(acc => acc.Email == loginModel.Email);
                 if (account == null || !BCrypt.Net.BCrypt.Verify(loginModel.Password, account.Password))
                 {
                     return Unauthorized(new { message = "Invalid credentials" });
