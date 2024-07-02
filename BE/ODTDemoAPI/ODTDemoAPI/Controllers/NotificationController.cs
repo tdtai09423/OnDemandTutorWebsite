@@ -17,7 +17,6 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("get-notifications-by-account/{accountId}")]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<UserNotification>>> GetNotificationsById([FromRoute] int accountId)
         {
             var notis = await _context.UserNotifications.Where(n => n.AccountId == accountId).OrderByDescending(n => n.NotificateDay).ToListAsync();
