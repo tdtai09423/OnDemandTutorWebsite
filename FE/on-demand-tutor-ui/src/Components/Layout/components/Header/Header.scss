@@ -44,3 +44,6 @@ button {
 .log-out-button {
     margin-right: 1em;
 }
+.dropdown-toggle::after {
+    display: none;
+  }

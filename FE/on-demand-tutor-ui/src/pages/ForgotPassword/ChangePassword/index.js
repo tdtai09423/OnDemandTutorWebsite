@@ -38,9 +38,9 @@ function ChangePassword() {
 
 
                 <div className='text'>New Password</div>
-                <input type='text' placeholder='Your New Password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
+                <input type='password' placeholder='Your New Password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
                 <div className='text'>Confirm Password</div>
-                <input type='text' placeholder='Re-enter Your New Password' className='form-control' value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
+                <input type='password' placeholder='Re-enter Your New Password' className='form-control' value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
                 <button onClick={() => handleResetPassword()}>Reset Password</button>
             </div>
         </>
