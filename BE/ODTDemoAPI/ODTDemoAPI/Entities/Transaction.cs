@@ -12,7 +12,7 @@ public partial class Transaction
 
     public decimal Amount { get; set; }
 
-    public DateTime? TransactionDate { get; set; }
+    public DateTime TransactionDate { get; set; }
 
     public string TransactionType { get; set; } = null!;
     [JsonIgnore]

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 
 namespace ODTDemoAPI.Controllers
@@ -14,13 +16,36 @@ namespace ODTDemoAPI.Controllers
             _context = context;
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetNotisById(int id)
+        [HttpGet("get-notifications-by-account/{accountId}")]
+        public async Task<ActionResult<IEnumerable<UserNotification>>> GetNotificationsById([FromRoute] int accountId)
+        {
+            var notis = await _context.UserNotifications.Where(n => n.AccountId == accountId).OrderByDescending(n => n.NotificateDay).ToListAsync();
+            var totalCount = notis.Count;
+            var totalCountNew = await _context.UserNotifications.CountAsync(n => n.NotiStatus == "NEW");
+            return Ok(new {NotificationList = notis, CountNew = totalCountNew, Count = totalCount});
+        }
+
+        [HttpPut("mark-as-read")]
+        [Authorize]
+        public async Task<IActionResult> MarkAsReadAll([FromBody] int accountId)
         {
             try
             {
-                var notis = _context.UserNotifications.Where(s => s.AccountId == id);
-                return Ok(notis);
+                var notis = await _context.UserNotifications.Where(n => n.NotiStatus == "NEW" && n.AccountId == accountId).ToListAsync();
+                if(notis == null || notis.Count == 0)
+                {
+                    return Ok(new {message = "You have no notifications yet."});
+                }
+
+                foreach(var noti in notis)
+                {
+                    noti.NotiStatus = "READ";
+                }
+
+                _context.UserNotifications.UpdateRange(notis);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "All notifications are marked as read." });
             }
             catch (Exception ex)
             {

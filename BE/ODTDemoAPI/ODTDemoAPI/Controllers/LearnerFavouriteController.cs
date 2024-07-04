@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 
@@ -17,6 +18,7 @@ namespace ODTDemoAPI.Controllers
 
         // POST: api/LearnerFavourite
         [HttpPost("add-favorite")]
+        [Authorize(Roles = "LEARNER")]
         public async Task<IActionResult> AddToFavourites(int learnerId, int tutorId)
         {
             var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);

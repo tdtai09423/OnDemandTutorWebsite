@@ -2,11 +2,8 @@
 
 namespace ODTDemoAPI.OperationModel
 {
-    public class GoogleTutorModel
+    public class BecomeTutorModel
     {
-        [Required]
-        public int TutorAge { get; set; }
-
         [Required]
         public string Nationality { get; set; } = null!;
 

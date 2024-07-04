@@ -13,7 +13,7 @@ public class AutomaticCleanUpService : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(1)); // Run every hour
+        _timer = new Timer(DoWork!, null, TimeSpan.Zero, TimeSpan.FromHours(1)); // Run every hour
         return Task.CompletedTask;
     }
 

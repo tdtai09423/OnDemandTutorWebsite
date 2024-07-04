@@ -7,9 +7,23 @@ import images from '../../../../assets/images';
 import logoutAPI from '../../../../api/logoutAPI';
 import { useEffect, useState } from 'react';
 import userAPI from '../../../../api/userAPI';
-
+import NotificationAPI from '../../../../api/notificationAPI';
+import Offcanvas from 'react-bootstrap/Offcanvas';
 
 function Header() {
+    const [showNotification, setNotification] = useState("")
+    const [userRole, setUserRole] = useState();
+    const [userId, setUserId] = useState();
+    const [notifications, setNotifications] = useState([]);
+    
+    
+    //Offcanvas
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => {
+        setShow(true);
+        HandleNotification();
+    };
 
     const [userRole, setUserRole] = useState();
     const [balance, setBalance] = useState();
@@ -27,6 +41,15 @@ function Header() {
         console.log(res);
         navigate("/");
 
+    }
+    const HandleNotification = async () => {
+        try {
+            // let res = NotificationAPI.getNotification(userId);
+            // setNotifications(res);
+            console.log("NOTIFICATION", res)
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     useEffect(() => {
@@ -121,6 +144,8 @@ function Header() {
                             </>
 
 
+                            </>
+                            
                         ) : (
                             <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
                                 <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
