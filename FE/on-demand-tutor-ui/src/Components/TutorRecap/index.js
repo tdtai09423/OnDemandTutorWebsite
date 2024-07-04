@@ -91,7 +91,7 @@ function TutorRecap({ tutor }) {
                                 <Row>
                                     <Col className="text-right" md={12}>
                                         <Container className="button-container">
-                                            <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
+                                            <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>Book trial lesson</Button>
                                             <Button variant="outline-secondary" className="message-btn">Send message</Button>
                                         </Container>
                                     </Col>

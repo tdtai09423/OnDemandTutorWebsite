@@ -9,7 +9,7 @@ import sectionAPI from "../../../../api/sectionAPI";
 
 
 
-function ScheduleCell({ tutorId, day, selectedDate, formattedDate }) {
+function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
 
     const Jtoken = localStorage.getItem('token');
     console.log(Jtoken);
@@ -17,7 +17,7 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate }) {
 
     const handleOnClick = (sectionFree) => {
         if (Jtoken) {
-            const course = 'Basic English Language Course';
+            const course = subject;
             const time = sectionFree.sectionStart + 'Z';
             const searchParams = new URLSearchParams();
             searchParams.set('course', course);

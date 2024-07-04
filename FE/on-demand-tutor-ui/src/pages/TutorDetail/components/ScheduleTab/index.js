@@ -17,13 +17,13 @@ import { ArrowLeftShort, ArrowRightShort } from 'react-bootstrap-icons'
 import sectionAPI from "../../../../api/sectionAPI";
 import ScheduleCell from "./ScheduleCell";
 
-function Calendar({ tutorId }) {
+function Calendar({ tutorId, subject }) {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
     const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
-        console.log(tutorId);
+        console.log(tutorId, subject);
     }, []);
 
     const changeWeekHandle = (btnType) => {
@@ -100,6 +100,7 @@ function Calendar({ tutorId }) {
                         day={day}
                         selectedDate={selectedDate}
                         formattedDate={formattedDate}
+                        subject={subject}
                     />
                 );
                 day = addDays(day, 1);

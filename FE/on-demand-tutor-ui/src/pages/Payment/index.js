@@ -1,19 +1,21 @@
 import React from 'react';
-import { Card, Row, Col, Button, Form, InputGroup, FormControl, Container, ListGroup, ListGroupItem, Badge, } from 'react-bootstrap';
-import { FaUserCircle, FaCheckCircle, FaStar, FaInfoCircle, FaAngleLeft, FaAngleRight } from 'react-icons/fa';
+import { Card, Row, Col, Button, Container, ListGroup, ListGroupItem, Badge, } from 'react-bootstrap';
+import { FaCheckCircle, FaStar } from 'react-icons/fa';
 import { useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import tutorAPI from '../../api/tutorAPI';
-import majorAPI from '../../api/majorAPI';
 import sectionAPI from '../../api/sectionAPI';
 import reviewRatingAPI from '../../api/ReviewRatingAPI';
 import { Image } from 'react-bootstrap';
 import './Payment.scss'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'
+import userAPI from '../../api/userAPI';
 
 
 function Payment() {
+
+    const [userId, setUserId] = useState();
 
     const [searchParam] = useSearchParams();
     const tutorId = searchParam.get('tutorId');
@@ -28,9 +30,11 @@ function Payment() {
     const navigate = useNavigate();
 
     const handleCheckout = async () => {
+
+
         const data = {
             "tutorId": tutorId,
-            "learnerId": 11,
+            "learnerId": userId,
             "curriculumDescription": curriculumnDescription,
             "startTime": startTime,
             "duration": 50
@@ -61,10 +65,13 @@ function Payment() {
     useEffect(() => {
         const fetchTutors = async () => {
             try {
+                const email = localStorage.getItem('email');
                 const tutor = await tutorAPI.get(tutorId);
                 const price = await sectionAPI.get(tutorId);
                 const rating = await reviewRatingAPI.getRating(tutorId);
                 const reviews = await reviewRatingAPI.getReview(tutorId);
+                const user = await userAPI.getUserByEmail(email);
+                setUserId(user.data.id)
                 setTutor(tutor.data);
                 setPrice(price.data);
                 setRating(rating.data);
@@ -158,7 +165,7 @@ function Payment() {
                             </Button>
                             <p className="mt-3 text-muted">
                                 By pressing the "Confirm payment" button, you agree to
-                                <a href="#" className="text-muted"> our website's Refund and Payment Policy.</a>
+                                <p> our website's Refund and Payment Policy.</p>
                             </p>
                             <p className="mt-1 text-muted">
                                 It's safe to pay on Preply. All transactions are protected by SSL encryption.

@@ -9,6 +9,10 @@ const userAPI = {
     getAll() {
         const url = 'Account/all-accounts';
         return apiClient.get(url);
+    },
+    getBalance(id) {
+        const url = '/Wallet/get-wallet?accountId=' + id;
+        return apiClient.get(url);
     }
 }
 

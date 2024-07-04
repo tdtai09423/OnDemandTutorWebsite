@@ -120,7 +120,8 @@ function PersonalSchedule() {
     }, []);
 
     return (
-        <div className="App">
+        <div style={{ marginTop: '5em' }}>
+            <h1>Your Schedule</h1>
             <ScheduleMeeting
                 borderRadius={10}
                 scheduleMeetingStyles={styles}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card, Row, Col, Image, Container } from 'react-bootstrap';
+import { Button, Card, Row, Col, Image, Container, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './TutorDetailTab.scss'
 import { Link } from 'react-router-dom'
@@ -27,6 +27,11 @@ function TutorDetailTab({ tutorId }) {
     const [rating, setRating] = useState();
     const [certi, setCerti] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [subject, setSubject] = useState('Basic English Language Course');
+
+    const handleSelectSubject = (Subject) => {
+        setSubject(Subject); // update the major state when an option is selected
+    };
 
     useEffect(() => {
         const fetchTutors = async () => {
@@ -113,8 +118,8 @@ function TutorDetailTab({ tutorId }) {
                     </Row>
                     <Row>
                         <Container className="button-container">
-                            <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button>
-                            <Button variant="outline-secondary" className="message-btn">Send message</Button>
+                            {/* <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button> */}
+                            <Button variant="outline-secondary" className="book-btn">Send message</Button>
                         </Container>
                     </Row>
                     <Row>
@@ -147,8 +152,25 @@ function TutorDetailTab({ tutorId }) {
                     <hr />
                 </Tab>
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
+                    <Dropdown align="end" className="" style={{ width: '40%' }}>
+                        <div style={{ paddingLeft: '10px', marginBottom: '5px' }}>What do you want to learn</div>
+                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
+                            <div className="dropdown-text">
+                                <span className="dropdown-tittle">{subject}</span>
+                            </div>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu className=" dropdown-menu">
+                            <Dropdown.Item onClick={() => handleSelectSubject('Basic English Language Course')}>
+                                Basic English Language Course
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleSelectSubject('Advanced English Language Course')}>
+                                Advanced English Language Course
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
                     <ScheduleTab
                         tutorId={tutorId}
+                        subject={subject}
                     />
                 </Tab>
                 <Tab eventKey="review" title={<span className="information-tab-text">Review</span>} className="information-tab">
