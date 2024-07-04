@@ -655,12 +655,12 @@ namespace ODTDemoAPI.Controllers
                 }
                 var token = _authService.GenerateToken(account);
 
-                if(account.RoleId == "LEARNER")
-                {
-                    account.Learner?.CheckAndUpdateMembership();
-                    _context.Learners.Update(account.Learner!);
-                    await _context.SaveChangesAsync();
-                }
+                //if(account.RoleId == "LEARNER")
+                //{
+                //    account.Learner?.CheckAndUpdateMembership();
+                //    _context.Learners.Update(account.Learner!);
+                //    await _context.SaveChangesAsync();
+                //}
 
                 var cookieOptions = new CookieOptions
                 {
