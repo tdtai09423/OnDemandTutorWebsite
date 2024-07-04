@@ -5,10 +5,12 @@ import tutorAPI from "../../api/tutorAPI";
 import { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
 import userAPI from "../../api/userAPI";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const [tutors, setTutors] = useState([]);
     const [user, setUser] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchTutors = async () => {
@@ -16,7 +18,13 @@ function Home() {
                 const email = localStorage.getItem('email');
                 const user = await userAPI.getUserByEmail(email);
                 setUser(user.data);
+                if (user.data.roleId === 'LEARNER') {
 
+                } else if (user.data.roleId === 'TUTOR') {
+                    navigate('/');
+                } else if (user.data.roleId === 'ADMIN') {
+                    navigate('/admin-dash-board');
+                }
                 const tutorList = await tutorAPI.getApproved();
                 setTutors(tutorList.data.response.items.$values);
                 console.log(tutorList);

@@ -16,7 +16,8 @@ function AdminAccount() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userList = await userAPI.getAll();
+        const token = localStorage.getItem('token');
+        const userList = await userAPI.getAll(token);
         setUser(userList.data.$values);
       } catch (error) {
         console.error("Error fetching tutors:", error);
