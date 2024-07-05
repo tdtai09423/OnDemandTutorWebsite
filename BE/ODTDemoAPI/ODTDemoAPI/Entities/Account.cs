@@ -26,6 +26,9 @@ public partial class Account
     [JsonIgnore]
     public virtual Learner? Learner { get; set; }
     [JsonIgnore]
+
+    public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
+    [JsonIgnore]
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
     [JsonIgnore]

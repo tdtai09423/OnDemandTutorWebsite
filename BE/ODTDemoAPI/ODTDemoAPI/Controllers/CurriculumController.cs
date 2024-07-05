@@ -161,7 +161,7 @@ namespace ODTDemoAPI.Controllers
             var curricula = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             if (curricula == null || curricula.Count == 0)
             {
-                return NotFound("No transaction was found.");
+                return NotFound("No curriculum was found.");
             }
             var response = new PaginatedResponse<Curriculum>
             {
@@ -187,7 +187,7 @@ namespace ODTDemoAPI.Controllers
             var curricula = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             if (curricula == null || curricula.Count == 0)
             {
-                return NotFound("No transaction was found.");
+                return NotFound("No curriclum was found.");
             }
             var response = new PaginatedResponse<Curriculum>
             {
@@ -213,7 +213,7 @@ namespace ODTDemoAPI.Controllers
             var curricula = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             if (curricula == null || curricula.Count == 0)
             {
-                return NotFound("No transaction was found.");
+                return NotFound("No curriculum was found.");
             }
             var response = new PaginatedResponse<Curriculum>
             {
@@ -239,7 +239,7 @@ namespace ODTDemoAPI.Controllers
             var curricula = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
             if (curricula == null || curricula.Count == 0)
             {
-                return NotFound("No transaction was found.");
+                return NotFound("No curriculum was found.");
             }
             var response = new PaginatedResponse<Curriculum>
             {
