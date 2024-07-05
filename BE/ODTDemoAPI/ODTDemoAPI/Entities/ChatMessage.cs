@@ -1,4 +1,6 @@
-﻿namespace ODTDemoAPI.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace ODTDemoAPI.Entities
 {
     public partial class ChatMessage
     {
@@ -9,9 +11,9 @@
         public string Content { get; set; } = null!;
 
         public int ChatBoxId { get; set; }
-
+        [JsonIgnore]
         public virtual ChatBox ChatBox { get; set; } = null!;
-
+        [JsonIgnore]
         public virtual ICollection<ChatBox> ChatBoxes { get; set; } = new List<ChatBox>();
     }
 }
