@@ -28,9 +28,15 @@ public partial class Tutor
 
     public string? MajorId { get; set; }
     [JsonIgnore]
+    public virtual ICollection<ChatBox> ChatBoxes { get; set; } = new List<ChatBox>();
+    [JsonIgnore]
     public virtual ICollection<Curriculum> Curricula { get; set; } = new List<Curriculum>();
     [JsonIgnore]
+    public virtual ICollection<LearnerFavourite> LearnerFavourites { get; set; } = new List<LearnerFavourite>();
+    [JsonIgnore]
     public virtual Major? Major { get; set; }
+    [JsonIgnore]
+    public virtual ICollection<ReviewRating> ReviewRatings { get; set; } = new List<ReviewRating>();
 
     public virtual Account TutorNavigation { get; set; } = null!;
 }

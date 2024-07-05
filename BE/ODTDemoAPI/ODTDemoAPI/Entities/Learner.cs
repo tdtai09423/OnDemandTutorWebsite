@@ -21,8 +21,12 @@ public partial class Learner
     public virtual Account LearnerNavigation { get; set; } = null!;
     [JsonIgnore]
     public virtual ICollection<LearnerOrder> LearnerOrders { get; set; } = new List<LearnerOrder>();
+    [JsonIgnore]
+    public virtual ICollection<ChatBox> ChatBoxes { get; set; } = new List<ChatBox>();
 
     public virtual Membership? Membership { get; set; }
+    [JsonIgnore]
+    public virtual ICollection<ReviewRating> ReviewRatings { get; set; } = new List<ReviewRating>();
 
     public void CheckAndUpdateMembership()
     {

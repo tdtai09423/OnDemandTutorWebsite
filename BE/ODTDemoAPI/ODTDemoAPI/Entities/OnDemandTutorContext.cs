@@ -15,6 +15,10 @@ public partial class OnDemandTutorContext : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
+    public virtual DbSet<ChatBox> ChatBoxes { get; set; }
+
+    public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+
     public virtual DbSet<Curriculum> Curricula { get; set; }
 
     public virtual DbSet<Learner> Learners { get; set; }
@@ -26,6 +30,8 @@ public partial class OnDemandTutorContext : DbContext
     public virtual DbSet<Major> Majors { get; set; }
 
     public virtual DbSet<Membership> Memberships { get; set; }
+
+    public virtual DbSet<Report> Reports { get; set; }
 
     public virtual DbSet<ReviewRating> ReviewRatings { get; set; }
 
@@ -64,6 +70,46 @@ public partial class OnDemandTutorContext : DbContext
             entity.Property(e => e.Password).HasMaxLength(60);
             entity.Property(e => e.RoleId).HasMaxLength(10);
             entity.Property(e => e.Status).HasDefaultValue(true);
+        });
+
+        modelBuilder.Entity<ChatBox>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ChatBox__3214EC07B6C10DFC");
+
+            entity.ToTable("ChatBox");
+
+            entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.LastMessage).WithMany(p => p.ChatBoxes)
+                .HasForeignKey(d => d.LastMessageId)
+                .HasConstraintName("FK_ChatBox_Message");
+
+            entity.HasOne(d => d.Learner).WithMany(p => p.ChatBoxes)
+                .HasForeignKey(d => d.LearnerId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Learner_ChatBox");
+
+            entity.HasOne(d => d.Tutor).WithMany(p => p.ChatBoxes)
+                .HasForeignKey(d => d.TutorId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Tutor_ChatBox");
+        });
+
+        modelBuilder.Entity<ChatMessage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ChatMess__3214EC0778FA8874");
+
+            entity.ToTable("ChatMessage");
+
+            entity.Property(e => e.Content)
+                .HasMaxLength(255)
+                .HasColumnName("content");
+            entity.Property(e => e.Sender).HasMaxLength(10);
+
+            entity.HasOne(d => d.ChatBox).WithMany(p => p.ChatMessages)
+                .HasForeignKey(d => d.ChatBoxId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Message_ChatBox");
         });
 
         modelBuilder.Entity<Curriculum>(entity =>
@@ -171,6 +217,23 @@ public partial class OnDemandTutorContext : DbContext
             entity.Property(e => e.MembershipDescription).HasMaxLength(255);
             entity.Property(e => e.MembershipLevel).HasMaxLength(50);
             entity.Property(e => e.DurationInDays).HasDefaultValue(30);
+        });
+
+        modelBuilder.Entity<Report>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Report__3214EC0779619661");
+
+            entity.ToTable("Report");
+
+            entity.Property(e => e.Content)
+                .HasMaxLength(255)
+                .HasColumnName("content");
+            entity.Property(e => e.Status).HasMaxLength(10);
+
+            entity.HasOne(d => d.User).WithMany(p => p.Reports)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_User_Report");
         });
 
         modelBuilder.Entity<ReviewRating>(entity =>
