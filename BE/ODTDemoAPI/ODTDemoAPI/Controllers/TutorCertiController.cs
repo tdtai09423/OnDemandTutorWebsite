@@ -82,6 +82,7 @@ namespace ODTDemoAPI.Controllers
                 else
                 {
                     tutor.CertiStatus = CertiStatus.Approved;
+                    _context.Tutors.Update(tutor);
                     _context.SaveChanges();
                     return NoContent();
                 }
@@ -106,6 +107,7 @@ namespace ODTDemoAPI.Controllers
                 else
                 {
                     tutor.CertiStatus = CertiStatus.Rejected;
+                    _context.Tutors.Update(tutor);
                     _context.SaveChanges();
                     return NoContent();
                 }
@@ -130,6 +132,7 @@ namespace ODTDemoAPI.Controllers
                 else
                 {
                     tutor.CertiStatus = CertiStatus.Pending;
+                    _context.Tutors.Update(tutor);
                     _context.SaveChanges();
                     return NoContent();
                 }
