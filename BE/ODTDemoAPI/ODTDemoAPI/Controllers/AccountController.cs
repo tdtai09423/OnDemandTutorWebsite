@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 using ODTDemoAPI.EntityViewModels;
 using Microsoft.AspNetCore.Authorization;
+using System.Drawing.Printing;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -730,20 +731,27 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("get-account-by-email")]
-        public Account? GetAccountByEmail(string email)
+        public async Task<Account?> GetAccountByEmail(string email)
         {
-            var account = _context.Accounts.SingleOrDefault(a => a.Email == email);
+            var account = await _context.Accounts.SingleOrDefaultAsync(a => a.Email == email);
             return account;
         }
 
         [HttpGet("all-accounts")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> GetAllAccounts()
+        public async Task<IActionResult> GetAllAccounts([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
+                IQueryable<Account> query = _context.Accounts.OrderBy(a => a.Id);
+                var totalCount = await query.CountAsync();
+                var accounts = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+                if (accounts== null || accounts.Count == 0)
+                {
+                    return NotFound("Not found accounts");
+                }
+
                 var accountViewModels = new List<AccountViewModel>();
-                var accounts = await _context.Accounts.ToListAsync();
                 foreach (var account in accounts)
                 {
                     accountViewModels.Add(new AccountViewModel
@@ -757,7 +765,21 @@ namespace ODTDemoAPI.Controllers
                         CreatedDate = account.CreatedDate,
                     });
                 }
-                return Ok(accountViewModels);
+
+                var response = new PaginatedResponse<AccountViewModel>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = accountViewModels,
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
             }
             catch (Exception ex)
             {
