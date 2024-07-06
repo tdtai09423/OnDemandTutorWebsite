@@ -46,6 +46,7 @@ function Header() {
                 const balance = await userAPI.getBalance(user.data.id);
 
                 setBalance(balance.data.wallet.balance)
+
             } catch (error) {
                 console.error("Error fetching user:", error);
             }

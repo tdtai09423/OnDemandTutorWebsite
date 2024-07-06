@@ -135,6 +135,7 @@ function TutorSchedule() {
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
+        style={{ marginTop: '90px' }}
       >
         <Modal.Header closeButton>
           <Modal.Title>Section</Modal.Title>

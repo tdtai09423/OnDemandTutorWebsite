@@ -39,13 +39,13 @@ function TutorDetailTab({ tutorId }) {
                 const tutor = await tutorAPI.get(tutorId);
                 const price = await sectionAPI.get(tutorId);
                 const rating = await reviewRatingAPI.getRating(tutorId);
-                const reviews = await reviewRatingAPI.getReview(tutorId);
+                //const reviews = await reviewRatingAPI.getReview(tutorId);
                 const certi = await tutorAPI.getCerti(tutorId);
                 setTutor(tutor.data);
                 setPrice(price.data);
                 setRating(rating.data);
                 setCerti(certi.data.$values);
-                setReviews(reviews.data.response.items.$values);
+                //setReviews(reviews.data.response.items.$values);
                 const majorID = tutor.data.majorId;
                 const major = await majorAPI.get(majorID);
                 setMajor(major.data);

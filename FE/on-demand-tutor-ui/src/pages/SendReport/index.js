@@ -25,7 +25,7 @@ function SendReport() {
                     <Col md={4} className="mb-4">
                         <Card className='card-component'>
                             <Image src="https://downloads.intercomcdn.com/i/o/457901/55e97a8fcc8b0373d2483022/26d542c879397f4fc4c9f9e8ba22fb61.png"
-                                className='card-icon'
+                                className='card-icon-report'
                                 loading="lazy" />
                             <div>
                                 <Card.Title>Help for Students</Card.Title>
@@ -38,7 +38,7 @@ function SendReport() {
                     <Col md={4} className="mb-4">
                         <Card className='card-component'>
                             <Image src="https://downloads.intercomcdn.com/i/o/457902/1a628b8b9165bd001ea0d4f9/3bdd0969fba73e412585de510bbd40d9.png"
-                                className='card-icon'
+                                className='card-icon-report'
                                 loading="lazy" />
                             <div>
                                 <Card.Title>Help for Tutors</Card.Title>
@@ -57,7 +57,7 @@ function SendReport() {
                     <Col md={4} className="mb-4">
                         <Card className='card-component'>
                             <Image src="https://downloads.intercomcdn.com/i/o/457903/488d245eee98ca36210263f6/b34d4fcecddae648b10791af6d50e0d0.png"
-                                className='card-icon'
+                                className='card-icon-report'
                                 loading="lazy" />
                             <div>
                                 <Card.Title>General Information</Card.Title>
@@ -70,7 +70,7 @@ function SendReport() {
                     <Col md={4} className="mb-4">
                         <Card className='card-component'>
                             <Image src="https://downloads.intercomcdn.com/i/o/457908/fc68b97580964a0cb5c0952a/bf544901e19fd7166e8dea7088bc582b.png"
-                                className='card-icon'
+                                className='card-icon-report'
                                 loading="lazy" />
                             <div>
                                 <Card.Title>Preply Business</Card.Title>

@@ -3,7 +3,7 @@ import apiClient from './apiClient';
 const orderHistoryAPI = {
 
     getOrderHistoryById(learnerId) {
-        const url = '/OrderHistory/Learner/' + learnerId;
+        const url = '/LearnerOrder/Learner/' + learnerId;
         return apiClient.get(url);
     },
     getOrderListByTutorId(tutorId, token) {

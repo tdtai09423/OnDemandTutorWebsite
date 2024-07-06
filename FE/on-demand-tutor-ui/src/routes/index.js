@@ -26,6 +26,7 @@ import TutorSideLayout from "../Components/Layout/TutorSideLayout/index.js";
 import TutorSchedule from "../pages/TutorHomePage/Components/pages/TutorSchedule.js";
 import TutorProfile from "../pages/TutorHomePage/Components/pages/TutorProfile.js";
 import TutorNotification from "../pages/TutorHomePage/Components/pages/TutorNotification.js";
+import TutorRevenue from "../pages/TutorHomePage/Components/pages/TutorRevenue.js";
 
 const publicRoute = [
     { path: '/', component: Home },
@@ -54,7 +55,8 @@ const publicRoute = [
     { path: '/personal-schedule', component: PersonalSchedule },
     { path: '/tutor-page', component: TutorSchedule, layout: TutorSideLayout, role: 'TUTOR' },
     { path: '/tutor-profile', component: TutorProfile, layout: TutorSideLayout, role: 'TUTOR' },
-    { path: '/tutor-notificattion', component: TutorNotification, layout: TutorSideLayout, role: 'TUTOR' }
+    { path: '/tutor-notificattion', component: TutorNotification, layout: TutorSideLayout, role: 'TUTOR' },
+    { path: '/tutor-revenue', component: TutorRevenue, layout: TutorSideLayout, role: 'TUTOR' }
 ];
 
 const privateRoute = [
