@@ -69,101 +69,101 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost("receive-wage")]
-        [Authorize(Roles = "TUTOR")]
-        public async Task<IActionResult> ReceiveWage([FromForm] int tutorId, int amount)
-        {
-            try
-            {
-                var tutor = await _context.Tutors.Include(t => t.TutorNavigation).FirstOrDefaultAsync(t => t.TutorId == tutorId);
-                if(tutor == null)
-                {
-                    return NotFound("Tutor not found");
-                }
+        //[HttpPost("receive-wage")]
+        //[Authorize(Roles = "TUTOR")]
+        //public async Task<IActionResult> ReceiveWage([FromForm] int amount, int tutorId)
+        //{
+        //    try
+        //    {
+        //        var tutor = await _context.Tutors.Include(t => t.TutorNavigation).ThenInclude(a => a.Wallet).FirstOrDefaultAsync(t => t.TutorId == tutorId);
+        //        if(tutor == null)
+        //        {
+        //            return NotFound("Tutor not found");
+        //        }
 
-                if(amount == 0)
-                {
-                    return BadRequest(new { message = "Invalid amount." });
-                }
+        //        if(amount == 0)
+        //        {
+        //            return BadRequest(new { message = "Invalid amount." });
+        //        }
 
-                var accountWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == tutorId);
-                if (tutor.TutorNavigation.Wallet == null)
-                {
-                    if(accountWallet == null)
-                    {
-                        var wallet = new Wallet
-                        {
-                            WalletId = tutorId,
-                            Balance = 0,
-                        };
-                        _context.Wallets.Add(wallet);
+        //        var accountWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == tutorId);
+        //        if (tutor.TutorNavigation.Wallet == null)
+        //        {
+        //            if(accountWallet == null)
+        //            {
+        //                var wallet = new Wallet
+        //                {
+        //                    WalletId = tutorId,
+        //                    Balance = 0,
+        //                };
+        //                _context.Wallets.Add(wallet);
 
-                        await _context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        decimal currBalance = accountWallet.Balance;
-                        _context.Wallets.Remove(accountWallet);
-                        await _context.SaveChangesAsync();
+        //                await _context.SaveChangesAsync();
+        //            }
+        //            else
+        //            {
+        //                decimal currBalance = accountWallet.Balance;
+        //                _context.Wallets.Remove(accountWallet);
+        //                await _context.SaveChangesAsync();
 
-                        var wallet = new Wallet
-                        {
-                            WalletId = tutorId,
-                            Balance = currBalance,
-                        };
-                        _context.Wallets.Add(wallet);
-                        await _context.SaveChangesAsync();
-                    }
-                }
+        //                var wallet = new Wallet
+        //                {
+        //                    WalletId = tutorId,
+        //                    Balance = currBalance,
+        //                };
+        //                _context.Wallets.Add(wallet);
+        //                await _context.SaveChangesAsync();
+        //            }
+        //        }
 
-                var totalEarnings = await _context.LearnerOrders
-                                        .Where(o => o.Curriculum!.TutorId == tutorId && o.OrderStatus == "Paid" && o.IsCompleted == true)
-                                        .SumAsync(o => o.Total);
+        //        var totalEarnings = await _context.LearnerOrders
+        //                                .Where(o => o.Curriculum!.TutorId == tutorId && o.OrderStatus == "Accepted" && o.IsCompleted == true)
+        //                                .SumAsync(o => o.Total);
 
-                var totalWithdrawn = await _context.Transactions
-                                        .Where(t => t.AccountId == tutorId && t.TransactionType == "Receive Wage")
-                                        .SumAsync(t => t.Amount);
+        //        var totalWithdrawn = await _context.Transactions
+        //                                .Where(t => t.AccountId == tutorId && t.TransactionType == "Receive Wage")
+        //                                .SumAsync(t => t.Amount);
 
-                var availableAmount = totalEarnings - totalWithdrawn;
+        //        var availableAmount = totalEarnings - totalWithdrawn;
 
-                if(availableAmount == 0)
-                {
-                    return BadRequest(new { message = "Your funds has reached limit. No more withdrawal until your next booking." });
-                }
+        //        if(availableAmount == 0)
+        //        {
+        //            return BadRequest(new { message = "Your funds has reached limit. No more withdrawal until your next booking." });
+        //        }
 
-                if(amount > availableAmount)
-                {
-                    return BadRequest(new { message = "Your withdrawal exceeds the available funds." });
-                }
+        //        if(amount > availableAmount)
+        //        {
+        //            return BadRequest(new { message = "Your withdrawal exceeds the available funds." });
+        //        }
 
-                var tutorWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == tutorId);
-                tutorWallet!.Balance += amount;
-                _context.Wallets.Update(tutorWallet);
+        //        var tutorWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == tutorId);
+        //        tutorWallet!.Balance += amount;
+        //        _context.Wallets.Update(tutorWallet);
 
-                var transaction = new Transaction
-                {
-                    AccountId = tutorId,
-                    Amount = amount,
-                    TransactionDate = DateTime.Now,
-                    TransactionType = "Receive Wage",
-                };
+        //        var transaction = new Transaction
+        //        {
+        //            AccountId = tutorId,
+        //            Amount = amount,
+        //            TransactionDate = DateTime.Now,
+        //            TransactionType = "Receive Wage",
+        //        };
 
-                _context.Transactions.Add(transaction);
-                await _context.SaveChangesAsync();
+        //        _context.Transactions.Add(transaction);
+        //        await _context.SaveChangesAsync();
 
-                return Ok(new 
-                { 
-                    balance = tutorWallet.Balance, 
-                    message1 = "Reeive successfull!", 
-                    message2 = totalEarnings == totalWithdrawn ? "Your funds has reached limit. No more withdrawal until your next booking." : null, 
-                    message3 = $"Available funds: {totalEarnings - totalWithdrawn}" 
-                });
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        return Ok(new 
+        //        { 
+        //            balance = tutorWallet.Balance, 
+        //            message1 = "Reeive successfully!", 
+        //            message2 = totalEarnings == totalWithdrawn ? "Your funds has reached limit. No more withdrawal until your next booking." : null, 
+        //            message3 = $"Available funds: {totalEarnings - totalWithdrawn}" 
+        //        });
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpGet("revenue-monthly")]
         [Authorize(Roles = "ADMIN")]

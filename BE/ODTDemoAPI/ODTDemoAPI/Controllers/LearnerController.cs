@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
+using ODTDemoAPI.EntityViewModels;
+using System.Drawing.Printing;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -43,13 +46,32 @@ namespace ODTDemoAPI.Controllers
             return learner;
         }
 
-        //private Learner? FindLearnerByEmail(string email)
-        //{
-        //    var learner = _context.Learners
-        //                        .Include(l => l.LearnerNavigation) //include account
-        //                        .FirstOrDefault(l => l.LearnerEmail == email
-        //                                            && l.LearnerNavigation.Status == true);
-        //    return learner;
-        //}
+        [HttpGet("get-all-learners")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetAllLearners([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            IQueryable<Learner> query = _context.Learners.OrderBy(l => l.LearnerId);
+            var totalCount = await query.CountAsync();
+            var learners = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            if (learners == null || learners.Count == 0)
+            {
+                return NotFound("Not found learners");
+            }
+
+            var response = new PaginatedResponse<Learner>
+            {
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize,
+                Items = learners,
+            };
+
+            int numOfPages = totalCount / pageSize;
+            if (totalCount % pageSize != 0)
+            {
+                numOfPages += 1;
+            }
+            return Ok(new { Response = response, NumOfPages = numOfPages });
+        }
     }
 }
