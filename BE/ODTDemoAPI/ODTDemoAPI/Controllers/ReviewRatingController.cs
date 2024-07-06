@@ -31,8 +31,6 @@ namespace ODTDemoAPI.Controllers
                 else
                 {
                     IQueryable<ReviewRating> query = _context.ReviewRatings
-                                            .Include(t => t.Learner)
-                                            .Include(t => t.Tutor)
                                             .Where(r => r.TutorId == tutorId);
                     query = query.OrderByDescending(r => r.ReviewDate);
                     var totalCount = await query.CountAsync();
