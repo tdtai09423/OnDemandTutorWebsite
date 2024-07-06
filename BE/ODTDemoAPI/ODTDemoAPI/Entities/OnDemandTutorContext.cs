@@ -57,7 +57,7 @@ public partial class OnDemandTutorContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC0761FF9DFD");
+            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC07C070FBAE");
 
             entity.ToTable("Account");
 
@@ -114,7 +114,7 @@ public partial class OnDemandTutorContext : DbContext
 
         modelBuilder.Entity<Curriculum>(entity =>
         {
-            entity.HasKey(e => e.CurriculumId).HasName("PK__Curricul__06C9FA1C9F0F3487");
+            entity.HasKey(e => e.CurriculumId).HasName("PK__Curricul__06C9FA1CEA78C330");
 
             entity.ToTable("Curriculum");
 
@@ -126,14 +126,14 @@ public partial class OnDemandTutorContext : DbContext
             entity.HasOne(d => d.Tutor).WithMany(p => p.Curricula)
                 .HasForeignKey(d => d.TutorId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Curriculu__Tutor__5DCAEF64");
+                .HasConstraintName("FK__Curriculu__Tutor__628FA481");
         });
 
         modelBuilder.Entity<Learner>(entity =>
         {
             entity.ToTable("Learner");
 
-            entity.HasIndex(e => e.LearnerId, "UQ__Learner__67ABFCDBC39A9A47").IsUnique();
+            entity.HasIndex(e => e.LearnerId, "UQ__Learner__67ABFCDBF3C7834B").IsUnique();
 
             entity.Property(e => e.LearnerId).ValueGeneratedNever();
             entity.Property(e => e.LearnerEmail).HasMaxLength(50);
@@ -150,12 +150,12 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.HasOne(d => d.Membership).WithMany(p => p.Learners)
                 .HasForeignKey(d => d.MembershipId)
-                .HasConstraintName("FK__Learner__Members__5EBF139D");
+                .HasConstraintName("FK__Learner__Members__6383C8BA");
         });
 
         modelBuilder.Entity<LearnerOrder>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__LearnerO__C3905BCF6D0D7565");
+            entity.HasKey(e => e.OrderId).HasName("PK__LearnerO__C3905BCFCEA04EE2");
 
             entity.ToTable("LearnerOrder");
 
@@ -165,11 +165,11 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.HasOne(d => d.Curriculum).WithMany(p => p.LearnerOrders)
                 .HasForeignKey(d => d.CurriculumId)
-                .HasConstraintName("FK__LearnerOr__Curri__628FA481");
+                .HasConstraintName("FK__LearnerOr__Curri__6754599E");
 
             entity.HasOne(d => d.Learner).WithMany(p => p.LearnerOrders)
                 .HasForeignKey(d => d.LearnerId)
-                .HasConstraintName("FK__LearnerOr__Learn__6383C8BA");
+                .HasConstraintName("FK__LearnerOr__Learn__68487DD7");
         });
 
         modelBuilder.Entity<LearnerFavourite>(entity =>
@@ -251,7 +251,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.HasOne(d => d.Learner).WithMany()
                 .HasForeignKey(d => d.LearnerId)
-                .HasConstraintName("FK__ReviewRat__Learn__6477ECF3");
+                .HasConstraintName("FK__ReviewRat__Learn__693CA210");
 
             entity.HasOne(d => d.Order).WithMany()
                 .HasForeignKey(d => d.OrderId)
@@ -260,7 +260,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.HasOne(d => d.Tutor).WithMany()
                 .HasForeignKey(d => d.TutorId)
-                .HasConstraintName("FK__ReviewRat__Tutor__656C112C");
+                .HasConstraintName("FK__ReviewRat__Tutor__6A30C649");
         });
 
         modelBuilder.Entity<Section>(entity =>
