@@ -44,6 +44,25 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
+        [HttpGet("curriculum-by-order/{orderId}")]
+        public async Task<IActionResult> GetCurriculumByOrderId([FromRoute] int orderId)
+        {
+            try
+            {
+                var order = await _context.LearnerOrders.Include(o => o.Curriculum).FirstOrDefaultAsync(o => o.OrderId == orderId);
+                if(order == null)
+                {
+                    return NotFound("Not found curriculum");
+                }
+
+                return Ok(new { curriculum = order.Curriculum });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("add-neww-curriculum")]
         [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> AddNewCurriculum([FromBody] int tutorId, [FromForm] AddCurriculumModel curriculum)
