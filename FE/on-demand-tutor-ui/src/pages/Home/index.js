@@ -21,7 +21,7 @@ function Home() {
                 if (user.data.roleId === 'LEARNER') {
 
                 } else if (user.data.roleId === 'TUTOR') {
-                    navigate('/');
+                    navigate('/tutor-page');
                 } else if (user.data.roleId === 'ADMIN') {
                     navigate('/admin-dash-board');
                 }

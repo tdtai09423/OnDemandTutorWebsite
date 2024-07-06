@@ -1,0 +1,30 @@
+.side-card {
+    border: 2px solid #c2bec0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 13em;
+    height: 4em;
+    padding: 1em 0;
+
+
+    &:hover {
+        border: 2px solid black;
+    }
+}
+
+.card-item {
+    font-size: 1rem;
+}
+
+.card-icon {
+    width: 80%;
+    height: auto;
+    margin: 10px;
+    margin-top: 2em;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+.card-text {
+    padding: 0.5px 0;
+}

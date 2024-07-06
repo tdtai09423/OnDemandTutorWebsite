@@ -120,12 +120,7 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
 
     return (
         <div
-            className={`col cell ${isSameDay(day, new Date())
-                ? "today"
-                : isSameDay(day, selectedDate)
-                    ? "selected"
-                    : ""
-                }`}
+            className={`col cell `}
             key={day}
         >
             <div className="number">{formattedDate}</div>

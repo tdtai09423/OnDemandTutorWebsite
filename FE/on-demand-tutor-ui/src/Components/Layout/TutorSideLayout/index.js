@@ -1,10 +1,10 @@
 import { styled } from '@mui/material/styles';
-import { Footer } from './footer';
-import { SideNav } from './side-nav';
+import { Footer } from './footer.js';
+import { SideNav } from './side-nav.js';
 import TopNav from './top-nav.js'
 
-const SIDE_NAV_WIDTH = 75;
-const TOP_NAV_HEIGHT = 64;
+const SIDE_NAV_WIDTH = 250;
+const TOP_NAV_HEIGHT = 90;
 
 const LayoutRoot = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
@@ -13,7 +13,8 @@ const LayoutRoot = styled('div')(({ theme }) => ({
     maxWidth: '100%',
     paddingTop: TOP_NAV_HEIGHT,
     [theme.breakpoints.up('lg')]: {
-        paddingLeft: SIDE_NAV_WIDTH
+        paddingLeft: SIDE_NAV_WIDTH + 50,
+        paddingRight: 40
     }
 }));
 
@@ -24,7 +25,7 @@ const LayoutContainer = styled('div')({
     width: '100%'
 });
 
-function DashboardLayout({ children }) {
+function TutorSideLayout({ children }) {
 
     return (
         <>
@@ -40,4 +41,4 @@ function DashboardLayout({ children }) {
     );
 };
 
-export default DashboardLayout;
+export default TutorSideLayout;

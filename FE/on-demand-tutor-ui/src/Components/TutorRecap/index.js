@@ -49,7 +49,7 @@ function TutorRecap({ tutor }) {
                         <Row>
                             <Col md={7}>
                                 <Card.Title className="tutor-name" >
-                                    <Link className="" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
+                                    <Link className="" as={Link} style={{ textDecoration: 'none', color: 'black' }} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
                                         {firstName} {lastName}
                                     </Link>
                                     <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutor.nationality}</span>

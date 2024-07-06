@@ -12,28 +12,28 @@ import 'react-widgets/styles.css';
 import { Scrollbar } from '../../../../../Components/scrollbar.js';
 import CertificateTableRow from './certificate-table-row.js';
 
-// const statusMap = {
-//     1: {
-//         color: 'success.main',
-//         label: 'Approved',
-//         id: 1
-//     },
-//     0: {
-//         color: 'error.main',
-//         label: 'Denied',
-//         id: 0
-//     },
-//     2: {
-//         color: 'warning.main',
-//         label: 'Pending',
-//         id: 2
-//     }
-// };
-// let Certificate = [
-//     { id: 0, name: 'Denied' },
-//     { id: 1, name: 'Approved' },
-//     { id: 2, name: 'Pending' }
-// ];
+const statusMap = {
+    1: {
+        color: 'success.main',
+        label: 'Approved',
+        id: 1
+    },
+    0: {
+        color: 'error.main',
+        label: 'Denied',
+        id: 0
+    },
+    2: {
+        color: 'warning.main',
+        label: 'Pending',
+        id: 2
+    }
+};
+let Certificate = [
+    { id: 0, name: 'Denied' },
+    { id: 1, name: 'Approved' },
+    { id: 2, name: 'Pending' }
+];
 
 export const CertiTable = (props) => {
     const {

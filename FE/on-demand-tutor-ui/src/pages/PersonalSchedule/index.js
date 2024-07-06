@@ -108,8 +108,8 @@ function PersonalSchedule() {
                 const user = await userAPI.getUserByEmail(email);
                 const sectionsDays = await sectionAPI.getLearnerSection(user.data.id, formattedStartDate, formattedEndDate, token);
 
-                console.log(sectionsDays.data.$values)
-                const tmp = getSectionFromResponse(sectionsDays.data.$values)
+                console.log(sectionsDays.data.schedule.$values)
+                const tmp = getSectionFromResponse(sectionsDays.data.schedule.$values)
                 setSections(tmp)
             } catch (error) {
                 console.error("Error fetching tutors:", error);

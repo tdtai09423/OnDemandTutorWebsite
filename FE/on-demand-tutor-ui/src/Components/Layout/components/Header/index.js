@@ -7,23 +7,19 @@ import images from '../../../../assets/images';
 import logoutAPI from '../../../../api/logoutAPI';
 import { useEffect, useState } from 'react';
 import userAPI from '../../../../api/userAPI';
-import NotificationAPI from '../../../../api/notificationAPI';
-import Offcanvas from 'react-bootstrap/Offcanvas';
 
 function Header() {
-    const [showNotification, setNotification] = useState("")
     const [userRole, setUserRole] = useState();
     const [userId, setUserId] = useState();
-    const [notifications, setNotifications] = useState([]);
 
 
     //Offcanvas
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => {
-        setShow(true);
-        HandleNotification();
-    };
+    // const [show, setShow] = useState(false);
+    // const handleClose = () => setShow(false);
+    // const handleShow = () => {
+    //     setShow(true);
+    //     HandleNotification();
+    // };
 
     const [balance, setBalance] = useState();
 
@@ -39,16 +35,6 @@ function Header() {
         window.location.reload();
         console.log(res);
         navigate("/");
-
-    }
-    const HandleNotification = async () => {
-        try {
-            let res = NotificationAPI.getNotification(userId);
-            setNotifications(res);
-            console.log("NOTIFICATION", res)
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     useEffect(() => {
@@ -113,29 +99,19 @@ function Header() {
                                     <Dropdown.Menu className="dropdown-menu" align="end">
                                         <Dropdown.Item><Link as={Link} to={"/user-profile"}>User profile</Link></Dropdown.Item>
                                         <Dropdown.Item>
-                                            {(userRole === 'LEARNER') ?
-                                                <Link as={Link} to={"/order-history"}>View history</Link>
-                                                :
-                                                <Link as={Link} to={"/order-list"}>Order list</Link>
-                                            }
-
+                                            <Link as={Link} to={"/order-history"}>View history</Link>
                                         </Dropdown.Item>
                                         <Dropdown.Item>
-                                            {(userRole === 'LEARNER') ?
-                                                <Link as={Link} to={"/favorite-tutor"}>Favorite tutor</Link>
-                                                :
-                                                <Link as={Link} to={"/personal-schedule"}>Schedule</Link>
-                                            }
+                                            <Link as={Link} to={"/favorite-tutor"}>Favorite tutor</Link>
                                         </Dropdown.Item>
                                         <Dropdown.Item>
-                                            {(userRole === 'LEARNER') ?
-                                                <Link as={Link} to={"/personal-schedule"}>Schedule</Link>
-                                                :
-                                                <div></div>
-                                            }
+                                            <Link as={Link} to={"/personal-schedule"}>Schedule</Link>
+                                        </Dropdown.Item>
+                                        <Dropdown.Item>
+                                            <Link as={Link} to={"/personal-schedule"}>Notification</Link>
                                         </Dropdown.Item>
                                         <Dropdown.Divider />
-                                        <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/"} onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
+                                        <Button className="loginButton text-black border border-2 border-dark" variant="" onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
                                             <span className="loginContent">Log Out</span>
                                         </Button>
                                     </Dropdown.Menu>
