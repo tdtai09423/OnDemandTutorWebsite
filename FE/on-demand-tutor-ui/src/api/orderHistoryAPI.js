@@ -46,6 +46,16 @@ const orderHistoryAPI = {
                 Authorization: `Bearer ${token}`
             }
         });
+    },
+    putTimeOrder(orderId, time, token) {
+        const formData = new FormData();
+        formData.append('startTime', time);
+        const url = '/LearnerOrder/update-booking/' + orderId;
+        return apiClient.put(url, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 }
 

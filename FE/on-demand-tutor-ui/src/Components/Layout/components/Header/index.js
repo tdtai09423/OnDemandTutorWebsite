@@ -32,7 +32,6 @@ function Header() {
         localStorage.removeItem('token');
         localStorage.removeItem('email');
         let res = await logoutAPI();
-        window.location.reload();
         console.log(res);
         navigate("/");
     }

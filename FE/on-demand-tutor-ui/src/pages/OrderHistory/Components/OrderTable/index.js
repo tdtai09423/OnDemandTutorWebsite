@@ -2,11 +2,13 @@ import Table from 'react-bootstrap/Table';
 import { useEffect, useState } from 'react';
 import orderHistoryAPI from '../../../../api/orderHistoryAPI';
 import CancelOrder from '../../CancelOrder';
-const OrderHistoryList=({ learnerId })=> {
-  
+import ChangeTime from '../../ChangeTime';
+import { Margin } from '@mui/icons-material';
+const OrderHistoryList = ({ learnerId }) => {
+
   const [listOrder, setListOrder] = useState([]);
-  
-  useEffect( () => {
+
+  useEffect(() => {
     const getOrderHistory = async () => {
       try {
         console.log("try order history")
@@ -15,16 +17,16 @@ const OrderHistoryList=({ learnerId })=> {
         console.log("res>>>>>>>>>>>>>>>>", res.data.$values)
         setListOrder(res.data.$values);
         console.log("try order history finish")
-  
+
       } catch (error) {
         console.log("try order history failed", error)
-  
+
       }
-  
+
     }
-    getOrderHistory(); 
+    getOrderHistory();
   }, [learnerId])
-  
+
 
 
   return (
@@ -46,7 +48,7 @@ const OrderHistoryList=({ learnerId })=> {
             listOrder.map((item, index) => {
               const timeDiff = new Date() - new Date(item.orderDate);
               const avail = item.orderStatus === "Pending" || item.orderStatus === "Paid"
-              const isCancellable =  avail && timeDiff < 48 * 60 * 60 * 1000;
+              const isCancellable = avail && timeDiff < 48 * 60 * 60 * 1000;
               const isCompleted = item.orderStatus === "Completed"
               return (
                 <tr key={`order-${index}`}>
@@ -57,7 +59,8 @@ const OrderHistoryList=({ learnerId })=> {
                   <td>{item.curriculumId}</td>
                   {isCancellable ? (
                     <td>
-                      <CancelOrder order={item} learnerId={learnerId}/>
+                      <ChangeTime order={item} />
+                      <CancelOrder order={item} learnerId={learnerId} />
                     </td>
                   ) : (
                     <td></td>
