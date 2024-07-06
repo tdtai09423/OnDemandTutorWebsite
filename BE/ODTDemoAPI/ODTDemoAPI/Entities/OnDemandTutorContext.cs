@@ -251,6 +251,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.HasOne(d => d.Learner).WithMany()
                 .HasForeignKey(d => d.LearnerId)
+                .IsRequired(false)
                 .HasConstraintName("FK__ReviewRat__Learn__693CA210");
 
             entity.HasOne(d => d.Order).WithMany()
@@ -260,6 +261,7 @@ public partial class OnDemandTutorContext : DbContext
 
             entity.HasOne(d => d.Tutor).WithMany()
                 .HasForeignKey(d => d.TutorId)
+                .IsRequired(false)
                 .HasConstraintName("FK__ReviewRat__Tutor__6A30C649");
         });
 
