@@ -72,6 +72,32 @@ namespace ODTDemoAPI.Controllers
             return Ok(weeks);
         }
 
+        [HttpGet("get-order-by-section/{sectionId}")]
+        public async Task<IActionResult> GetOrderBySection([FromRoute] int sectionId)
+        {
+            var section = await _context.Sections.FirstOrDefaultAsync(s => s.SectionId == sectionId);
+
+            var stbConditions = await _context.STBConditions.Where(c => c.StartTime == section!.SectionStart).ToListAsync();
+
+            if (!stbConditions.Any())
+            {
+                return NotFound(new { Message = "No STBCondition found" });
+            }
+
+            LearnerOrder? order = null;
+
+            foreach ( var stbCondition in stbConditions)
+            {
+                order = await _context.LearnerOrders.FirstOrDefaultAsync(o => o.OrderId == stbCondition.OrderId);
+                if (order!.CurriculumId == section!.CurriculumId)
+                {
+                    break;
+                }
+            }
+
+            return Ok(order);
+        }
+
         [HttpGet("weekly-schedule-tutor")]
         public async Task<IActionResult> GetWeeklyScheduleTutor(int tutorId, [FromQuery] DateTime startTime, [FromQuery] DateTime endTime)
         {
