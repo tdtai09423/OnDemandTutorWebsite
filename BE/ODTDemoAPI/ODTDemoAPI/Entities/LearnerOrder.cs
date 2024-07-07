@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace ODTDemoAPI.Entities;
 
@@ -20,7 +17,7 @@ public partial class LearnerOrder
     public bool IsCompleted { get; set; }
 
     public int? LearnerId { get; set; }
-
+    [JsonIgnore]
     public virtual Curriculum? Curriculum { get; set; }
     [JsonIgnore]
     public virtual Learner? Learner { get; set; }
