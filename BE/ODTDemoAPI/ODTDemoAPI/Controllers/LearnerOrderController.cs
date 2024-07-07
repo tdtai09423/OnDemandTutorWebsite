@@ -1069,7 +1069,7 @@ namespace ODTDemoAPI.Controllers
                 _context.Sections.Update(section);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { Section = section });
+                return Ok(new { Section = section, Order = order });
             }
 
             return BadRequest("An error has occurred");
