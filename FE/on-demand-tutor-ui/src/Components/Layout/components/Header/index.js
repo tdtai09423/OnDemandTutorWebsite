@@ -122,7 +122,6 @@ function Header() {
                                                     fontSize: '30px',
                                                     fontWeight: 700,
                                                     fontFamily: "'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif",
-
                                                 }}
 
                                             >Notification</Offcanvas.Title>
@@ -153,9 +152,6 @@ function Header() {
                                         </Dropdown.Item>
                                         <Dropdown.Item>
                                             <Link as={Link} to={"/personal-schedule"}>Schedule</Link>
-                                        </Dropdown.Item>
-                                        <Dropdown.Item>
-                                            <Link as={Link} to={"/personal-schedule"}>Notification</Link>
                                         </Dropdown.Item>
                                         <Dropdown.Divider />
                                         <Button className="loginButton text-black border border-2 border-dark" variant="" onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
