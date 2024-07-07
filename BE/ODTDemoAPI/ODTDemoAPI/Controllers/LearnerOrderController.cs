@@ -1107,7 +1107,10 @@ namespace ODTDemoAPI.Controllers
                 return BadRequest("Order has been comfirmed as completed before.");
             }
 
-            var lastSection = order.Curriculum!.Sections.OrderByDescending(s => s.SectionEnd).FirstOrDefault();
+            var stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
+
+            var lastSection = await _context.Sections.FirstOrDefaultAsync(s => s.CurriculumId == order.CurriculumId
+                                                                    && s.SectionStart == stbCondition!.StartTime);
             if (lastSection == null || lastSection.SectionStatus != "Completed")
             {
                 return BadRequest("Cannot confirm order completion. The last section has not ended yet.");
