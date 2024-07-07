@@ -1030,12 +1030,12 @@ namespace ODTDemoAPI.Controllers
 
         [HttpPost("confirm-section-completion")]
         [Authorize(Roles = "TUTOR")]
-        public IActionResult ConfirmSectionCompletion([FromQuery] int orderId, [FromQuery] int sectionId)
+        public async Task<IActionResult> ConfirmSectionCompletion([FromQuery] int orderId, [FromQuery] int sectionId)
         {
-            var order = _context.LearnerOrders
+            var order = await _context.LearnerOrders
                                     .Include(o => o.Curriculum!)
                                     .ThenInclude(c => c.Sections)
-                                    .FirstOrDefault(o => o.OrderId == orderId);
+                                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
             {
                 return NotFound("Not found order");
@@ -1051,7 +1051,7 @@ namespace ODTDemoAPI.Controllers
                 return BadRequest("Order has been comfirmed as completed before.");
             }
 
-            var section = order.Curriculum!.Sections.FirstOrDefault(s => s.SectionId == sectionId);
+            var section = await  _context.Sections.FirstOrDefaultAsync(s => s.SectionId == sectionId);
 
             if (section == null)
             {
@@ -1063,11 +1063,11 @@ namespace ODTDemoAPI.Controllers
                 return BadRequest("This section has been completed before. Cannot operate");
             }
 
-            if (section.SectionEnd > DateTime.Now)
+            if (section.SectionEnd < DateTime.Now)
             {
                 section.SectionStatus = "Completed";
                 _context.Sections.Update(section);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return Ok(new { Section = section });
             }
