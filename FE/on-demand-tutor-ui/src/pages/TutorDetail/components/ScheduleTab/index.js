@@ -46,9 +46,7 @@ function Calendar({ tutorId, subject }) {
         return (
             <div className="header row flex-middle">
                 <div className="col col-start">
-                    {/* <div className="icon" onClick={() => changeMonthHandle("prev")}>
-            prev month
-          </div> */}
+
                 </div>
                 <div className="col col-center">
                     <span>{format(currentMonth, dateFormat)}</span>
