@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col, Form, InputGroup, Dropdown, Button } from 'react-bootstrap';
 import 'rc-slider/assets/index.css';
 import CustomDropdown from './components/CustomDropdown';
@@ -6,16 +6,20 @@ import { useState } from 'react';
 import DatePicker from "react-widgets/DatePicker";
 import './FilterBar.scss';
 
-function FilterBar() {
+
+function FilterBar({ majors }) {
 
     const [major, setMajor] = useState('English');
+    const [majorChoices, setMajorChoices] = useState([]);
     const [nationality, setNationality] = useState('Any Country');
     const [available, setAvailable] = useState('');
     const [native, setNative] = useState('No');
     const [also, setAlso] = useState('Also speak');
+    const [sortBy, setSortBy] = useState('Our top picks');
+    console.log(majors);
 
     const submitFilter = (e) => {
-        console.log({ major, nationality, available, native });
+        console.log({ major, nationality, available, native, sortBy });
     }
 
     const handleSelectMajor = (major) => {
@@ -31,6 +35,13 @@ function FilterBar() {
     const handleSelectNative = (native) => {
         setNative(native); // update the nationality state when an option is selected
     };
+    const handleSelectSortBy = (sortBy) => {
+        setSortBy(sortBy); // update
+    };
+
+    useEffect(() => {
+        setMajorChoices(majors);
+    }, [])
 
     return (
         <Container fluid className="mt-4">
@@ -44,15 +55,11 @@ function FilterBar() {
                             </div>
                         </Dropdown.Toggle>
                         <Dropdown.Menu className=" dropdown-menu">
-                            <Dropdown.Item onClick={() => handleSelectMajor('English')}>
-                                English
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectMajor('Spanish')}>
-                                Spanish
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectMajor('French')}>
-                                French
-                            </Dropdown.Item>
+                            {majorChoices.map((major) => (
+                                <Dropdown.Item onClick={() => handleSelectMajor(`${major.majorName}`)}>
+                                    {major.majorName}
+                                </Dropdown.Item>
+                            ))}
                         </Dropdown.Menu>
                     </Dropdown>
                 </Col>
@@ -127,12 +134,13 @@ function FilterBar() {
                 <Col md={2} className="d-flex justify-content-between">
                     <Dropdown align="end">
                         <Dropdown.Toggle variant="outline-secondary" id="dropdown-sort-by" className="w-100 dropdown-toggle-multi-line rounded-2">
-                            Sort by: Our top picks
+                            Sort by: {sortBy}
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="dropdown-menu">
-                            <Dropdown.Item href="#">Option 1</Dropdown.Item>
-                            <Dropdown.Item href="#">Option 2</Dropdown.Item>
-                            <Dropdown.Item href="#">Option 3</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleSelectSortBy('Ascendent by price')}>Ascendent by price</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleSelectSortBy('Descendant by price')}>Descendant by price</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleSelectSortBy('Ascendent by rating')}>Ascendent by rating</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleSelectSortBy('Descendant by rating')}>Descendant by rating</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Col>

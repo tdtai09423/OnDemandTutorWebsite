@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Stripe;
 using Stripe.Checkout;
+using ODTDemoAPI.ChatHubs;
 
 namespace ODTDemoAPI
 {
@@ -92,6 +93,7 @@ namespace ODTDemoAPI
             builder.Services.AddRazorPages();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddSingleton<RazorViewToStringRenderer>();
+            builder.Services.AddSingleton<UserStatusService>();
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireLearnerRole", policy => policy.RequireRole("LEARNER"));
@@ -102,6 +104,7 @@ namespace ODTDemoAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSignalR();
             builder.Services.AddDbContext<OnDemandTutorContext>(option =>
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("OnDemandTutor"));
@@ -141,11 +144,9 @@ namespace ODTDemoAPI
             app.UseCors("AllowAll");
 
             app.MapControllers();
+            app.MapHub<ChatHub>("/chatHub");
 
             app.Run();
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
         }
     }

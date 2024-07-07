@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
 import userAPI from "../../api/userAPI";
 import { useNavigate } from "react-router-dom";
+import majorAPI from "../../api/majorAPI";
 
 function Home() {
     const [tutors, setTutors] = useState([]);
+    const [majors, setMajors] = useState([]);
     const [user, setUser] = useState({});
     const navigate = useNavigate();
 
@@ -21,7 +23,7 @@ function Home() {
                 if (user.data.roleId === 'LEARNER') {
 
                 } else if (user.data.roleId === 'TUTOR') {
-                    navigate('/');
+                    navigate('/tutor-page');
                 } else if (user.data.roleId === 'ADMIN') {
                     navigate('/admin-dash-board');
                 }
@@ -33,7 +35,17 @@ function Home() {
                 console.error("Error fetching tutors:", error);
             }
         };
+        const fetchMajor = async () => {
+            try {
+                const majorsRes = await majorAPI.getAll();
+                setMajors(majorsRes.data.response.items.$values);
+
+            } catch (error) {
+                console.error("Error fetching tutors:", error);
+            }
+        };
         fetchTutors();
+        fetchMajor();
     }, []);
 
     return (
@@ -54,7 +66,9 @@ function Home() {
                     <Image className="banner-image" src="https://static.preply.com/static/ssr/_next/static/images/hero-23-0802150dbe518540999c5757ad16d400.jpg" />
                 </div>
             </div>
-            <FilterBar />
+            <FilterBar
+                majors={majors}
+            />
             <hr />
             <div className="tutor-recap">
                 {tutors.map((tutor) => (

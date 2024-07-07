@@ -9,6 +9,7 @@ import learnerAPI from "../../../api/learnerAPI";
 import './orderItem.scss'
 import { Button } from 'react-bootstrap';
 import orderHistoryAPI from "../../../api/orderHistoryAPI";
+import { Form, InputGroup } from 'react-bootstrap';
 
 function OrderItem({ orderItem, id }) {
 
@@ -109,10 +110,21 @@ function OrderItem({ orderItem, id }) {
                         className=""
                         style={{ backgroundColor: "#e0e0e0", opacity: 1, marginBottom: '5px' }}
                     />
-                    <MDBRow className="align-items-center">
-                        <MDBCol md="1">
-                        </MDBCol>
-                        <MDBCol md="3">
+                    <MDBRow className="align-items-center" style={{ marginTop: '10px' }}>
+                        <MDBCol md="4">
+                            {(orderItem.orderStatus === 'Paid') ? (
+                                <InputGroup className="">
+                                    <Form className="d-flex">
+                                        <Form.Control
+                                            placeholder="Input classroom URL"
+                                            className="me-2 search-bar"
+                                            aria-label="Search"
+                                        />
+
+                                    </Form>
+                                </InputGroup>
+                            ) : (<></>)}
+
                         </MDBCol>
                         <MDBCol md="4">
                         </MDBCol>
@@ -123,7 +135,7 @@ function OrderItem({ orderItem, id }) {
                                         <Button className="text-muted mt-1 mb-0 small ms-xl-5 custom-button-text-order-item" onClick={handleAccept} variant="primary" style={{ color: 'white' }}>
                                             Accept
                                         </Button>
-                                        <Button className="text-muted mt-1 mb-0 small ms-xl-5 custom-button-text-order-item" onClick={handleReject} variant="danger" style={{ color: 'white' }}>
+                                        <Button className="text-muted mt-1 mb-0 small ms-xl-5 custom-button-text-order-item" onClick={handleReject} variant="danger" style={{ color: 'white' }} disabled>
                                             Reject
                                         </Button>
                                     </div>

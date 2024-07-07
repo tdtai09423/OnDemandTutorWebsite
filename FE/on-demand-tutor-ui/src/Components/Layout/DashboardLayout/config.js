@@ -1,8 +1,8 @@
 import ChartPieIcon from "@heroicons/react/24/solid/ChartPieIcon"
 import UserCircleIcon from "@heroicons/react/24/solid/UserCircleIcon"
 import ShoppingCartIcon from "@heroicons/react/24/solid/ShoppingCartIcon"
+import CheckBadgeIcon from "@heroicons/react/24/solid/CheckBadgeIcon"
 import { SvgIcon } from '@mui/material';
-
 export const items = [
   {
     href: '/admin-dash-board',
@@ -11,7 +11,7 @@ export const items = [
         <ChartPieIcon />
       </SvgIcon>
     ),
-    label: 'Home'
+    label: 'Revenue'
   },
   {
     href: '/admin-dash-board-order',
@@ -35,7 +35,7 @@ export const items = [
     href: '/admin-dash-board-certificate',
     icon: (
       <SvgIcon>
-        <UserCircleIcon />
+        <CheckBadgeIcon />
       </SvgIcon>
     ),
     label: 'Certificate'

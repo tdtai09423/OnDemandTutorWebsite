@@ -4,7 +4,6 @@ import TutorDetail from "../pages/TutorDetail";
 import Login from "../pages/Login";
 import SignUpStudent from "../pages/SignUpStudent";
 import SignUpTutor from "../pages/SignUpTutor";
-import TutorProfile from "../pages/TutorProfile";
 import SendReport from "../pages/SendReport";
 import Policy from "../pages/Policy";
 import AdminDashBoard from "../pages/AdminDashBoard";
@@ -19,12 +18,15 @@ import FavoriteTutor from "../pages/FavoriteTutor/index.js";
 import Payment from "../pages/Payment/index.js";
 import PaymentSuccess from "../pages/PaymentSuccess/index.js";
 import OrderListTutor from "../pages/OrderListTutor/index.js";
-
 import ForgotPassword from "../pages/ForgotPassword/index.js";
 import VerifyAccount from "../pages/ForgotPassword/VerifyAccount/index.js";
 import ChangePassword from "../pages/ForgotPassword/ChangePassword/index.js";
-
 import PersonalSchedule from "../pages/PersonalSchedule/index.js";
+import TutorSideLayout from "../Components/Layout/TutorSideLayout/index.js";
+import TutorSchedule from "../pages/TutorHomePage/Components/pages/TutorSchedule.js";
+import TutorProfile from "../pages/TutorHomePage/Components/pages/TutorProfile.js";
+import TutorNotification from "../pages/TutorHomePage/Components/pages/TutorNotification.js";
+import TutorRevenue from "../pages/TutorHomePage/Components/pages/TutorRevenue.js";
 
 const publicRoute = [
     { path: '/', component: Home },
@@ -33,32 +35,28 @@ const publicRoute = [
     { path: '/login', component: Login },
     { path: '/sign-up-student', component: SignUpStudent },
     { path: '/sign-up-tutor', component: SignUpTutor },
-    { path: '/tutor-profile', component: TutorProfile },
     { path: '/send-report', component: SendReport, layout: null },
     { path: '/policy', component: Policy, layout: null },
-    { path: '/admin-dash-board', component: AdminDashBoard, layout: DashboardLayout },
+    { path: '/admin-dash-board', component: AdminDashBoard, layout: DashboardLayout, role: 'ADMIN' },
     { path: '/admin-dash-board-order', component: AdminOrder, layout: DashboardLayout },
     { path: '/admin-dash-board-account', component: AdminAccount, layout: DashboardLayout },
     { path: '/admin-dash-board-certificate', component: Certificate, layout: DashboardLayout },
     { path: '/user-profile', component: UserProfile },
+    { path: '/tutor-profile', component: UserProfile, layout: TutorSideLayout },
     { path: '/verify-code', component: VerifyCode },
     { path: '/order-history', component: OrderHistory },
     { path: '/favorite-tutor', component: FavoriteTutor },
     { path: '/payment', component: Payment },
     { path: '/payment-success', component: PaymentSuccess },
-    { path: '/order-list', component: OrderListTutor },
-
+    { path: '/order-list', component: OrderListTutor, layout: TutorSideLayout },
     { path: '/forgot-password', component: ForgotPassword },
     { path: '/verify-account', component: VerifyAccount },
     { path: '/change-password', component: ChangePassword },
-
-
-
-
     { path: '/personal-schedule', component: PersonalSchedule },
-
-
-
+    { path: '/tutor-page', component: TutorSchedule, layout: TutorSideLayout, role: 'TUTOR' },
+    { path: '/tutor-profile', component: TutorProfile, layout: TutorSideLayout, role: 'TUTOR' },
+    { path: '/tutor-notificattion', component: TutorNotification, layout: TutorSideLayout, role: 'TUTOR' },
+    { path: '/tutor-revenue', component: TutorRevenue, layout: TutorSideLayout, role: 'TUTOR' }
 ];
 
 const privateRoute = [

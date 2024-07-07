@@ -7,7 +7,7 @@ const majorAPI = {
     },
 
     get(id) {
-        const url = '/Major/' + id;
+        const url = '/Major/get-major/' + id;
         return apiClient.get(url);
     }
 }

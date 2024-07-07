@@ -13,6 +13,8 @@ function App() {
           {publicRoute.map((route, index) => {
             const Page = route.component;
 
+            const role = route.role;
+
             let Layout = DefaultLayout;
 
             if (route.layout) {

@@ -128,6 +128,7 @@ const EditProfile = ({ userInformation }) => {
             </Button>
 
             <Modal
+                style={{ marginTop: '90px' }}
                 show={show}
                 onHide={handleClose}
                 backdrop="static"

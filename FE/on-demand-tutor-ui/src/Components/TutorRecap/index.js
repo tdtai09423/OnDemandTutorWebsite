@@ -2,7 +2,7 @@ import { Button, Card, Row, Col, Image, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './TutorRecap.scss'
 import { Link } from 'react-router-dom'
-import { Globe, PersonFill, ChatSquareDotsFill, StarFill } from 'react-bootstrap-icons'
+import { Globe, PersonFill, ChatSquareDotsFill, StarFill, SuitHeart, SuitHeartFill } from 'react-bootstrap-icons'
 import { useState, useEffect } from 'react';
 import sectionAPI from '../../api/sectionAPI';
 import reviewRatingAPI from '../../api/ReviewRatingAPI';
@@ -26,7 +26,7 @@ function TutorRecap({ tutor }) {
                 setRating(rating.data);
                 const majorID = tutor.majorId;
                 const major = await majorAPI.get(majorID);
-                setMajor(major.data);
+                setMajor(major.data.major.majorName);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
@@ -48,15 +48,29 @@ function TutorRecap({ tutor }) {
                     <Card.Body>
                         <Row>
                             <Col md={7}>
-                                <Card.Title className="tutor-name" >
-                                    <Link className="" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
-                                        {firstName} {lastName}
-                                    </Link>
-                                    <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutor.nationality}</span>
-                                </Card.Title>
+                                <Row>
+                                    <Col md={8}>
+                                        <Card.Title className="tutor-name" >
+                                            <Link className="" as={Link} style={{ textDecoration: 'none', color: 'black' }} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>
+                                                {firstName} {lastName}
+                                            </Link>
+                                            <span className="flag" style={{ fontSize: '10px', marginLeft: '20px' }}>{tutor.nationality}</span>
+                                        </Card.Title>
+                                    </Col>
+                                    <Col md={2}>
+                                    </Col>
+                                    <Col md={2}
+                                        style={{
+                                            textAlign: 'center',
+                                            padding: '1em 0',
+                                        }}
+                                    >
+                                        <SuitHeart style={{ fontSize: '1.5em' }} />
+                                    </Col>
+                                </Row>
                                 <Card.Text>
                                     <p className="language">
-                                        <Globe className="icon" /> {major.majorName}
+                                        <Globe className="icon" /> {major}
                                     </p>
                                     <p className="students">
                                         <PersonFill className="icon" /> {tutor.activeStudents}2 active students · {tutor.lessons}2 lessons

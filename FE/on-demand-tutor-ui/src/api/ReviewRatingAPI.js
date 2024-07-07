@@ -7,7 +7,7 @@ const reviewRatingAPI = {
         return apiClient.get(url);
     },
     getReview(id) {
-        const url = '/ReviewRating/getReviews/tutor/' + id + '?page=1&pageSize=5'
+        const url = '/ReviewRating/getReviews/tutor/' + id + '?page=1&pageSize=10'
         return apiClient.get(url);
     }
 }

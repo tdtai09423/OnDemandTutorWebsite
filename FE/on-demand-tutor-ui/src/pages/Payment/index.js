@@ -69,13 +69,13 @@ function Payment() {
                 const tutor = await tutorAPI.get(tutorId);
                 const price = await sectionAPI.get(tutorId);
                 const rating = await reviewRatingAPI.getRating(tutorId);
-                const reviews = await reviewRatingAPI.getReview(tutorId);
+                //const reviews = await reviewRatingAPI.getReview(tutorId);
                 const user = await userAPI.getUserByEmail(email);
                 setUserId(user.data.id)
                 setTutor(tutor.data);
                 setPrice(price.data);
                 setRating(rating.data);
-                setReviews(reviews.data.response.items.$values);
+                //setReviews(reviews.data.response.items.$values);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }

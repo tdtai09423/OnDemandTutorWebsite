@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Footer } from './footer';
 import { SideNav } from './side-nav';
-import { TopNav } from './top-nav';
+import TopNav from './top-nav.js'
 
 const SIDE_NAV_WIDTH = 75;
 const TOP_NAV_HEIGHT = 64;

@@ -29,19 +29,24 @@ function HomeAdmin() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem('token');
         const approvedResponse = await tutorAPI.getApproved();
-        const pendingResponse = await tutorAPI.getPending();
-        const rejectedResponse = await tutorAPI.getRejected();
+        const page = 1;
+        const pageSize = 10;
+        const pendingResponse = await tutorAPI.getPending(token, page, pageSize);
+        const rejectedResponse = await tutorAPI.getRejected(token, page, pageSize);
 
-        const approvedTutors = approvedResponse.data.$values;
-        const pendingTutors = pendingResponse.data.$values;
-        const rejectedTutors = rejectedResponse.data.$values;
+        const approvedTutors = approvedResponse.data.response.items.$values;
+        const pendingTutors = pendingResponse.data.response.items.$values;
+        const rejectedTutors = rejectedResponse.data.response.items.$values;
 
         const mergedTutors = [...approvedTutors, ...pendingTutors, ...rejectedTutors].sort((a, b) => a.tutorId - b.tutorId);
         console.log(mergedTutors)
         setTutors(mergedTutors);
 
-        //const learnerList = await learnerAPI.getAll();
+        // const learnerList = await learnerAPI.getAll();
+        // console.log(learnerList.data.response.items.$values)
+        // setLearners(learnerList.data.response.items.$values);
       } catch (error) {
         console.error("Error fetching tutors:", error);
       }

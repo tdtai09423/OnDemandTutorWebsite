@@ -37,7 +37,7 @@ namespace ODTDemoAPI.Controllers
         {
             var learner = await _context.Learners.Include(l => l.Membership).FirstOrDefaultAsync(l => l.LearnerId == request.LearnerId);
 
-            if(learner == null)
+            if (learner == null)
             {
                 return NotFound("Not found learner");
             }
@@ -55,9 +55,9 @@ namespace ODTDemoAPI.Controllers
                                             .ToListAsync();
             int maxOrdersPerMonth = 5;
 
-            if(learner.Membership != null)
+            if (learner.Membership != null)
             {
-                if(learner.Membership.MembershipLevel == "SILVER")
+                if (learner.Membership.MembershipLevel == "SILVER")
                 {
                     maxOrdersPerMonth = 15;
                 }
@@ -67,7 +67,7 @@ namespace ODTDemoAPI.Controllers
                 }
             }
 
-            if(orders.Count >= maxOrdersPerMonth)
+            if (orders.Count >= maxOrdersPerMonth)
             {
                 return BadRequest("You have reached the limit booking in this month. Upgrade your membership for more benefits.");
             }
@@ -577,12 +577,12 @@ namespace ODTDemoAPI.Controllers
                 }
 
                 var stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
-                if(stbCondition == null)
+                if (stbCondition == null)
                 {
                     return NotFound("Not found short term booking condition.");
                 }
 
-                if(startTime.HasValue)
+                if (startTime.HasValue)
                 {
                     stbCondition.StartTime = startTime.Value;
                 }
@@ -676,7 +676,7 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var learner = await _context.Learners.FirstOrDefaultAsync(l => l.LearnerId == learnerId);
-                if (learner == null) 
+                if (learner == null)
                 {
                     return NotFound("Learner not found!");
                 }
@@ -1030,12 +1030,12 @@ namespace ODTDemoAPI.Controllers
 
         [HttpPost("confirm-section-completion")]
         [Authorize(Roles = "TUTOR")]
-        public IActionResult ConfirmSectionCompletion([FromQuery] int orderId, [FromQuery] int sectionId)
+        public async Task<IActionResult> ConfirmSectionCompletion([FromQuery] int orderId, [FromQuery] int sectionId)
         {
-            var order = _context.LearnerOrders
+            var order = await _context.LearnerOrders
                                     .Include(o => o.Curriculum!)
                                     .ThenInclude(c => c.Sections)
-                                    .FirstOrDefault(o => o.OrderId == orderId);
+                                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
             {
                 return NotFound("Not found order");
@@ -1051,25 +1051,25 @@ namespace ODTDemoAPI.Controllers
                 return BadRequest("Order has been comfirmed as completed before.");
             }
 
-            var section = order.Curriculum!.Sections.FirstOrDefault(s => s.SectionId == sectionId);
+            var section = await  _context.Sections.FirstOrDefaultAsync(s => s.SectionId == sectionId);
 
-            if(section == null)
+            if (section == null)
             {
                 return NotFound("Not found section");
             }
 
-            if(section.SectionStatus == "Completed")
+            if (section.SectionStatus == "Completed")
             {
                 return BadRequest("This section has been completed before. Cannot operate");
             }
 
-            if(section.SectionEnd > DateTime.Now)
+            if (section.SectionEnd < DateTime.Now)
             {
                 section.SectionStatus = "Completed";
                 _context.Sections.Update(section);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-                return Ok(new { Section = section });
+                return Ok(new { Section = section, Order = order });
             }
 
             return BadRequest("An error has occurred");
@@ -1077,15 +1077,24 @@ namespace ODTDemoAPI.Controllers
 
         [HttpPost("comfirm-order-completion")]
         [Authorize(Roles = "TUTOR")]
-        public IActionResult ConfirmOrderCompletion([FromQuery] int orderId)
+        public async Task<IActionResult> ConfirmOrderCompletion([FromQuery] int orderId)
         {
-            var order = _context.LearnerOrders
+            var order = await _context.LearnerOrders
                                     .Include(o => o.Curriculum!)
                                     .ThenInclude(c => c.Sections)
-                                    .FirstOrDefault(o => o.OrderId == orderId);
+                                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
             {
                 return NotFound("Not found order");
+            }
+
+            var tutor = await _context.Tutors
+                                    .Include(t => t.TutorNavigation)
+                                    .ThenInclude(a => a.Wallet)
+                                    .FirstOrDefaultAsync(t => t.TutorId == order.Curriculum!.TutorId);
+            if (tutor == null)
+            {
+                return NotFound("Not found tutor");
             }
 
             if (order.OrderStatus != "Accepted")
@@ -1098,7 +1107,10 @@ namespace ODTDemoAPI.Controllers
                 return BadRequest("Order has been comfirmed as completed before.");
             }
 
-            var lastSection = order.Curriculum!.Sections.OrderByDescending(s => s.SectionEnd).FirstOrDefault();
+            var stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
+
+            var lastSection = await _context.Sections.FirstOrDefaultAsync(s => s.CurriculumId == order.CurriculumId
+                                                                    && s.SectionStart == stbCondition!.StartTime);
             if (lastSection == null || lastSection.SectionStatus != "Completed")
             {
                 return BadRequest("Cannot confirm order completion. The last section has not ended yet.");
@@ -1106,9 +1118,59 @@ namespace ODTDemoAPI.Controllers
 
             order.IsCompleted = true;
             _context.LearnerOrders.Update(order);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Confirmed successfully!", Order = order });
+            var accountWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == order.Curriculum!.TutorId);
+            if (tutor.TutorNavigation.Wallet == null)
+            {
+                if (accountWallet == null)
+                {
+                    var wallet = new Wallet
+                    {
+                        WalletId = tutor.TutorId,
+                        Balance = 0,
+                    };
+                    _context.Wallets.Add(wallet);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    decimal currBalance = accountWallet.Balance;
+                    _context.Wallets.Remove(accountWallet);
+                    await _context.SaveChangesAsync();
+
+                    var wallet = new Wallet
+                    {
+                        WalletId = tutor.TutorId,
+                        Balance = currBalance,
+                    };
+                    _context.Wallets.Add(wallet);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            var tutorWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == tutor.TutorId);
+            tutorWallet!.Balance += order.Total;
+            _context.Wallets.Update(tutorWallet);
+
+            var transaction = new Transaction
+            {
+                AccountId = tutor.TutorId,
+                Amount = order.Total,
+                TransactionDate = DateTime.Now,
+                TransactionType = "Receive Wage",
+            };
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            return Ok(new 
+            { 
+                message1 = "Confirmed successfully!", 
+                Order = order, 
+                message2 = "Money has been to your wallet.", 
+                balance = tutorWallet.Balance 
+            });
         }
 
         [HttpPost("reject-booking")]
@@ -1485,7 +1547,7 @@ namespace ODTDemoAPI.Controllers
 
         // GET: api/OrderHistory/Learner/5
         [HttpGet("Learner/{learnerId}")]
-        public async Task<ActionResult<IEnumerable<LearnerOrder>>> GetOrdersByLearnerId([FromRoute]int learnerId)
+        public async Task<ActionResult<IEnumerable<LearnerOrder>>> GetOrdersByLearnerId([FromRoute] int learnerId)
         {
             var orders = await _context.LearnerOrders
                                        .Where(order => order.LearnerId == learnerId)
