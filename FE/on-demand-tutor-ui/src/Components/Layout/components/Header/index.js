@@ -14,15 +14,15 @@ import NotificationCom from '../NotificationCom';
 function Header() {
     const [userRole, setUserRole] = useState();
     const [userId, setUserId] = useState();
-
+    const [notifications, setNotifications] = useState([]);
 
     //Offcanvas
-    // const [show, setShow] = useState(false);
-    // const handleClose = () => setShow(false);
-    // const handleShow = () => {
-    //     setShow(true);
-    //     HandleNotification();
-    // };
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => {
+        setShow(true);
+        HandleNotification();
+    };
 
     const [balance, setBalance] = useState();
 
@@ -42,10 +42,10 @@ function Header() {
     }
     const HandleNotification = async () => {
         try {
-            let res = NotificationAPI.getNotification(userId);
+            let res = await NotificationAPI.getNotification(userId);
             setNotifications(res);
-            console.log("NOTIFICATION", (await res).data.notificationList.$values)
-            setNotifications((await res).data.notificationList.$values)
+            console.log("NOTIFICATION", res.data.notificationList.$values)
+            setNotifications(res.data.notificationList.$values)
         } catch (error) {
             console.log(error);
         }
