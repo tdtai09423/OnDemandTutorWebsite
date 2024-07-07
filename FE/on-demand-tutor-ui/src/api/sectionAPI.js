@@ -17,6 +17,10 @@ const sectionAPI = {
                 Authorization: `Bearer ${token}`
             }
         });
+    },
+    getOrderBySection(id) {
+        const url = '/Section/get-order-by-section/' + id;
+        return apiClient.get(url);
     }
 }
 

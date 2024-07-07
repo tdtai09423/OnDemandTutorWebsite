@@ -3,28 +3,29 @@ import {
     isSameDay,
     set
 } from "date-fns";
-import './ScheduleTab.scss';
-import { useNavigate } from 'react-router-dom'
+import '../../../TutorDetail/components/ScheduleTab/ScheduleTab.scss';
 import sectionAPI from "../../../../api/sectionAPI";
+import orderHistoryAPI from "../../../../api/orderHistoryAPI";
 
 
 
-function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
+function ScheduleCellChangeTime({ curriculum, day, selectedDate, formattedDate, orderId }) {
 
     const Jtoken = localStorage.getItem('token');
-    console.log(Jtoken);
-    const navigate = useNavigate();
 
-    const handleOnClick = (sectionFree) => {
-        if (Jtoken) {
-            const course = subject;
-            const time = sectionFree.sectionStart + 'Z';
-            const searchParams = new URLSearchParams();
-            searchParams.set('course', course);
-            searchParams.set('time', time);
-            navigate("/payment?tutorId=" + tutorId + '&' + searchParams.toString())
-        } else {
-            navigate("/login")
+    const handleOnClick = async (sectionFree) => {
+        console.log(orderId);
+        console.log(sectionFree.sectionStart);
+        console.log(Jtoken);
+        const confirmed = window.confirm('Are you sure to change order time ?');
+        if (confirmed) {
+            try {
+                await orderHistoryAPI.putTimeOrder(orderId, sectionFree.sectionStart, Jtoken);
+            } catch (error) {
+                console.error('Error updating data:', error);
+                alert('Đã xảy ra lỗi');
+            }
+            window.location.reload();
         }
     }
 
@@ -34,7 +35,7 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
     newDate.setDate(newDate.getDate() + 1);
 
     const formatDate = (date) => {
-        const day = date.getDate().toString().padStart(2, '0');
+        const day = date.getDate();
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
         return `${year}-0${month}-${day}`;
@@ -106,7 +107,7 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
     useEffect(() => {
         const fetchSection = async () => {
             try {
-                const sectionsDay = await sectionAPI.getTutorSection(tutorId, formattedOriginalDate, formattedNewDate);
+                const sectionsDay = await sectionAPI.getTutorSection(curriculum.tutorId, formattedOriginalDate, formattedNewDate);
                 if (sectionsDay.data.$values[0]) {
                     setSection(sectionsDay.data.$values[0].sections.$values);
                 }
@@ -118,23 +119,21 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
         fetchSection();
     }, []);
 
-
-
     return (
         <div
             className={`col cell `}
             key={day}
         >
             <div className="number">{formattedDate}</div>
-            <div className="sections-day">
+            <div className="sections-day" style={{ marginTop: '10px', marginBottom: '1.5em', borderLeft: '1px solid black', borderRight: '1px solid black' }}>
                 {free.map((sectionFree) => {
                     if (!sections.some(section => section.sectionStart === sectionFree.sectionStart)) {
                         return (
-                            <div key={free.$id} className="sectionFree" onClick={() => handleOnClick(sectionFree)}>{formatSection(new Date(sectionFree.sectionStart))}</div>
+                            <div key={sectionFree.$id} className="sectionFree" onClick={() => handleOnClick(sectionFree)}>{formatSection(new Date(sectionFree.sectionStart))}</div>
                         );
                     } else {
                         return (
-                            <div key={free.$id} className="sectionBooked" disable>{formatSection(new Date(sectionFree.sectionStart))}</div>
+                            <div key={sectionFree.$id} className="sectionBooked" disable>{formatSection(new Date(sectionFree.sectionStart))}</div>
                         );
                     }
                 })}
@@ -147,4 +146,4 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
     );
 }
 
-export default ScheduleCell;
+export default ScheduleCellChangeTime;

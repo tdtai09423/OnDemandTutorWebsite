@@ -11,16 +11,11 @@ const OrderHistoryList = ({ learnerId }) => {
   useEffect(() => {
     const getOrderHistory = async () => {
       try {
-        console.log("try order history")
-        // let userId = learnerId;
         let res = await orderHistoryAPI.getOrderHistoryById(learnerId);
-        console.log("res>>>>>>>>>>>>>>>>", res.data.$values)
         setListOrder(res.data.$values);
-        console.log("try order history finish")
 
       } catch (error) {
         console.log("try order history failed", error)
-
       }
 
     }
