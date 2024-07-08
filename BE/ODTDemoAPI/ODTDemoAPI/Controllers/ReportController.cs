@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.EntityViewModels;
+using ODTDemoAPI.OperationModel;
 using System.Drawing.Printing;
 
 namespace ODTDemoAPI.Controllers
@@ -168,9 +169,9 @@ namespace ODTDemoAPI.Controllers
 
         [HttpPost("add-new-report")]
         [Authorize]
-        public async Task<IActionResult> AddNewReport([FromBody] int userId, [FromForm] string content)
+        public async Task<IActionResult> AddNewReport([FromBody] AddReportModel model)
         {
-            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == userId);
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == model.UserId);
             if (account == null)
             {
                 return NotFound("Not found account");
@@ -178,8 +179,8 @@ namespace ODTDemoAPI.Controllers
 
             var report = new Report
             {
-                UserId = userId,
-                Content = content,
+                UserId = model.UserId,
+                Content = model.Content,
                 Status = "Pending",
             };
 
