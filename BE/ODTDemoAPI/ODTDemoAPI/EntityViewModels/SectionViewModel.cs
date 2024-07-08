@@ -11,5 +11,9 @@
         public string? SectionStatus { get; set; }
 
         public string? MeetUrl { get; set; }
+
+        public int? CurriculumId { get; set; }
+
+        public int? TutorId { get; set; }
     }
 }

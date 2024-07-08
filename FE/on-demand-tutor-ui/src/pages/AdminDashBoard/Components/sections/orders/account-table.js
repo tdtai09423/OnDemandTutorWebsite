@@ -210,7 +210,7 @@ export const AccountsTable = (props) => {
       </Scrollbar>
       <Divider />
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25]}
         component="div"
         count={count}
         rowsPerPage={rowsPerPage}

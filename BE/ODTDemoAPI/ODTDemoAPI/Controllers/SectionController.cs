@@ -124,26 +124,21 @@ namespace ODTDemoAPI.Controllers
 
         [HttpGet("weekly-schedule-learner")]
         [Authorize(Roles = "LEARNER")]
-        public async Task<IActionResult> GetWeeklyScheduleLearner(int learnerId, [FromQuery] DateTime startTime, DateTime endTime)
-        {
+        public async Task<IActionResult> GetWeeklyScheduleLearner(int learnerId, [FromQuery] DateTime startTime, DateTime endTime) {
             var orders = await _context.LearnerOrders
-                                .Where(o => o.LearnerId == learnerId)
-                                .ToListAsync();
+                                    .Where(o => o.LearnerId == learnerId)
+                                    .ToListAsync();
             STBCondition? stbCondition = null;
 
             List<Section> sections = new List<Section>();
-            foreach (var order in orders)
-            {
+            foreach (var order in orders) {
                 var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == order.CurriculumId);
-                if (curriculum == null)
-                {
+                if (curriculum == null) {
                     continue;
                 }
-                if(curriculum.CurriculumType == "ShortTerm")
-                {
+                if (curriculum.CurriculumType == "ShortTerm") {
                     stbCondition = await _context.STBConditions.FirstOrDefaultAsync(c => c.OrderId == order.OrderId);
-                    if (stbCondition == null)
-                    {
+                    if (stbCondition == null) {
                         continue;
                     }
                     var sectionByOrder = await _context.Sections
@@ -153,29 +148,41 @@ namespace ODTDemoAPI.Controllers
                                                         .ToListAsync();
                     sectionByOrder = sectionByOrder.Where(s => s.SectionStart == stbCondition.StartTime).ToList();
                     sections.AddRange(sectionByOrder);
-                }
-                else
-                {
+                } else {
                     continue;
                 }
             }
 
             sections = sections.OrderBy(s => s.SectionStart).ToList();
 
-            var schedule = sections.GroupBy(s => s.SectionStart.Date).Select(g => new ScheduleViewModel
-            {
-                Date = g.Key,
-                Sections = g.Select(s => new SectionViewModel
-                {
-                    Id = s.SectionId,
-                    SectionStart = s.SectionStart,
-                    SectionEnd = s.SectionEnd,
-                    SectionStatus = s.SectionStatus,
-                    MeetUrl = s.MeetUrl
-                }).ToList()
-            }).ToList();
+            var schedule = new List<ScheduleViewModel>();
+
+            foreach (var group in sections.GroupBy(s => s.SectionStart.Date)) {
+                var scheduleViewModel = new ScheduleViewModel {
+                    Date = group.Key,
+                    Sections = new List<SectionViewModel>()
+                };
+
+                foreach (var section in group) {
+                    var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == section.CurriculumId);
+                    var sectionViewModel = new SectionViewModel {
+                        Id = section.SectionId,
+                        SectionStart = section.SectionStart,
+                        SectionEnd = section.SectionEnd,
+                        SectionStatus = section.SectionStatus,
+                        MeetUrl = section.MeetUrl,
+                        CurriculumId = section.CurriculumId,
+                        TutorId = curriculum?.TutorId // Set TutorId from the curriculum
+                    };
+                    scheduleViewModel.Sections.Add(sectionViewModel);
+                }
+
+                schedule.Add(scheduleViewModel);
+            }
 
             return Ok(new { Schedule = schedule, Condition = stbCondition });
         }
+
+
     }
 }

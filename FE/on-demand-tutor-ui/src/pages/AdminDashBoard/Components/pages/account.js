@@ -8,8 +8,8 @@ import { AccountsTable } from '../sections/orders/account-table.js';
 function AdminAccount() {
   const [mode, setMode] = useState('table');
   const [query, setQuery] = useState('');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [users, setUser] = useState([]);
 
@@ -17,14 +17,15 @@ function AdminAccount() {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-        const userList = await userAPI.getAll(token);
-        setUser(userList.data.$values);
+        const userList = await userAPI.getAll(token, page + 1, rowsPerPage);
+        console.log(userList.data.response.items.$values);
+        setUser(userList.data.response.items.$values);
       } catch (error) {
         console.error("Error fetching tutors:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [page, rowsPerPage]);
 
   const handleModeChange = useCallback(
     (event, value) => {
@@ -44,6 +45,7 @@ function AdminAccount() {
 
   const handleChangePage = useCallback(
     (event, value) => {
+      console.log(value)
       setPage(value);
     },
     []
@@ -51,8 +53,9 @@ function AdminAccount() {
 
   const handleChangeRowsPerPage = useCallback(
     (event) => {
+      console.log(event.target.value)
       setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
+      setPage(1);
     },
     []
   );

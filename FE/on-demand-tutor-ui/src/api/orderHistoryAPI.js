@@ -56,6 +56,14 @@ const orderHistoryAPI = {
                 Authorization: `Bearer ${token}`
             }
         });
+    },
+    postConfirmCompleteSection(sectionId, orderId, token) {
+        const url = '/LearnerOrder/confirm-section-completion?orderId=' + orderId + '&sectionId=' + sectionId;
+        return apiClient.post(url, null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 }
 

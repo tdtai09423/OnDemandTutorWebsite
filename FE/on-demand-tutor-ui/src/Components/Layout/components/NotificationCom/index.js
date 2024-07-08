@@ -35,7 +35,7 @@ const NotificationCom = ({ notificationInfo, userId }) => {
                 const isRead = item.notiStatus === "NEW";
                 const key = index;
                 return (
-                    <Card className='containerCard'>
+                    <Card key={item.notificationId} className='containerCard'>
                         <Card.Body>
                             {isRead ? (
                                 <Card.Text className='card-new'>
@@ -44,7 +44,8 @@ const NotificationCom = ({ notificationInfo, userId }) => {
                                 : (<></>)
                             }
                             <Card.Text className='card-text'>
-                                {item.content}
+                                <Megaphone />
+                                <div>{item.content}</div>
                             </Card.Text>
                             <Card.Text className='card-text'>
                                 {formattedOrderDate}

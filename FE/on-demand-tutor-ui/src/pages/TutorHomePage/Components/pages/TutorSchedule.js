@@ -63,7 +63,9 @@ function TutorSchedule() {
       let tmpArray = section.sections.$values;
       tmpArray.map((item) => {
         const startTime = new Date(item.sectionStart);
+        startTime.setMinutes(startTime.getMinutes() + 59);
         const endTime = new Date(item.sectionEnd);
+        endTime.setMinutes(endTime.getMinutes() + 59);
         const duration = 50;
         sections.push({
           startTime: new Date(formatSection(startTime)),
@@ -106,8 +108,9 @@ function TutorSchedule() {
     setStatus(timeSlot.availableTimeslot.status);
     const now = new Date();
     const current = new Date(timeSlot.startTime);
+    current.setMinutes(current.getMinutes() - 59);
     console.log('>>>>current', now, current);
-    if (current < now) {
+    if (current < now && timeSlot.availableTimeslot.status === 'Not Started') {
       setCanComplete(true);
     } else {
       setCanComplete(false);
@@ -124,6 +127,7 @@ function TutorSchedule() {
   const handleComplete = async () => {
     if (canComplete) {
       let token = localStorage.getItem('token');
+      console.log('update >>>>>>>', sectionId, orderId, token)
       const confirmRes = await orderHistoryAPI.postConfirmCompleteSection(sectionId, orderId, token);
       console.log('confirmRes');
     } else {
@@ -175,7 +179,7 @@ function TutorSchedule() {
         eventDurationInMinutes={50}
         availableTimeslots={sections}
         onStartTimeSelect={handleTimeSelect}
-        defaultDate={startDate}
+        format_startTimeFormatString="h:00 a"
       />
       <Modal
         show={show}

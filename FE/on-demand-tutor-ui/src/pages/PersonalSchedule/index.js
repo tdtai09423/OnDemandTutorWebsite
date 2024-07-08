@@ -6,6 +6,7 @@ import userAPI from '../../api/userAPI';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { format } from 'date-fns';
+import tutorAPI from '../../api/tutorAPI';
 
 function PersonalSchedule() {
 
@@ -54,7 +55,6 @@ function PersonalSchedule() {
     const formattedStartDate = formatDate(startDate)
     const formattedEndDate = formatDate(endDate)
 
-    console.log(formattedStartDate, formattedEndDate)
 
     const getSectionFromResponse = (sectionList) => {
         let sections = [];
@@ -63,15 +63,17 @@ function PersonalSchedule() {
             const section = sectionList[i];
             let tmpArray = section.sections.$values;
             tmpArray.map((item) => {
-                console.log(item)
                 const startTime = new Date(item.sectionStart);
+                startTime.setMinutes(startTime.getMinutes() + 59);
                 const endTime = new Date(item.sectionEnd);
+                endTime.setMinutes(endTime.getMinutes() + 59);
                 const duration = 50;
                 sections.push({
                     startTime: new Date(formatSection(startTime)),
                     endTime: new Date(formatSection(endTime)),
                     duration: duration,
-                    meetUrl: item.meetUrl
+                    meetUrl: item.meetUrl,
+                    tutorId: item.tutorId
                 });
             })
         }
@@ -87,15 +89,27 @@ function PersonalSchedule() {
     const [timeEnd, setTimeEnd] = useState('');
     const [meetUrl, setMeetUrl] = useState();
     const [duration, setDuration] = useState();
+    const [tutorName, setTutorName] = useState();
 
-    const handleTimeSelect = (timeSlot) => {
+    const handleTimeSelect = async (timeSlot) => {
         setShow(true);
-        console.log(timeSlot)
-        setTimeStart(format(new Date(timeSlot.startTime), 'yyyy-MM-dd HH:mm:ss'))
-        setTimeEnd(format(new Date(timeSlot.availableTimeslot.endTime), 'yyyy-MM-dd HH:mm:ss'))
-        console.log(format(new Date(timeSlot.availableTimeslot.endTime), 'yyyy-MM-dd HH:mm:ss'))
+
+        const startTime = new Date(timeSlot.startTime);
+        startTime.setMinutes(startTime.getMinutes() - 59);
+        const endTime = new Date(timeSlot.availableTimeslot.endTime);
+        endTime.setMinutes(endTime.getMinutes() - 59);
+
+        setTimeStart(format(startTime, 'yyyy-MM-dd HH:mm:ss'))
+        setTimeEnd(format(endTime, 'yyyy-MM-dd HH:mm:ss'))
+
         setMeetUrl(timeSlot.availableTimeslot.meetUrl)
         setDuration(timeSlot.availableTimeslot.duration)
+        try {
+            const tutorName = await tutorAPI.get(timeSlot.availableTimeslot.tutorId)
+            setTutorName(tutorName.data.tutorNavigation.firstName + ' ' + tutorName.data.tutorNavigation.lastName)
+        } catch (e) {
+            console.log(e);
+        }
     };
 
 
@@ -107,8 +121,6 @@ function PersonalSchedule() {
             try {
                 const user = await userAPI.getUserByEmail(email);
                 const sectionsDays = await sectionAPI.getLearnerSection(user.data.id, formattedStartDate, formattedEndDate, token);
-
-                console.log(sectionsDays.data.schedule.$values)
                 const tmp = getSectionFromResponse(sectionsDays.data.schedule.$values)
                 setSections(tmp)
             } catch (error) {
@@ -129,6 +141,7 @@ function PersonalSchedule() {
                 eventDurationInMinutes={50}
                 availableTimeslots={sections}
                 onStartTimeSelect={handleTimeSelect}
+                format_startTimeFormatString="h:00 a"
             />
             <Modal
                 show={show}
@@ -145,6 +158,7 @@ function PersonalSchedule() {
                         <div className='text'>End time: {timeEnd}</div>
                         <div className='text'>Meet URL: {meetUrl}</div>
                         <div className='text'>Duration: {duration}</div>
+                        <div className='text'>Tutor: {tutorName}</div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

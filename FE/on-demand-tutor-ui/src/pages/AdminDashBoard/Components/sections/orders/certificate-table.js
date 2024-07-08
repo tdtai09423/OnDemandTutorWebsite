@@ -70,6 +70,7 @@ export const CertiTable = (props) => {
                         {items.map((account) => {
                             return (
                                 <CertificateTableRow
+                                    key={account.tutorNavigation.id}
                                     account={account}
                                 />
                             );
