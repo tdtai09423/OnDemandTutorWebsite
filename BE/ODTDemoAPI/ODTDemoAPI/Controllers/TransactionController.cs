@@ -187,5 +187,28 @@ namespace ODTDemoAPI.Controllers
                 .SumAsync(t => t.Amount);
             return Ok(new { Year = year, Revenue = revenue });
         }
+
+        [HttpGet("get-count-users-membership-monthly")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetMembershipCountMonthly(int year, int month)
+        {
+            var count = await _context.Transactions
+                .Where(t => t.TransactionDate.Year == year
+                            && t.TransactionDate.Month == month
+                            && (t.TransactionType == "Membership SILVER" || t.TransactionType == "Membership PRENIUM"))
+                .CountAsync();
+            return Ok(new { Year = year, Month = month, NumOfUsers = count });
+        }
+
+        [HttpGet("get-count-users-membership-yearly")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetMembershipCountYearly(int year)
+        {
+            var count = await _context.Transactions
+                .Where(t => t.TransactionDate.Year == year
+                            && (t.TransactionType == "Membership SILVER" || t.TransactionType == "Membership PRENIUM"))
+                .CountAsync();
+            return Ok(new { Year = year, NumOfUsers = count });
+        }
     }
 }
