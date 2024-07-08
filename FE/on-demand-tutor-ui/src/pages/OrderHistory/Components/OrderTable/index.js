@@ -51,7 +51,7 @@ const OrderHistoryList = ({ learnerId }) => {
               const timeDiff = new Date() - new Date(item.orderDate);
               const avail = item.orderStatus === "Pending" || item.orderStatus === "Paid"
               const isCancellable = avail && timeDiff < 48 * 60 * 60 * 1000;
-              const isCompleted = item.orderStatus === "Completed"
+              const isCompleted = (item.orderStatus === "Paid" || item.orderStatus === "Accepted" || item.orderStatus === "Pending")
               return (
                 <tr key={`order-${index}`}>
                   <td>{item.orderId}</td>

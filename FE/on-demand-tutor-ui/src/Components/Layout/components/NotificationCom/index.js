@@ -1,9 +1,10 @@
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import { useEffect, useState } from 'react';
 import './notiCom.scss';
 import { toast } from 'react-toastify';
 import NotificationAPI from '../../../../api/notificationAPI';
+import { Megaphone } from 'react-bootstrap-icons';
+
 const NotificationCom = ({ notificationInfo, userId }) => {
     const token = localStorage.getItem("token")
     console.log(userId)

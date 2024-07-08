@@ -67,8 +67,6 @@ function Header() {
         };
 
         fetchUser();
-        handleShow();
-        // HandleNotification();
     }, [])
 
     const handleClickWallet = () => {
@@ -163,15 +161,15 @@ function Header() {
                                         <PersonCircle style={{ fontSize: '2em' }}></PersonCircle>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className="dropdown-menu" align="end">
-                                        <Dropdown.Item><Link as={Link} to={"/user-profile"}>User profile</Link></Dropdown.Item>
+                                        <Dropdown.Item><Link as={Link} to={"/user-profile"} style={{ textDecoration: 'none', color: 'black' }}>User profile</Link></Dropdown.Item>
                                         <Dropdown.Item>
-                                            <Link as={Link} to={"/order-history"}>View history</Link>
+                                            <Link as={Link} to={"/order-history"} style={{ textDecoration: 'none', color: 'black' }}>View history</Link>
                                         </Dropdown.Item>
                                         <Dropdown.Item>
-                                            <Link as={Link} to={"/favorite-tutor"}>Favorite tutor</Link>
+                                            <Link as={Link} to={"/favorite-tutor"} style={{ textDecoration: 'none', color: 'black' }}>Favorite tutor</Link>
                                         </Dropdown.Item>
                                         <Dropdown.Item>
-                                            <Link as={Link} to={"/personal-schedule"}>Schedule</Link>
+                                            <Link as={Link} to={"/personal-schedule"} style={{ textDecoration: 'none', color: 'black' }}>Schedule</Link>
                                         </Dropdown.Item>
                                         <Dropdown.Divider />
                                         <Button className="loginButton text-black border border-2 border-dark" variant="" onClick={HandleLogOut} style={{ width: '60%', position: 'relative', float: 'inline-end', marginRight: '10px' }}>
