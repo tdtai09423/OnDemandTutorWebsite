@@ -23,11 +23,12 @@ function TopNav() {
     <Box
       component="header"
       sx={{
-        backgroundColor: 'neutral.900',
+        backgroundColor: 'white',
         color: 'common.white',
         position: 'fixed',
         width: '100%',
-        zIndex: (theme) => theme.zIndex.appBar
+        zIndex: (theme) => theme.zIndex.appBar,
+        boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 3px'
       }}
     >
       <Stack

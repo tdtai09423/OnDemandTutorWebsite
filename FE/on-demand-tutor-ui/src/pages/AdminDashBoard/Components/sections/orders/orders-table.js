@@ -18,29 +18,46 @@ import {
   Typography
 } from '@mui/material';
 import { Scrollbar } from '../../../../../Components/scrollbar.js';
+import { CheckCircleFill, XCircleFill } from 'react-bootstrap-icons'
 
 const statusMap = {
-  complete: {
+  1: {
     color: 'success.main',
-    label: 'Complete'
+    label: 'Approved',
+    id: 1
   },
-  created: {
-    color: 'neutral.500',
-    label: 'Created'
-  },
-  delivered: {
-    color: 'warning.main',
-    label: 'Delivered'
-  },
-  placed: {
-    color: 'info.main',
-    label: 'Placed'
-  },
-  processed: {
+  0: {
     color: 'error.main',
-    label: 'Processed'
+    label: 'Denied',
+    id: 0
+  },
+  2: {
+    color: 'warning.main',
+    label: 'Pending',
+    id: 2
   }
 };
+let Certificate = [
+  { id: 0, name: 'Denied' },
+  { id: 1, name: 'Approved' },
+  { id: 2, name: 'Pending' }
+];
+let statuss = [
+  { id: 'Disable', name: 'Disable' },
+  { id: 'Enable', name: 'Enable' }
+];
+
+const formatDate = (date) => {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+
 
 export const OrdersTable = (props) => {
   const {
@@ -52,6 +69,8 @@ export const OrdersTable = (props) => {
     onRowsPerPageChange
   } = props;
 
+  console.log(items)
+
   return (
     <div>
       <Scrollbar>
@@ -59,16 +78,19 @@ export const OrdersTable = (props) => {
           <TableHead>
             <TableRow>
               <TableCell>
-                Order
+                ID
               </TableCell>
               <TableCell>
-                Date
+                Order Date
               </TableCell>
               <TableCell>
-                Customer
+                Learner
               </TableCell>
               <TableCell>
                 Status
+              </TableCell>
+              <TableCell>
+                Tutor
               </TableCell>
               <TableCell>
                 Total
@@ -78,13 +100,11 @@ export const OrdersTable = (props) => {
           </TableHead>
           <TableBody>
             {items.map((order) => {
-              const status = statusMap[order.status];
-              const createdDate = format(order.createdAt, 'dd MMM yyyy');
-              const createdTime = format(order.createdAt, 'HH:mm');
-              const totalAmount = numeral(order.totalAmount).format(`${order.currency}0,0.00`);
+              const id = order.orderId;
+              const isCompleted = order.isCompleted;
 
               return (
-                <TableRow key={order.id}>
+                <TableRow key={id}>
                   <TableCell>
                     <Link
                       color="inherit"
@@ -92,7 +112,7 @@ export const OrdersTable = (props) => {
                       underline="none"
                       variant="subtitle2"
                     >
-                      #{order.id}
+                      #{id}
                     </Link>
                   </TableCell>
                   <TableCell>
@@ -100,17 +120,11 @@ export const OrdersTable = (props) => {
                       color="inherit"
                       variant="inherit"
                     >
-                      {createdDate}
-                    </Typography>
-                    <Typography
-                      color="text.secondary"
-                      variant="inherit"
-                    >
-                      {createdTime}
+                      {formatDate(new Date(order.orderDate))}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    {order.customer.name}
+                    {order.learnerId}
                   </TableCell>
                   <TableCell>
                     <Stack
@@ -118,28 +132,30 @@ export const OrdersTable = (props) => {
                       direction="row"
                       spacing={1}
                     >
-                      <Box
-                        sx={{
-                          backgroundColor: status.color,
-                          borderRadius: '50%',
-                          height: 8,
-                          width: 8
-                        }}
-                      />
-                      <Typography variant="body2">
-                        {status.label}
-                      </Typography>
+                      {isCompleted ? (
+                        <div className='d-flex align-items-center'>
+                          <CheckCircleFill style={{ color: 'green', marginRight: '5px' }}>
+
+                          </CheckCircleFill>
+                          <div>Completed</div>
+                        </div>
+                      ) : (
+                        <div className='d-flex align-items-center'>
+                          <XCircleFill style={{ color: 'red', marginRight: '5px' }}>
+
+                          </XCircleFill>
+                          <div>Completed</div>
+                        </div>
+                      )}
                     </Stack>
                   </TableCell>
                   <TableCell>
-                    {totalAmount}
+                    {order.curriculumId}
+                  </TableCell>
+                  <TableCell>
+                    $ {order.total}
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton>
-                      <SvgIcon fontSize="small">
-                        <EllipsisVerticalIcon />
-                      </SvgIcon>
-                    </IconButton>
                   </TableCell>
                 </TableRow>
               );
@@ -149,7 +165,7 @@ export const OrdersTable = (props) => {
       </Scrollbar>
       <Divider />
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25]}
         component="div"
         count={count}
         rowsPerPage={rowsPerPage}
@@ -168,3 +184,4 @@ OrdersTable.propTypes = {
   onPageChange: PropTypes.func,
   onRowsPerPageChange: PropTypes.func
 };
+
