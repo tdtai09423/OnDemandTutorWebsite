@@ -1,8 +1,7 @@
 import { Button, Dropdown } from 'react-bootstrap';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Box, Link, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import images from '../../../assets/images';
-import { PersonCircle } from 'react-bootstrap-icons'
 import logoutAPI from '../../../api/logoutAPI';
 
 const TOP_NAV_HEIGHT = 64;

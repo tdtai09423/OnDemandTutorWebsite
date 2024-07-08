@@ -10,7 +10,7 @@ const NotificationCom = ({ notificationInfo }) => {
         <>
             {notificationInfo.map((item, index) => {
                 return (
-                    <Card className='containerCard'>
+                    <Card key={item.notificationId} className='containerCard'>
                         <Card.Body>
                             <Card.Text className='card-text'>
                                 <Megaphone />

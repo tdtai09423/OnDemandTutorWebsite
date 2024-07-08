@@ -13,14 +13,14 @@ function AdminOrder() {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const [orders, setOrder] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const orderList = await orderAPI.getAll();
         console.log(orderList.data.$values);
-        setOrder(orderList.data.$values);
+        setOrders(orderList.data.$values);
       } catch (error) {
         console.error("Error fetching tutors:", error);
       }

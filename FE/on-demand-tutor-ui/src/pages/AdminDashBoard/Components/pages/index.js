@@ -1,4 +1,3 @@
-import { subDays, subHours, subMinutes } from 'date-fns';
 import ShoppingBagIcon from '@heroicons/react/24/solid/ShoppingBagIcon';
 import User from '@heroicons/react/24/solid/UserIcon';
 import Users from '@heroicons/react/24/solid/UserGroupIcon';
@@ -12,11 +11,11 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import { OverviewKpi } from '../sections/overview/overview-kpi.js';
-import { OverviewLatestCustomers } from '../sections/overview/overview-latest-customers.js';
 import { OverviewSummary } from '../sections/overview/overview-summary.js';
 import { useState, useEffect } from 'react';
 import tutorAPI from '../../../../api/tutorAPI.js';
 import learnerAPI from '../../../../api/learnerAPI.js';
+import orderAPI from '../../../../api/orderAPI.js';
 
 const now = new Date();
 
@@ -44,9 +43,12 @@ function HomeAdmin() {
         console.log(mergedTutors)
         setTutors(mergedTutors);
 
-        // const learnerList = await learnerAPI.getAll();
-        // console.log(learnerList.data.response.items.$values)
-        // setLearners(learnerList.data.response.items.$values);
+        const orderList = await orderAPI.getAll();
+        setOrders(orderList.data.$values);
+
+        const learnerList = await learnerAPI.getAll(token);
+        console.log(learnerList.data.response.items.$values)
+        setLearners(learnerList.data.response.items.$values);
       } catch (error) {
         console.error("Error fetching tutors:", error);
       }
@@ -95,7 +97,7 @@ function HomeAdmin() {
                       </Avatar>
                     }
                     label='Orders'
-                    value='5610'
+                    value={orders.length}
                   />
                 </Grid>
                 <Grid
@@ -141,14 +143,14 @@ function HomeAdmin() {
                       </Avatar>
                     }
                     label='Learner'
-                    value='1942'
+                    value={learners.length}
                   />
                 </Grid>
                 <Grid xs={12}>
                   <OverviewKpi
                     chartSeries={[
                       {
-                        data: [0, 20, 40, 30, 30, 44, 90],
+                        data: [0, 20, 40, 30, 30, 44, 90, 60, 88],
                         name: 'Revenue'
                       }
                     ]}
@@ -176,7 +178,7 @@ function HomeAdmin() {
                     ]}
                   />
                 </Grid>
-                <Grid xs={12}>
+                {/* <Grid xs={12}>
                   <OverviewLatestCustomers
                     customers={[
                       {
@@ -226,7 +228,7 @@ function HomeAdmin() {
                       }
                     ]}
                   />
-                </Grid>
+                </Grid>*/}
               </Grid>
             </div>
           </Stack>
