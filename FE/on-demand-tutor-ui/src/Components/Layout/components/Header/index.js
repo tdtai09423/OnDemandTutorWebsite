@@ -37,8 +37,6 @@ function Header() {
         let res = await logoutAPI();
         console.log(res);
         navigate("/");
-
-
     }
     const HandleNotification = async () => {
         try {

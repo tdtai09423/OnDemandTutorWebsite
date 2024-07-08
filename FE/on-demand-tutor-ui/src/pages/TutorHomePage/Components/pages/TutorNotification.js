@@ -1,8 +1,6 @@
-import { useCallback, useState, useEffect } from 'react';
-import { Box, Card, Container, Divider, Stack, Typography } from '@mui/material';
-import { OrdersSearch } from '../sections/orders/orders-search.js';
+import { useState, useEffect } from 'react';
+import { Box, Container, Stack, Typography } from '@mui/material';
 import userAPI from '../../../../api/userAPI.js';
-import { CertiTable } from '../sections/orders/certificate-table.js';
 import NotificationCom from '../../../../Components/Layout/components/NotificationCom/index.js';
 import NotificationAPI from '../../../../api/notificationAPI.js';
 
@@ -10,7 +8,6 @@ import NotificationAPI from '../../../../api/notificationAPI.js';
 function TutorNotification() {
     const [notifications, setNotifications] = useState([]);
 
-    const [tutors, setTutors] = useState([]);
     const [userId, setUserId] = useState();
 
     const fetchData = async () => {
