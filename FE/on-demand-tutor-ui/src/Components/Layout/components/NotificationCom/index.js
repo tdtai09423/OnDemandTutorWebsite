@@ -15,6 +15,9 @@ const NotificationCom = ({ notificationInfo, userId }) => {
     };
     const markAsRead = async () => {
         try {
+            console.log("API USERID", userId);
+            console.log("API TOKEN", token);
+
             let res = await NotificationAPI.putMarkAsRead(userId, token);
             console.log(res)
             toast.success(res.message)
@@ -26,7 +29,7 @@ const NotificationCom = ({ notificationInfo, userId }) => {
 
     return (
         <>
-            {/* <Button className='mark-as-read' onClick={markAsRead}>Mark as read</Button>{' '} */}
+            <Button className='mark-as-read' onClick={markAsRead}>Mark as read</Button>{' '}
             {notificationInfo.map((item, index) => {
                 const formattedOrderDate = formatDate(new Date(item.notificateDay));
                 const isRead = item.notiStatus === "NEW";
