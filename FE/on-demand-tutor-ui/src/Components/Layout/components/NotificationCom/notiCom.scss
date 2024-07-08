@@ -8,7 +8,8 @@
     border: 2px solid #d6d2d2;
 
     &:hover {
-        border: 2px solid #d881bb
+        border: 2px solid #d881bb;
+        background-color: #e7e0e0;
     }
 
     .card-text {
@@ -17,5 +18,25 @@
         font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         padding-top: 30px;
 
+    }
+
+    .card-new {
+        font-size: 20px;
+        font-weight: 300;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        padding-top: 30px;
+        color: red;
+    }
+
+}
+
+.mark-as-read {
+    background-color: #d881bb;
+    border: 2px solid #d881bb;
+    color: black;
+
+    &:hover {
+        background-color: #c951a1;
+        border: 2px solid #c951a1;
     }
 }

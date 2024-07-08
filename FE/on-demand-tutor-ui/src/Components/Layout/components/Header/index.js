@@ -129,7 +129,7 @@ function Header() {
                                         </Offcanvas.Header>
                                         <Offcanvas.Body>
                                             {notifications && notifications.length > 0 ? (
-                                                <NotificationCom notificationInfo={notifications} />
+                                                <NotificationCom notificationInfo={notifications} userId={userId} />
                                             ) : (
                                                 <div>
                                                     you have no notification

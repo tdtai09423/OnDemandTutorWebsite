@@ -17,7 +17,6 @@ function OrderItem({ orderItem, id }) {
     const [orders, setOrders] = useState([]);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-
     useEffect(() => {
         const fetchUser = async () => {
             try {
