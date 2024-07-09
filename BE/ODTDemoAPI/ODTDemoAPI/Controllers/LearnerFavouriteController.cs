@@ -48,7 +48,6 @@ namespace ODTDemoAPI.Controllers
             // Load the related entities to include them in the response
             var favor = await _context.LearnerFavourites
                          .Include(f => f.Learner)
-                         .Include(f => f.Tutor)
                          .FirstOrDefaultAsync(f => f.LearnerId == learnerFavourite.LearnerId && f.TutorId == learnerFavourite.TutorId);
 
             return Ok( new { learnerId = favor!.LearnerId, FavourInfo = favor! });

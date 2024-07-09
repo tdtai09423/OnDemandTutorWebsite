@@ -184,11 +184,6 @@ public partial class OnDemandTutorContext : DbContext
                 .HasForeignKey(d => d.LearnerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Learner_Favourite");
-
-            entity.HasOne(d => d.Tutor).WithMany()
-                .HasForeignKey(d => d.TutorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Learner_Favorite");
         });
 
         modelBuilder.Entity<Major>(entity =>
@@ -249,20 +244,20 @@ public partial class OnDemandTutorContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
 
-            entity.HasOne(d => d.Learner).WithMany()
+            entity.HasOne(d => d.Learner).WithMany(r => r.ReviewRatings)
                 .HasForeignKey(d => d.LearnerId)
-                .IsRequired(false)
-                .HasConstraintName("FK__ReviewRat__Learn__693CA210");
-
-            entity.HasOne(d => d.Order).WithMany()
-                .HasForeignKey(d => d.OrderId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Review_Learner");
+
+            entity.HasOne(d => d.Order).WithMany(r => r.ReviewRatings)
+                .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("KF_Order_Review");
 
-            entity.HasOne(d => d.Tutor).WithMany()
+            entity.HasOne(d => d.Tutor).WithMany(r => r.ReviewRatings)
                 .HasForeignKey(d => d.TutorId)
-                .IsRequired(false)
-                .HasConstraintName("FK__ReviewRat__Tutor__6A30C649");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Review_Tutor");
         });
 
         modelBuilder.Entity<Section>(entity =>
