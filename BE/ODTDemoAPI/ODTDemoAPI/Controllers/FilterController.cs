@@ -462,5 +462,124 @@ namespace ODTDemoAPI.Controllers
             }
             return Ok(new { Response = response, NumOfPages = numOfPages });
         }
+
+        [HttpGet("filter-tutors")]
+        public async Task<IActionResult> FilterTutors
+            (
+            [FromQuery] string? nationality,
+            [FromQuery] string? major,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice,
+            [FromQuery] decimal? minRating,
+            [FromQuery] decimal? maxRating,
+            [FromQuery] bool? ratingCountDesc,
+            [FromQuery] bool priceRangeAsc = true,
+            [FromQuery] bool ratingAsc = true,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+            )
+        {
+            try
+            {
+                IQueryable<Tutor> query = _context.Tutors
+                    .Include(t => t.ReviewRatings)
+                    .AsQueryable();
+
+                if (!string.IsNullOrEmpty(nationality))
+                {
+                    query = query.Where(t => t.Nationality.Contains(nationality));
+                }
+
+                if (!string.IsNullOrEmpty(major))
+                {
+                    query = query.Where(t => t.Major != null && t.Major.MajorName.Contains(major));
+                }
+
+                if (minPrice.HasValue)
+                {
+                    query = query.Where(t => t.Curricula.Any(c => c.PricePerSection >= minPrice.Value));
+                }
+
+                if (maxPrice.HasValue)
+                {
+                    query = query.Where(t => t.Curricula.Any(c => c.PricePerSection <= maxPrice.Value));
+                }
+
+                if (!priceRangeAsc)
+                {
+                    query = query.OrderByDescending(t => t.Curricula.Max(c => c.PricePerSection));
+                }
+
+                if (minRating.HasValue || maxRating.HasValue)
+                {
+                    if (minRating.HasValue)
+                    {
+                        query = query.Where(t => t.ReviewRatings.Average(r => r.Rating) >= (double) minRating.Value);
+                    }
+
+                    if (maxRating.HasValue)
+                    {
+                        query = query.Where(t => t.ReviewRatings.Average(r => r.Rating) <= (double) maxRating.Value);
+                    }
+
+                    if (ratingAsc)
+                    {
+                        query = (IQueryable<Tutor>)query.Select(t => new
+                        {
+                            Tutor = t,
+                            AverageRating = _context.ReviewRatings
+                                                .Where(r => r.TutorId == t.TutorId && r.Rating.HasValue)
+                                                .Average(r => (double?)r.Rating) ?? 0
+                        }).OrderBy(t => t.AverageRating);
+                    }
+                    else
+                    {
+                        query = (IQueryable<Tutor>)query.Select(t => new
+                        {
+                            Tutor = t,
+                            AverageRating = _context.ReviewRatings
+                                                .Where(r => r.TutorId == t.TutorId && r.Rating.HasValue)
+                                                .Average(r => (double?)r.Rating) ?? 0
+                        }).OrderByDescending(t => t.AverageRating);
+                    }
+                }
+
+                if (ratingCountDesc.HasValue)
+                {
+                    if (ratingCountDesc.Value)
+                    {
+                        query = (IQueryable<Tutor>)query.Select(t => new
+                        {
+                            Tutor = t,
+                            RatingCount = _context.ReviewRatings
+                                              .Count(r => r.TutorId == t.TutorId && r.Rating.HasValue)
+                        }).OrderByDescending(t => t.RatingCount);
+                    }
+                }
+
+                var tutors = await query.ToListAsync();
+                var totalCount = tutors.Count();
+                var pagedTutor = tutors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                var response = new PaginatedResponse<Tutor>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = pagedTutor
+                };
+
+                int numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages += 1;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
