@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.OperationModel;
+using Stripe.Climate;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -24,7 +25,11 @@ public class AnalystController : ControllerBase
         {
             var query = _context.LearnerOrders
                                 .Include(o => o.Curriculum)
-                                .Where(o => o.Curriculum!.TutorId == tutorId && o.OrderDate.Date == date.Date);
+                                .Where(o => o.Curriculum!.TutorId == tutorId 
+                                && o.OrderDate.Date == date.Date 
+                                && o.OrderStatus == "Accepted"
+                                && o.IsCompleted == true
+                                 );
 
             var totalBookings = await query.CountAsync();
             var totalAmount = await query.SumAsync(o => o.Total);
@@ -52,7 +57,12 @@ public class AnalystController : ControllerBase
 
             var query = _context.LearnerOrders
                                 .Include(o => o.Curriculum)
-                                .Where(o => o.Curriculum!.TutorId == tutorId && o.OrderDate >= startDate && o.OrderDate < endDate);
+                                .Where(o => o.Curriculum!.TutorId == tutorId
+                                            && o.OrderDate >= startDate
+                                            && o.OrderDate < endDate
+                                           && o.OrderStatus == "Accepted"
+                                            && o.IsCompleted == true
+                                            );
 
             var totalBookings = await query.CountAsync();
             var totalAmount = await query.SumAsync(o => o.Total);    
@@ -72,5 +82,35 @@ public class AnalystController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-}
+    [HttpGet("get-all-bookings-summary/{tutorId}")]
+    public async Task<IActionResult> GetAllBookingsSummaryForTutor([FromRoute] int tutorId)
+    {
+        try
+        {
+            var query = _context.LearnerOrders
+                                .Include(o => o.Curriculum)
+                                .Where(o => o.Curriculum!.TutorId == tutorId
+                                            && o.OrderStatus == "Accepted"
+                                            && o.IsCompleted == true
+                                           );
+
+            var totalBookings = await query.CountAsync();
+            var totalAmount = await query.SumAsync(o => o.Total); 
+            var orders = await query.ToListAsync();
+
+            var response = new BookingSummary
+            {
+                TotalBookings = totalBookings,
+                TotalAmount = totalAmount,
+                Orders = orders
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    }
    
