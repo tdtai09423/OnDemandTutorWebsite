@@ -1,8 +1,7 @@
 import { Button, Dropdown } from 'react-bootstrap';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Box, Link, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import images from '../../../assets/images';
-import { PersonCircle } from 'react-bootstrap-icons'
 import logoutAPI from '../../../api/logoutAPI';
 
 const TOP_NAV_HEIGHT = 64;
@@ -23,11 +22,12 @@ function TopNav() {
     <Box
       component="header"
       sx={{
-        backgroundColor: 'neutral.900',
+        backgroundColor: 'white',
         color: 'common.white',
         position: 'fixed',
         width: '100%',
-        zIndex: (theme) => theme.zIndex.appBar
+        zIndex: (theme) => theme.zIndex.appBar,
+        boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 3px'
       }}
     >
       <Stack

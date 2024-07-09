@@ -1,27 +1,32 @@
-import { useCallback, useState, useEffect } from 'react';
-import { Box, Card, Container, Divider, Stack, Typography } from '@mui/material';
-import { OrdersSearch } from '../sections/orders/orders-search.js';
-import tutorAPI from '../../../../api/tutorAPI.js';
-import { CertiTable } from '../sections/orders/certificate-table.js';
+import { useState, useEffect } from 'react';
+import { Box, Container, Stack, Typography } from '@mui/material';
+import userAPI from '../../../../api/userAPI.js';
+import NotificationCom from '../../../../Components/Layout/components/NotificationCom/index.js';
+import NotificationAPI from '../../../../api/notificationAPI.js';
 
 
 function TutorNotification() {
-    const [mode, setMode] = useState('table');
-    const [query, setQuery] = useState('');
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [notifications, setNotifications] = useState([]);
 
-    const [tutors, setTutors] = useState([]);
+    const [userId, setUserId] = useState();
 
     const fetchData = async () => {
         try {
-
+            const Jtoken = localStorage.getItem('token');
+            const email = localStorage.getItem('email');
+            const user = await userAPI.getUserByEmail(email);
+            setUserId(user.data.id);
+            let res = await NotificationAPI.getNotification(user.data.id);
+            setNotifications(res);
+            console.log("NOTIFICATION", res.data.notificationList.$values);
+            setNotifications(res.data.notificationList.$values)
         } catch (error) {
-            console.error("Error fetching tutors:", error);
+            console.log(error);
         }
     };
 
     useEffect(() => {
+
         fetchData();
     }, []);
 
@@ -47,13 +52,7 @@ function TutorNotification() {
                             </Typography>
                         </Stack>
                         <div>
-                            <Card>
-
-                                <Divider />
-                                <CertiTable
-
-                                />
-                            </Card>
+                            <NotificationCom notificationInfo={notifications} />
                         </div>
                     </Stack>
                 </Container>

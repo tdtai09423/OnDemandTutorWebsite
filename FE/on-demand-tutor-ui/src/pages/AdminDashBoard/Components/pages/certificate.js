@@ -17,10 +17,10 @@ function Certificate() {
         try {
             const token = localStorage.getItem('token');
             const approvedResponse = await tutorAPI.getApproved();
-            const page = 1;
-            const pageSize = 10;
-            const pendingResponse = await tutorAPI.getPending(token, page, pageSize);
-            const rejectedResponse = await tutorAPI.getRejected(token, page, pageSize);
+            const page1 = 1;
+            const pageSize1 = 10;
+            const pendingResponse = await tutorAPI.getPending(token, page1, pageSize1);
+            const rejectedResponse = await tutorAPI.getRejected(token, page1, pageSize1);
 
             const approvedTutors = approvedResponse.data.response.items.$values;
             const pendingTutors = pendingResponse.data.response.items.$values;

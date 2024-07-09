@@ -4,6 +4,14 @@ import { Link, useNavigate } from 'react-router-dom'
 // import SignUpTutorAPI from '../../api/signUpTutor';
 import axios from "axios";
 import { toast } from 'react-toastify';
+import { NavDropdown, Navbar, Nav, Button, Container } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import '../../Components/Layout/components/Header/Header.scss'
+import { BoxArrowInRight } from 'react-bootstrap-icons'
+import images from '../../assets/images';
+
+
+
 function SignUpTutor() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -104,7 +112,7 @@ function SignUpTutor() {
             });
             toast.success("Sent verification code to your email!");
 
-            navigate("/verify-code", {state: {email : email}});
+            navigate("/verify-code", { state: { email: email } });
         } catch (error) {
             toast.error(error.message);
             console.error("Send code error:", error);
@@ -112,10 +120,43 @@ function SignUpTutor() {
     }
     return (
         <>
+            <Navbar expand="lg" className="bg-body-tertiary">
+                <Container fluid>
+                    <Navbar.Brand as={Link} to={"/"}>
+                        <img src={images.logo} alt="OnDemandTutorLogo" />
+                    </Navbar.Brand>
+                    <Navbar.Toggle aria-controls="navbarScroll" />
+                    <Navbar.Collapse id="navbarScroll">
+                        <Nav
+                            className="me-auto my-2 my-lg-0"
+                            style={{ maxHeight: '100px' }}
+                            navbarScroll
+                        >
+
+                            <Nav.Link as={Link} to={"/"}><span className="navBarContent">Find tutor</span></Nav.Link>
+                            <Nav.Link as={Link} to={"/sign-up-tutor"}><span className="navBarContent">Become a tutor</span></Nav.Link>
+                            <NavDropdown title={<span className="navBarContent">Contact us</span>} id="navbarScrollingDropdown">
+                                <NavDropdown.Item><Link as={Link} to={"/send-report"}>Send report</Link></NavDropdown.Item>
+                                <NavDropdown.Item href="#action4">
+                                    Another action
+                                </NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item>
+                                    <Link as={Link} to={"/policy"}>Policy</Link>
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                        </Nav>
+                        <Button className="loginButton text-black border border-2 border-dark" variant="" as={Link} to={"/login"}>
+                            <BoxArrowInRight className="loginIcon"></BoxArrowInRight>
+                            <span className="loginContent">Log In</span>
+                        </Button>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
             <div className='signup-container col-3 sign-up-form'>
                 <div className='tittle'>Sign up as a tutor</div>
                 <div className='haveacc'>Already have an account? <Link className="forgot-password" as={Link} to={"/login"}> Log in</Link></div>
-                
+
                 <div className='text'>First name</div>
                 <input type='text' placeholder='Your first name' className='form-control' value={firstName} onChange={(event) => setFirstName(event.target.value)} />
                 <div className='text'>Last name</div>

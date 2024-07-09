@@ -1,8 +1,8 @@
 import apiClient from './apiClient';
 
 const orderAPI = {
-    postShortTermBooking() {
-        const url = '/Tutor/approved';
+    getAll() {
+        const url = '/LearnerOrder';
         return apiClient.get(url);
     },
 

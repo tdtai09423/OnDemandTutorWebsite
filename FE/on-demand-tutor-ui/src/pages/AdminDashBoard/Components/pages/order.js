@@ -1,85 +1,32 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { subHours, subMinutes } from 'date-fns';
 import { Box, Button, Card, Container, Divider, Stack, Typography } from '@mui/material';
 import { OrdersSearch } from '../sections/orders/orders-search.js';
 import { OrdersTable } from '../sections/orders/orders-table.js';
+import orderAPI from '../../../../api/orderAPI.js';
 
 const now = new Date();
-
-const orders = [
-  {
-    id: '5273',
-    createdAt: subMinutes(now, 21).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Devon Lane'
-    },
-    status: 'delivered',
-    totalAmount: 192.5,
-    updatedAt: subMinutes(now, 7).getTime()
-  },
-  {
-    id: '9265',
-    createdAt: subMinutes(now, 56).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Livia Louthe'
-    },
-    status: 'complete',
-    totalAmount: 631,
-    updatedAt: subMinutes(now, 54).getTime()
-  },
-  {
-    id: '9266',
-    createdAt: subHours(subMinutes(now, 31), 2).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Peri Ottawell'
-    },
-    status: 'placed',
-    totalAmount: 631,
-    updatedAt: subHours(subMinutes(now, 43), 1).getTime()
-  },
-  {
-    id: '1090',
-    createdAt: subHours(subMinutes(now, 51), 2).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Thadeus Jacketts'
-    },
-    status: 'processed',
-    totalAmount: 100,
-    updatedAt: subHours(subMinutes(now, 13), 2).getTime()
-  },
-  {
-    id: '1111',
-    createdAt: subHours(subMinutes(now, 6), 3).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Rad Jose'
-    },
-    status: 'processed',
-    totalAmount: 60,
-    updatedAt: subHours(subMinutes(now, 54), 2).getTime()
-  },
-  {
-    id: '2475',
-    createdAt: subHours(subMinutes(now, 17), 4).getTime(),
-    currency: '$',
-    customer: {
-      name: 'Eydie Hopkyns'
-    },
-    status: 'complete',
-    totalAmount: 1200,
-    updatedAt: subHours(subMinutes(now, 1), 2).getTime()
-  }
-];
 
 function AdminOrder() {
   const [mode, setMode] = useState('table');
   const [query, setQuery] = useState('');
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const orderList = await orderAPI.getAll();
+        console.log(orderList.data.$values);
+        setOrders(orderList.data.$values);
+      } catch (error) {
+        console.error("Error fetching tutors:", error);
+      }
+    };
+    fetchData();
+  }, [page, rowsPerPage]);
 
   const handleModeChange = useCallback(
     (event, value) => {
@@ -99,6 +46,7 @@ function AdminOrder() {
 
   const handleChangePage = useCallback(
     (event, value) => {
+      console.log(value)
       setPage(value);
     },
     []
@@ -106,11 +54,13 @@ function AdminOrder() {
 
   const handleChangeRowsPerPage = useCallback(
     (event) => {
+      console.log(event.target.value)
       setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
+      setPage(1);
     },
     []
   );
+
 
   return (
     <>
