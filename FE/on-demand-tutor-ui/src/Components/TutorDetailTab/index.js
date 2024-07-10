@@ -14,6 +14,7 @@ import majorAPI from '../../api/majorAPI';
 import sectionAPI from '../../api/sectionAPI';
 import reviewRatingAPI from '../../api/ReviewRatingAPI';
 import LearnerReview from './component/learnerReview/learnerReview';
+import curriculumAPI from '../../api/curriculumAPI';
 
 
 function TutorDetailTab({ tutorId }) {
@@ -27,10 +28,16 @@ function TutorDetailTab({ tutorId }) {
     const [rating, setRating] = useState();
     const [certi, setCerti] = useState([]);
     const [reviews, setReviews] = useState([]);
-    const [subject, setSubject] = useState('Basic English Language Course');
+    const [subject, setSubject] = useState('Choose...');
+    const [subjects, setSubjects] = useState([]);
+    const [available, setAvailable] = useState('morning');
+
 
     const handleSelectSubject = (Subject) => {
         setSubject(Subject); // update the major state when an option is selected
+    };
+    const handleSelectAvailable = (Available) => {
+        setAvailable(Available); // update the major state when an option is selected
     };
 
     useEffect(() => {
@@ -39,19 +46,21 @@ function TutorDetailTab({ tutorId }) {
                 const tutor = await tutorAPI.get(tutorId);
                 const price = await sectionAPI.get(tutorId);
                 const rating = await reviewRatingAPI.getRating(tutorId);
-                //const reviews = await reviewRatingAPI.getReview(tutorId);
+                const reviews = await reviewRatingAPI.getReview(tutorId);
                 const certi = await tutorAPI.getCerti(tutorId);
+                const subject = await curriculumAPI.getCurriculumByTutorId(tutorId);
                 setTutor(tutor.data);
                 setPrice(price.data);
                 setRating(rating.data);
                 setCerti(certi.data.$values);
-                //setReviews(reviews.data.response.items.$values);
+                setReviews(reviews.data.response.items.$values);
                 const majorID = tutor.data.majorId;
                 const major = await majorAPI.get(majorID);
                 setMajor(major.data);
                 setFirstName(tutor.data.tutorNavigation.firstName);
                 setLastName(tutor.data.tutorNavigation.lastName);
-                console.log(rating)
+                setSubjects(subject.data.$values);
+                console.log('>>>>', subject.data.$values)
 
             } catch (error) {
                 console.error("Error fetching tutors:", error);
@@ -110,7 +119,7 @@ function TutorDetailTab({ tutorId }) {
                         </Col>
                         <Col md={8}>
                             <div className="price align-item-center">
-                                <span className="amount">₫{price}</span>
+                                <span className="amount">${price}</span>
                                 <span className="duration">50-min lesson</span>
                             </div>
                         </Col>
@@ -152,25 +161,53 @@ function TutorDetailTab({ tutorId }) {
                     <hr />
                 </Tab>
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
-                    <Dropdown align="end" className="" style={{ width: '40%' }}>
-                        <div style={{ paddingLeft: '10px', marginBottom: '5px' }}>What do you want to learn</div>
-                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
-                            <div className="dropdown-text">
-                                <span className="dropdown-tittle">{subject}</span>
-                            </div>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu className=" dropdown-menu">
-                            <Dropdown.Item onClick={() => handleSelectSubject('Basic English Language Course')}>
-                                Basic English Language Course
-                            </Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleSelectSubject('Advanced English Language Course')}>
-                                Advanced English Language Course
-                            </Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    <Row>
+                        <Col md={6}>
+                            <Dropdown align="end" className="" style={{ width: '80%' }}>
+                                <div style={{ paddingLeft: '10px', marginBottom: '5px' }}>What do you want to learn</div>
+                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
+                                    <div className="dropdown-text">
+                                        <span className="dropdown-tittle">{subject}</span>
+                                    </div>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className=" dropdown-menu">
+                                    {subjects.map((item) => {
+                                        return (
+                                            <Dropdown.Item key={item.$id} onClick={() => handleSelectSubject(item.curriculumDescription)}>
+                                                {item.curriculumDescription}
+                                            </Dropdown.Item>
+                                        );
+                                    })}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Col>
+                        <Col md={6}>
+                            <Dropdown align="end" className="" style={{ width: '80%' }}>
+                                <div style={{ paddingLeft: '10px', marginBottom: '5px' }}>Available on:</div>
+                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
+                                    <div className="dropdown-text">
+                                        <span className="dropdown-tittle">{available}</span>
+                                    </div>
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className=" dropdown-menu">
+                                    <Dropdown.Item onClick={() => handleSelectAvailable('morning')}>
+                                        Morning
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => handleSelectAvailable('afternoon')}>
+                                        Afternoon
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => handleSelectAvailable('night')}>
+                                        Night
+                                    </Dropdown.Item>
+
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Col>
+                    </Row>
                     <ScheduleTab
                         tutorId={tutorId}
                         subject={subject}
+                        available={available}
                     />
                 </Tab>
                 <Tab eventKey="review" title={<span className="information-tab-text">Review</span>} className="information-tab">
@@ -182,8 +219,8 @@ function TutorDetailTab({ tutorId }) {
                 </Tab>
                 <Tab eventKey="resume" title={<span className="information-tab-text">Resume</span>} className="information-tab">
                     <ul>
-                        {certi.map((certi) => (
-                            <li key={certi.$id}>{certi.tutorCertificate}</li>
+                        {certi.map((item) => (
+                            <li key={item.$id}>{item.tutorCertificate}</li>
                         ))}
                     </ul>
                     <hr />

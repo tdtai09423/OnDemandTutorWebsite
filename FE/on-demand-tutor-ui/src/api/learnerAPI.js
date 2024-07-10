@@ -6,7 +6,7 @@ const learnerAPI = {
         return apiClient.get(url);
     },
     getFavourite(id) {
-        const url = '/LearnerFavourites/learner/' + id;
+        const url = '/LearnerFavourite/' + id;
         return apiClient.get(url);
     },
     getAll(token) {
@@ -16,7 +16,19 @@ const learnerAPI = {
                 Authorization: `Bearer ${token}`
             }
         });
-    }
+    },
+    addFavourite(tutorId, learnerId, token) {
+        const url = 'LearnerFavourite/add-favorite?learnerId=' + learnerId + '&tutorId=' + tutorId;
+        return apiClient.post(url, null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    },
+    removeFavourite(tutorId, learnerId) {
+        const url = 'LearnerFavourite/' + learnerId + '/' + tutorId;
+        return apiClient.delete(url);
+    },
 }
 
 export default learnerAPI;

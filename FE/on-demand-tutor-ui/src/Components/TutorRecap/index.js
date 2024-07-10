@@ -7,8 +7,11 @@ import { useState, useEffect } from 'react';
 import sectionAPI from '../../api/sectionAPI';
 import reviewRatingAPI from '../../api/ReviewRatingAPI';
 import majorAPI from '../../api/majorAPI';
+import userAPI from '../../api/userAPI';
+import learnerAPI from '../../api/learnerAPI';
 
-function TutorRecap({ tutor }) {
+
+function TutorRecap({ tutor, tutorFavouriteList }) {
 
     const firstName = tutor.tutorNavigation.firstName;
     const lastName = tutor.tutorNavigation.lastName;
@@ -16,8 +19,16 @@ function TutorRecap({ tutor }) {
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
     const [major, setMajor] = useState('');
+    //const [tutorFavourites, setTutorFavourites] = useState([]);
+    //const [isFavourite, setIsFavourite] = useState();
+    const [show, setShow] = useState();
+
 
     useEffect(() => {
+        const tmp = tutorFavouriteList.map(item => item.tutorId);
+        //setIsFavourite(tmp.includes(tutor.tutorId));
+        tmp.includes(tutor.tutorId) ? setShow(<SuitHeartFill style={{ fontSize: '1.5em' }} onClick={handleHeartFillIconClick} />) : setShow(<SuitHeart style={{ fontSize: '1.5em' }} onClick={handleHeartIconClick} />);
+
         const fetchTutors = async () => {
             try {
                 const price = await sectionAPI.get(tutor.tutorId);
@@ -32,7 +43,34 @@ function TutorRecap({ tutor }) {
             }
         };
         fetchTutors();
-    }, []);
+    }, [tutorFavouriteList]);
+
+    const handleHeartIconClick = async () => {
+        setShow(<SuitHeartFill style={{ fontSize: '1.5em' }} onClick={handleHeartFillIconClick} />)
+        //setIsFavourite(true);
+        const token = localStorage.getItem('token');
+        const email = localStorage.getItem('email');
+        const user = await userAPI.getUserByEmail(email);
+        console.log(user.data.id)
+        const addFavour = await learnerAPI.addFavourite(tutor.tutorId, user.data.id, token)
+    }
+
+    const handleHeartFillIconClick = async () => {
+        setShow(<SuitHeart style={{ fontSize: '1.5em' }} onClick={handleHeartIconClick} />);
+        //setIsFavourite(false);
+        const email = localStorage.getItem('email');
+        const user = await userAPI.getUserByEmail(email);
+        console.log(user.data.id)
+        const removeFavour = await learnerAPI.removeFavourite(tutor.tutorId, user.data.id)
+    }
+
+    // const renderHeartIcon = () => {
+    //     if (isFavourite) {
+    //         return <SuitHeartFill style={{ fontSize: '1.5em' }} onClick={handleHeartFillIconClick} />
+    //     } else {
+    //         return <SuitHeart style={{ fontSize: '1.5em' }} onClick={handleHeartIconClick} />
+    //     }
+    // }
 
     const truncatedDescription = tutor.tutorDescription.length > 150 ? tutor.tutorDescription.substring(0, 150) + '...' : tutor.tutorDescription;
 
@@ -65,7 +103,7 @@ function TutorRecap({ tutor }) {
                                             padding: '1em 0',
                                         }}
                                     >
-                                        <SuitHeart style={{ fontSize: '1.5em' }} />
+                                        {show}
                                     </Col>
                                 </Row>
                                 <Card.Text>
@@ -97,7 +135,7 @@ function TutorRecap({ tutor }) {
                                     </Col>
                                     <Col md={6}>
                                         <div className='d-block'>
-                                            <h3><strong>₫</strong>{price}</h3><div>50-min lesson</div>
+                                            <h3><strong>$</strong>{price}</h3><div>50-min lesson</div>
                                         </div>
 
                                     </Col>

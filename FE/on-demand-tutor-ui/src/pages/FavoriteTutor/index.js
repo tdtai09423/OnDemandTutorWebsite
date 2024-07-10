@@ -6,6 +6,7 @@ import { Globe, PersonFill, ChatSquareDotsFill, StarFill } from 'react-bootstrap
 import { useState, useEffect } from 'react';
 import learnerAPI from '../../api/learnerAPI';
 import userAPI from '../../api/userAPI';
+import tutorAPI from '../../api/tutorAPI';
 
 function FavoriteTutor() {
 
@@ -14,16 +15,25 @@ function FavoriteTutor() {
     useEffect(() => {
         const fetchTutors = async () => {
             try {
+                let tutorArr = [];
                 const email = localStorage.getItem('email');
                 const user = await userAPI.getUserByEmail(email);
 
                 const tutorList = await learnerAPI.getFavourite(user.data.id);
-                setTutors(tutorList.data.$values);
+                console.log(tutorList.data.$values)
+                for (let i = 0; i < tutorList.data.$values.length; i++) {
+                    const tutor = await tutorAPI.get(tutorList.data.$values[i].tutorId);
+                    console.log('>>>', tutor)
+                    tutorArr[i] = tutor.data;
+                }
+                setTutors(tutorArr);
+                console.log(tutorArr);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
         };
         fetchTutors();
+
     }, []);
 
     return (
@@ -42,7 +52,7 @@ function FavoriteTutor() {
                             <Col md={9}>
                                 <Card.Body>
                                     <Row>
-                                        <Col md={7}>
+                                        <Col md={12}>
                                             <Card.Text>
                                                 <p className="language">
                                                     <Globe className="icon" /> {tutor.majorId}
@@ -60,10 +70,6 @@ function FavoriteTutor() {
                                                 </p>
                                                 <Link className="read-more" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>Read more</Link>
                                             </Card.Text>
-                                        </Col>
-
-                                        <Col md={5} className="profile-button">
-
                                         </Col>
                                     </Row>
                                 </Card.Body>

@@ -19,7 +19,6 @@ function AdminOrder() {
     const fetchData = async () => {
       try {
         const orderList = await orderAPI.getAll();
-        console.log(orderList.data.$values);
         setOrders(orderList.data.$values);
       } catch (error) {
         console.error("Error fetching tutors:", error);
@@ -81,13 +80,6 @@ function AdminOrder() {
               <Typography variant="h4">
                 Orders
               </Typography>
-              <Button
-                color="primary"
-                size="large"
-                variant="contained"
-              >
-                Add
-              </Button>
             </Stack>
             <div>
               <Card>

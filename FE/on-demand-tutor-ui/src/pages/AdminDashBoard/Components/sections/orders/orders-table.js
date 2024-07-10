@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Scrollbar } from '../../../../../Components/scrollbar.js';
 import { CheckCircleFill, XCircleFill } from 'react-bootstrap-icons'
+import OrdersTableRow from './orders-table-row.js'
 
 const statusMap = {
   1: {
@@ -31,11 +32,6 @@ const statusMap = {
     id: 2
   }
 };
-let Certificate = [
-  { id: 0, name: 'Denied' },
-  { id: 1, name: 'Approved' },
-  { id: 2, name: 'Pending' }
-];
 let statuss = [
   { id: 'Disable', name: 'Disable' },
   { id: 'Enable', name: 'Enable' }
@@ -98,60 +94,12 @@ export const OrdersTable = (props) => {
               const isCompleted = order.isCompleted;
 
               return (
-                <TableRow key={id}>
-                  <TableCell>
-                    <Link
-                      color="inherit"
-                      href="#"
-                      underline="none"
-                      variant="subtitle2"
-                    >
-                      #{id}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      color="inherit"
-                      variant="inherit"
-                    >
-                      {formatDate(new Date(order.orderDate))}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    {order.learnerId}
-                  </TableCell>
-                  <TableCell>
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing={1}
-                    >
-                      {isCompleted ? (
-                        <div className='d-flex align-items-center'>
-                          <CheckCircleFill style={{ color: 'green', marginRight: '5px' }}>
-
-                          </CheckCircleFill>
-                          <div>Completed</div>
-                        </div>
-                      ) : (
-                        <div className='d-flex align-items-center'>
-                          <XCircleFill style={{ color: 'red', marginRight: '5px' }}>
-
-                          </XCircleFill>
-                          <div>Completed</div>
-                        </div>
-                      )}
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    {order.curriculumId}
-                  </TableCell>
-                  <TableCell>
-                    $ {order.total}
-                  </TableCell>
-                  <TableCell align="right">
-                  </TableCell>
-                </TableRow>
+                <OrdersTableRow
+                  key={id}
+                  id={id}
+                  order={order}
+                  isCompleted={isCompleted}
+                />
               );
             })}
           </TableBody>

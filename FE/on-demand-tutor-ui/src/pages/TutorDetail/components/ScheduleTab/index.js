@@ -17,7 +17,7 @@ import { ArrowLeftShort, ArrowRightShort } from 'react-bootstrap-icons'
 import sectionAPI from "../../../../api/sectionAPI";
 import ScheduleCell from "./ScheduleCell";
 
-function Calendar({ tutorId, subject }) {
+function Calendar({ tutorId, subject, available }) {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -99,6 +99,7 @@ function Calendar({ tutorId, subject }) {
                         selectedDate={selectedDate}
                         formattedDate={formattedDate}
                         subject={subject}
+                        availableC={available}
                     />
                 );
                 day = addDays(day, 1);

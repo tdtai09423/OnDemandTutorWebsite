@@ -249,12 +249,13 @@
 
 .calendar .body .cell {
     position: relative;
-    height: 27em;
+    height: auto;
     border-right: 1px solid black;
     overflow-y: scroll;
     cursor: pointer;
     transition: 0.25s ease-out;
     font-size: 1.5em;
+    min-height: 15em;
 }
 
 .calendar .body .cell::-webkit-scrollbar {

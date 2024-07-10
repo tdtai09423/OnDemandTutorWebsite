@@ -5,6 +5,8 @@ import CancelOrder from '../../CancelOrder';
 import ChangeTime from '../../ChangeTime';
 import { Margin } from '@mui/icons-material';
 import Invoice from '../../Invoice/Invoice';
+import Feedback from '../../Feedback/Feedback';
+
 const OrderHistoryList = ({ learnerId }) => {
 
   const [listOrder, setListOrder] = useState([]);
@@ -52,6 +54,7 @@ const OrderHistoryList = ({ learnerId }) => {
               const avail = item.orderStatus === "Pending" || item.orderStatus === "Paid"
               const isCancellable = avail && timeDiff < 48 * 60 * 60 * 1000;
               const isCompleted = (item.orderStatus === "Paid" || item.orderStatus === "Accepted" || item.orderStatus === "Pending")
+              const isAbleToFeedback = (item.orderStatus === "Accepted")
               return (
                 <tr key={`order-${index}`}>
                   <td>{item.orderId}</td>
@@ -72,6 +75,14 @@ const OrderHistoryList = ({ learnerId }) => {
                     {isCompleted ? (
                       <td>
                         <Invoice order={item} />
+                      </td>
+                    ) : (
+                      <td></td>
+                    )}
+
+                    {isAbleToFeedback ? (
+                      <td>
+                        <Feedback order={item} learnerId={learnerId} />
                       </td>
                     ) : (
                       <td></td>

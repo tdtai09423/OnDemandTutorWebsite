@@ -9,10 +9,9 @@ import sectionAPI from "../../../../api/sectionAPI";
 
 
 
-function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
+function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject, availableC }) {
 
     const Jtoken = localStorage.getItem('token');
-    console.log(Jtoken);
     const navigate = useNavigate();
 
     const handleOnClick = (sectionFree) => {
@@ -49,7 +48,62 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
     const formattedOriginalDate = formatDate(originalDate);
     const formattedNewDate = formatDate(newDate);
 
-    const [sections, setSection] = useState([])
+    const [sections, setSection] = useState([]);
+    const morning = [{
+        $id: '1',
+        sectionStart: formattedOriginalDate + "T07:00:00"
+    }, {
+        $id: '2',
+        sectionStart: formattedOriginalDate + "T08:00:00"
+    }, {
+        $id: '3',
+        sectionStart: formattedOriginalDate + "T09:00:00"
+    }, {
+        $id: '4',
+        sectionStart: formattedOriginalDate + "T10:00:00"
+    }, {
+        $id: '5',
+        sectionStart: formattedOriginalDate + "T11:00:00"
+    }, {
+        $id: '6',
+        sectionStart: formattedOriginalDate + "T12:00:00"
+    }, {
+        $id: '7',
+        sectionStart: formattedOriginalDate + "T13:00:00"
+    }];
+    const afternoon = [{
+        $id: '8',
+        sectionStart: formattedOriginalDate + "T14:00:00"
+    }, {
+        $id: '9',
+        sectionStart: formattedOriginalDate + "T15:00:00"
+    }, {
+        $id: '10',
+        sectionStart: formattedOriginalDate + "T16:00:00"
+    }, {
+        $id: '11',
+        sectionStart: formattedOriginalDate + "T17:00:00"
+    }, {
+        $id: '12',
+        sectionStart: formattedOriginalDate + "T18:00:00"
+    }, {
+        $id: '13',
+        sectionStart: formattedOriginalDate + "T19:00:00"
+    }, {
+        $id: '14',
+        sectionStart: formattedOriginalDate + "T20:00:00"
+    }]
+    const night = [{
+        $id: '15',
+        sectionStart: formattedOriginalDate + "T21:00:00"
+    }, {
+        $id: '16',
+        sectionStart: formattedOriginalDate + "T22:00:00"
+    }, {
+        $id: '17',
+        sectionStart: formattedOriginalDate + "T23:00:00"
+    }]
+
     const [free, setFree] = useState([{
         $id: '1',
         sectionStart: formattedOriginalDate + "T07:00:00"
@@ -116,7 +170,15 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
             }
         };
         fetchSection();
-    }, []);
+        if (availableC === 'morning') {
+            setFree(morning)
+        } else if (availableC === 'afternoon') {
+            setFree(afternoon)
+        } else {
+            setFree(night)
+        }
+        console.log(availableC)
+    }, [availableC]);
 
 
 
@@ -128,7 +190,14 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject }) {
             <div className="number">{formattedDate}</div>
             <div className="sections-day">
                 {free.map((sectionFree) => {
-                    if (!sections.some(section => section.sectionStart === sectionFree.sectionStart)) {
+                    const today = new Date();
+                    today.setHours(today.getHours() + 1);
+                    const sectionStartss = new Date(sectionFree.sectionStart);
+                    if (today > sectionStartss) {
+                        return (
+                            <></>
+                        );
+                    } else if (!sections.some(section => section.sectionStart === sectionFree.sectionStart)) {
                         return (
                             <div key={free.$id} className="sectionFree" onClick={() => handleOnClick(sectionFree)}>{formatSection(new Date(sectionFree.sectionStart))}</div>
                         );

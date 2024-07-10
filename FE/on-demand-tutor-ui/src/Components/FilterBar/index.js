@@ -16,7 +16,6 @@ function FilterBar({ majors }) {
     const [native, setNative] = useState('No');
     const [also, setAlso] = useState('Also speak');
     const [sortBy, setSortBy] = useState('Our top picks');
-    console.log(majors);
 
     const submitFilter = (e) => {
         console.log({ major, nationality, available, native, sortBy });

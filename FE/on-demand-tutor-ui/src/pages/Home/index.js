@@ -7,11 +7,13 @@ import { Image } from "react-bootstrap";
 import userAPI from "../../api/userAPI";
 import { useNavigate } from "react-router-dom";
 import majorAPI from "../../api/majorAPI";
+import learnerAPI from "../../api/learnerAPI";
 
 function Home() {
     const [tutors, setTutors] = useState([]);
     const [majors, setMajors] = useState([]);
     const [user, setUser] = useState({});
+    const [tutorFavouriteList, setTutorFavouriteList] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,7 +31,8 @@ function Home() {
                 }
                 const tutorList = await tutorAPI.getApproved();
                 setTutors(tutorList.data.response.items.$values);
-                console.log(tutorList);
+                const tutorFavouriteList = await learnerAPI.getFavourite(user.data.id);
+                setTutorFavouriteList(tutorFavouriteList.data.$values);
 
             } catch (error) {
                 console.error("Error fetching tutors:", error);
@@ -72,7 +75,7 @@ function Home() {
             <hr />
             <div className="tutor-recap">
                 {tutors.map((tutor) => (
-                    <TutorRecap tutor={tutor} key={tutor.tutorId} />
+                    <TutorRecap tutorFavouriteList={tutorFavouriteList} tutor={tutor} key={tutor.tutorId} />
                 ))}
             </div>
         </div>

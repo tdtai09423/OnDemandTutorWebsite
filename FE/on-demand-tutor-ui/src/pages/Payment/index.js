@@ -116,7 +116,7 @@ function Payment() {
                             <ListGroup className="mt-3">
                                 <ListGroupItem>
                                     <div className="d-flex justify-content-between">
-                                        <span>Friday, June 21 at 23:00</span>
+                                        <span>{new Date()}</span>
                                         <span className="text-muted">Time is based on your location</span>
                                     </div>
                                 </ListGroupItem>
@@ -124,20 +124,20 @@ function Payment() {
                                     <div className="d-flex justify-content-between align-items-center">
                                         <span>Your order</span>
                                         <Badge variant="light">
-                                            <strong>₫</strong>{price}
+                                            <strong>$</strong>{price}
                                         </Badge>
                                     </div>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <div className="d-flex justify-content-between">
                                         <span>50-min lesson</span>
-                                        <span><strong>₫</strong>{price}</span>
+                                        <span><strong>$</strong>{price}</span>
                                     </div>
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <div className="d-flex justify-content-between">
                                         <span>Total</span>
-                                        <span><strong>₫</strong>{price}</span>
+                                        <span><strong>$</strong>{price}</span>
                                     </div>
                                 </ListGroupItem>
                             </ListGroup>
@@ -161,7 +161,7 @@ function Payment() {
                         </Card.Header>
                         <Card.Body>
                             <Button variant="primary" block className="mt-3" type="submit" onClick={handleCheckout}>
-                                Confirm payment - <span><strong>₫</strong>{price}</span>
+                                Confirm payment - <span><strong>$</strong>{price}</span>
                             </Button>
                             <p className="mt-3 text-muted">
                                 By pressing the "Confirm payment" button, you agree to

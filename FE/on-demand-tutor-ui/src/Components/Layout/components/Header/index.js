@@ -2,11 +2,12 @@ import { NavDropdown, Navbar, Nav, Button, Container, Dropdown } from 'react-boo
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Header.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import { BoxArrowInRight, PersonCircle, WalletFill, PlusCircle } from 'react-bootstrap-icons'
+import { BoxArrowInRight, PersonCircle, WalletFill, PlusCircle, StarFill, Gem } from 'react-bootstrap-icons'
 import images from '../../../../assets/images';
 import logoutAPI from '../../../../api/logoutAPI';
 import { useEffect, useState } from 'react';
 import userAPI from '../../../../api/userAPI';
+import learnerAPI from '../../../../api/learnerAPI';
 
 import NotificationAPI from '../../../../api/notificationAPI';
 import Offcanvas from 'react-bootstrap/Offcanvas';
@@ -15,6 +16,7 @@ function Header() {
     const [userRole, setUserRole] = useState();
     const [userId, setUserId] = useState();
     const [notifications, setNotifications] = useState([]);
+    const [membership, setMembership] = useState('None')
     const newNotifications = notifications.filter((notification) => notification.notiStatus === "NEW");
     const newNotificationsCount = newNotifications.length;
     //Offcanvas
@@ -56,7 +58,10 @@ function Header() {
             try {
                 const user = await userAPI.getUserByEmail(email);
                 setUserRole(user.data.roleId)
-
+                if (user.data.roleId === 'LEARNER') {
+                    const learner = await learnerAPI.get(user.data.id);
+                    setMembership(learner.data.membershipId)
+                }
                 const balance = await userAPI.getBalance(user.data.id);
                 setUserId(user.data.id)
                 setBalance(balance.data.wallet.balance)
@@ -90,13 +95,13 @@ function Header() {
                         <Nav.Link as={Link} to={"/"}><span className="navBarContent">Find tutor</span></Nav.Link>
                         <Nav.Link as={Link} to={"/sign-up-tutor"}><span className="navBarContent">Become a tutor</span></Nav.Link>
                         <NavDropdown title={<span className="navBarContent">Contact us</span>} id="navbarScrollingDropdown">
-                            <NavDropdown.Item><Link as={Link} to={"/send-report"}>Send report</Link></NavDropdown.Item>
+                            <NavDropdown.Item><Link as={Link} to={"/send-report"} style={{ textDecoration: 'none', color: 'black' }}>Send report</Link></NavDropdown.Item>
                             <NavDropdown.Item href="#action4">
-                                Another action
+                                Upgrade your membership
                             </NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item>
-                                <Link as={Link} to={"/policy"}>Policy</Link>
+                                <Link as={Link} to={"/policy"} style={{ textDecoration: 'none', color: 'black' }}>Policy</Link>
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
@@ -104,8 +109,11 @@ function Header() {
                         Jtoken ? (
                             <>
                                 <div className='balance-box'>
-                                    <WalletFill className='balance-icon' onClick={handleClickWallet}></WalletFill> : ₫{balance}
-                                    <Link as={Link} to={"/top-up-wallet"}><PlusCircle className='top-up-icon'></PlusCircle></Link>
+                                    <WalletFill className='balance-icon' onClick={handleClickWallet}></WalletFill> : ${balance}
+                                    <Link as={Link} to={"/top-up-wallet"}>
+                                        {/* <PlusCircle className='top-up-icon'>
+                                        </PlusCircle> */}
+                                    </Link>
                                 </div>
                                 <div>
 
@@ -130,8 +138,6 @@ function Header() {
 
                                             )
                                     }
-
-
 
                                     <Offcanvas show={show} onHide={handleClose}>
                                         <Offcanvas.Header closeButton>
@@ -161,6 +167,11 @@ function Header() {
                                         <PersonCircle style={{ fontSize: '2em' }}></PersonCircle>
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className="dropdown-menu" align="end">
+                                        <Dropdown.Item>
+                                            <div style={{ display: 'flex', textDecoration: 'none', color: 'black', fontSize: '0.7em' }}>MemberShip: {(membership === 'M001') ? (<><p style={{ marginLeft: '10px' }}> Silver</p><StarFill /></>) : (membership === 'M002') ? (<><p style={{ marginLeft: '10px' }}> Premium</p><Gem /></>) : (<><p style={{ marginLeft: '10px' }}> None</p></>)}
+
+                                            </div>
+                                        </Dropdown.Item>
                                         <Dropdown.Item><Link as={Link} to={"/user-profile"} style={{ textDecoration: 'none', color: 'black' }}>User profile</Link></Dropdown.Item>
                                         <Dropdown.Item>
                                             <Link as={Link} to={"/order-history"} style={{ textDecoration: 'none', color: 'black' }}>View history</Link>
