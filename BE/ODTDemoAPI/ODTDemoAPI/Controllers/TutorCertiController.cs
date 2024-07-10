@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
+using ODTDemoAPI.Services;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -10,9 +11,11 @@ namespace ODTDemoAPI.Controllers
     public class TutorCertiController : ControllerBase
     {
         private readonly OnDemandTutorContext _context;
-        public TutorCertiController(OnDemandTutorContext context)
+        private readonly IEmailService _emailService;
+        public TutorCertiController(OnDemandTutorContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         [HttpGet("{id}")]
@@ -83,7 +86,10 @@ namespace ODTDemoAPI.Controllers
                 {
                     tutor.CertiStatus = CertiStatus.Approved;
                     _context.Tutors.Update(tutor);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
+
+                    await _emailService.SendMailAsync(tutor.TutorEmail, "Congratulations", "Your certificate has been approved by admin. Let's enjoy your journey as a tutor.");
+
                     return NoContent();
                 }
             }
@@ -108,7 +114,10 @@ namespace ODTDemoAPI.Controllers
                 {
                     tutor.CertiStatus = CertiStatus.Rejected;
                     _context.Tutors.Update(tutor);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
+
+                    await _emailService.SendMailAsync(tutor.TutorEmail, "Bad News", "Your certificate has been rejected by admin. Please check your certificate again and if it has no problems, We're so sorry you are not suitable with our business.");
+
                     return NoContent();
                 }
             }
@@ -133,7 +142,10 @@ namespace ODTDemoAPI.Controllers
                 {
                     tutor.CertiStatus = CertiStatus.Pending;
                     _context.Tutors.Update(tutor);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
+
+                    await _emailService.SendMailAsync(tutor.TutorEmail, "Bad News", "Your certificate has been reset status by admin. Please wait a short time for a mini check about your certificate.");
+
                     return NoContent();
                 }
             }
