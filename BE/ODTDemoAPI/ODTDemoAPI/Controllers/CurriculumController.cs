@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.EntityViewModels;
 using ODTDemoAPI.OperationModel;
+using ODTDemoAPI.Services;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -12,10 +13,12 @@ namespace ODTDemoAPI.Controllers
     public class CurriculumController : ControllerBase
     {
         private readonly OnDemandTutorContext _context;
+        private readonly IEmailService _emailService;
 
-        public CurriculumController(OnDemandTutorContext context)
+        public CurriculumController(OnDemandTutorContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         [HttpGet("get-all-curricula/{tutorId}")]
@@ -50,7 +53,7 @@ namespace ODTDemoAPI.Controllers
             try
             {
                 var order = await _context.LearnerOrders.Include(o => o.Curriculum).FirstOrDefaultAsync(o => o.OrderId == orderId);
-                if(order == null)
+                if (order == null)
                 {
                     return NotFound("Not found curriculum");
                 }
@@ -153,7 +156,7 @@ namespace ODTDemoAPI.Controllers
                     curriculum.PricePerSection = model.PricePerSection.Value;
                 }
 
-                if(curriculum != oldCurriculum)
+                if (curriculum != oldCurriculum)
                 {
                     curriculum.CurriculumStatus = "Pending";
                 }
@@ -282,8 +285,8 @@ namespace ODTDemoAPI.Controllers
         {
             try
             {
-                var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == curriculumId);
-                if(curriculum == null)
+                var curriculum = await _context.Curricula.Include(c => c.Tutor).FirstOrDefaultAsync(c => c.CurriculumId == curriculumId);
+                if (curriculum == null)
                 {
                     return NotFound("Not found curriculum");
                 }
@@ -292,7 +295,9 @@ namespace ODTDemoAPI.Controllers
                 _context.Curricula.Update(curriculum);
                 await _context.SaveChangesAsync();
 
-                return Ok(new {message = "Update successfully", Curriculum = curriculum });
+                await NotifyTutorAboutCurriculumStatus(curriculum.Tutor!.TutorId, curriculumId, "accepted");
+
+                return Ok(new { message = "Update successfully", Curriculum = curriculum });
             }
             catch (Exception ex)
             {
@@ -315,6 +320,8 @@ namespace ODTDemoAPI.Controllers
                 curriculum.CurriculumStatus = "Rejected";
                 _context.Curricula.Update(curriculum);
                 await _context.SaveChangesAsync();
+
+                await NotifyTutorAboutCurriculumStatus(curriculum.Tutor!.TutorId, curriculumId, "rejected");
 
                 return Ok(new { message = "Update successfully", Curriculum = curriculum });
             }
@@ -340,12 +347,48 @@ namespace ODTDemoAPI.Controllers
                 _context.Curricula.Update(curriculum);
                 await _context.SaveChangesAsync();
 
+                await NotifyTutorAboutCurriculumStatus(curriculum.Tutor!.TutorId, curriculumId, "reset status");
+
                 return Ok(new { message = "Update successfully", Curriculum = curriculum });
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private async Task NotifyTutorAboutCurriculumStatus(int tutorId, int curriculumId, string status)
+        {
+            var curriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.CurriculumId == curriculumId);
+            if (curriculum == null)
+            {
+                throw new Exception("Not found curriculum");
+            }
+
+            var notification = new UserNotification
+            {
+                Content = $"Your curriculum {curriculum.CurriculumDescription} has been {status}.",
+                NotificateDay = DateTime.Now,
+                AccountId = tutorId,
+                NotiStatus = "NEW",
+            };
+
+            var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+            if (tutor != null)
+            {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == tutorId);
+                string subject = "Curriculum Status Update";
+                string message = $"Dear {account!.FirstName}, \n\nYour curriculum {curriculum.CurriculumDescription} has been {status}. Please login for checking.";
+
+                await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
+            }
+            else
+            {
+                throw new Exception("Not found tutor.");
+            }
+
+            _context.UserNotifications.Add(notification);
+            await _context.SaveChangesAsync();
         }
     }
 }
