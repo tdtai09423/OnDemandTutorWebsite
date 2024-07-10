@@ -1298,7 +1298,7 @@ namespace ODTDemoAPI.Controllers
             {
                 var account = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == tutorId);
                 string subject = "Booking Status Update";
-                string message = $"Dear {account!.FirstName}, \n\nour cancel request for order having curriculum {order.Curriculum!.CurriculumType} has been {status} by the learner. Please login to your dashboard for more details.";
+                string message = $"Dear {account!.FirstName}, \n\nYour cancel request for order having curriculum {order.Curriculum!.CurriculumType} has been {status} by the learner. Please login to your dashboard for more details.";
 
                 await _emailService.SendMailAsync(tutor.TutorEmail, subject, message);
             }
