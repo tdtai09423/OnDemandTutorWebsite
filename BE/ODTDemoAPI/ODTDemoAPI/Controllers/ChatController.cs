@@ -85,5 +85,17 @@ namespace ODTDemoAPI.Controllers
             var chatMessages = await _context.ChatMessages.Where(cm => cm.ChatBoxId == chatBoxId).OrderBy(cm => cm.Id).ToListAsync();
             return Ok(chatMessages);
         }
+
+        [HttpGet("chatbox/{learnerId}/{tutorId}")]
+        [Authorize]
+        public async Task<IActionResult> GetChatBox([FromRoute] int learnerId, [FromRoute] int tutorId)
+        {
+            var chatBox = await _context.ChatBoxes
+                                    .Include(c => c.Learner)
+                                    .Include(c => c.Tutor)
+                                    .Include(c => c.ChatMessages)
+                                    .Where(c => c.LearnerId == learnerId && c.TutorId == tutorId).ToListAsync();
+            return Ok(chatBox);
+        }
     }
 }
