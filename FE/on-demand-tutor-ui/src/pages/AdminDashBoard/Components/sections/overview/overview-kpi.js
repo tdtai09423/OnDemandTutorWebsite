@@ -54,7 +54,7 @@ const useChartOptions = () => {
         color: theme.palette.divider,
         show: true
       },
-      categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'll', 'next'],
+      categories: ['Jan', 'Feb', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'll', 'next'],
       labels: {
         style: {
           colors: theme.palette.text.secondary

@@ -24,6 +24,7 @@ function HomeAdmin() {
   const [orders, setOrders] = useState([]);
   const [tutors, setTutors] = useState([]);
   const [learners, setLearners] = useState([]);
+  const [orderRevenue, setOrderRevenue] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,30 +151,18 @@ function HomeAdmin() {
                   <OverviewKpi
                     chartSeries={[
                       {
-                        data: [0, 20, 40, 30, 30, 44, 90, 60, 88],
+                        data: [0, 20, 40, 30, 30, 44, 90, 60, 150],
                         name: 'Revenue'
                       }
                     ]}
                     stats={[
                       {
-                        label: 'Revenue',
+                        label: 'Membership',
                         value: '$4,800.00'
                       },
                       {
-                        label: 'NET',
+                        label: 'Order',
                         value: '$4,900,24'
-                      },
-                      {
-                        label: 'Pending orders',
-                        value: '$1,600.50'
-                      },
-                      {
-                        label: 'Due',
-                        value: '$6,900.10'
-                      },
-                      {
-                        label: 'Overdue',
-                        value: '$6,500.80'
                       }
                     ]}
                   />

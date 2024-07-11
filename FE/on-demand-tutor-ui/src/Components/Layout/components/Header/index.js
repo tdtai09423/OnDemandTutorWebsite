@@ -2,7 +2,7 @@ import { NavDropdown, Navbar, Nav, Button, Container, Dropdown } from 'react-boo
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './Header.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import { BoxArrowInRight, PersonCircle, WalletFill, PlusCircle, StarFill, Gem } from 'react-bootstrap-icons'
+import { BoxArrowInRight, PersonCircle, WalletFill, PlusCircle, StarFill, Gem, ChatDots } from 'react-bootstrap-icons'
 import images from '../../../../assets/images';
 import logoutAPI from '../../../../api/logoutAPI';
 import { useEffect, useState } from 'react';
@@ -97,13 +97,30 @@ function Header() {
                         <NavDropdown title={<span className="navBarContent">Contact us</span>} id="navbarScrollingDropdown">
                             <NavDropdown.Item><Link as={Link} to={"/send-report"} style={{ textDecoration: 'none', color: 'black' }}>Send report</Link></NavDropdown.Item>
                             <NavDropdown.Item href="#action4">
-                                Upgrade your membership
+                                Membership
                             </NavDropdown.Item>
                             <NavDropdown.Divider />
                             <NavDropdown.Item>
                                 <Link as={Link} to={"/policy"} style={{ textDecoration: 'none', color: 'black' }}>Policy</Link>
                             </NavDropdown.Item>
                         </NavDropdown>
+                        {
+                            Jtoken ? (
+                                <NavDropdown
+                                    title={
+                                        <ChatDots style={{ fontSize: '25px' }}>
+                                        </ChatDots>
+                                    }
+                                    style={{ padding: '0', display: 'flex', marginLeft: '15px' }}>
+                                    <NavDropdown.Item>
+                                        <Link as={Link} to={"/send-report"} style={{ textDecoration: 'none', color: 'black' }}>Send report</Link>
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            ) : (
+                                <></>
+                            )
+                        }
+
                     </Nav>
                     {
                         Jtoken ? (
