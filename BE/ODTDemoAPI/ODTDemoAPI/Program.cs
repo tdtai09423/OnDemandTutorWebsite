@@ -92,7 +92,6 @@ namespace ODTDemoAPI
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.AddTransient<IEmailService, EmailService>();
-            builder.Services.AddSingleton<RazorViewToStringRenderer>();
             builder.Services.AddSingleton<UserStatusService>();
             builder.Services.AddAuthorization(options =>
             {
