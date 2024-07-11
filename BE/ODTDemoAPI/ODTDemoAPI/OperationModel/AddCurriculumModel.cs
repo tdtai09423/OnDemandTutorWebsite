@@ -2,6 +2,8 @@
 {
     public class AddCurriculumModel
     {
+        public int TutorId { get; set; }
+
         public string CurriculumType { get; set; } = null!;
 
         public int TotalSlot { get; set; }

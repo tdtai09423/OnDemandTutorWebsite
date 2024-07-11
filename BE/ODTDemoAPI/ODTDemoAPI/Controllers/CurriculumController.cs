@@ -66,13 +66,13 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost("add-neww-curriculum")]
+        [HttpPost("add-new-curriculum")]
         [Authorize(Roles = "TUTOR")]
-        public async Task<IActionResult> AddNewCurriculum([FromBody] int tutorId, [FromForm] AddCurriculumModel curriculum)
+        public async Task<IActionResult> AddNewCurriculum([FromBody] AddCurriculumModel curriculum)
         {
             try
             {
-                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == tutorId);
+                var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorId == curriculum.TutorId);
                 if (tutor == null)
                 {
                     return NotFound("Not found tutor");
@@ -83,7 +83,7 @@ namespace ODTDemoAPI.Controllers
                     return BadRequest("Not found type");
                 }
 
-                var findCurriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.TutorId == tutorId
+                var findCurriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.TutorId == curriculum.TutorId
                                                                     && c.CurriculumType == curriculum.CurriculumType
                                                                     && c.CurriculumDescription == curriculum.CurriculumDescription);
                 if (findCurriculum != null)
@@ -98,13 +98,13 @@ namespace ODTDemoAPI.Controllers
                     TotalSlot = curriculum.TotalSlot,
                     CurriculumDescription = curriculum.CurriculumDescription,
                     PricePerSection = curriculum.PricePerSection,
-                    TutorId = tutorId
+                    TutorId = curriculum.TutorId
                 };
 
                 _context.Curricula.Add(newCurriculum);
                 await _context.SaveChangesAsync();
 
-                var find = await _context.Curricula.FirstOrDefaultAsync(c => c.TutorId == tutorId
+                var find = await _context.Curricula.FirstOrDefaultAsync(c => c.TutorId == curriculum.TutorId
                                                                     && c.CurriculumType == curriculum.CurriculumType
                                                                     && c.CurriculumDescription == curriculum.CurriculumDescription);
 
