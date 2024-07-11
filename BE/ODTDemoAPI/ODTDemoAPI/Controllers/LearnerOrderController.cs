@@ -1247,6 +1247,41 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
+        [HttpGet("get-orders-by-time-period")]
+        public async Task<IActionResult> GetOrdersByTimePeriod([FromQuery] DateTime startTime, [FromQuery] DateTime endTime, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                IQueryable<LearnerOrder> query = _context.LearnerOrders.Where(o => o.OrderStatus == "Accepted");
+                query = query.Where(o => o.OrderDate >= startTime && o.OrderDate <= endTime);
+                query = query.OrderBy(o => o.OrderDate);
+                var totalCount = await query.CountAsync();
+                var orders = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+                if (orders == null || orders.Count == 0)
+                {
+                    return NotFound("Not found orders in this time period.");
+                }
+
+                var response = new PaginatedResponse<LearnerOrder>
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = orders,
+                };
+                var numOfPages = totalCount / pageSize;
+                if (totalCount % pageSize != 0)
+                {
+                    numOfPages++;
+                }
+                return Ok(new { Response = response, NumOfPages = numOfPages });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private async Task RefundPayment(decimal amount, int learnerId)
         {
             try
