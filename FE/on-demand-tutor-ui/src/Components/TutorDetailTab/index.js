@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, Card, Row, Col, Image, Container, Dropdown } from 'react-bootstrap';
+import { Button, Card, Row, Col, Image, Container, Dropdown, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './TutorDetailTab.scss'
 import { Link } from 'react-router-dom'
-import { Globe, PersonFill, ChatSquareDotsFill, StarFill, ArrowClockwise, Clock, Star } from 'react-bootstrap-icons'
+import { Globe, PersonFill, ChatSquareDotsFill, StarFill, ArrowClockwise, Clock, Star, Plus } from 'react-bootstrap-icons'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import { useState } from 'react';
@@ -32,6 +32,9 @@ function TutorDetailTab({ tutorId, roleUser }) {
     const [subjects, setSubjects] = useState([]);
     const [available, setAvailable] = useState('morning');
 
+    const [pricePerSection, setPricePerSection] = useState();
+    const [curriculumDescription1, setCurriculumDescription1] = useState();
+    const [showForm, setShowForm] = useState(false);
 
 
     const handleSelectSubject = (Subject) => {
@@ -39,6 +42,15 @@ function TutorDetailTab({ tutorId, roleUser }) {
     };
     const handleSelectAvailable = (Available) => {
         setAvailable(Available); // update the major state when an option is selected
+    };
+
+    const fetchSubject = async () => {
+        try {
+            const subject = await curriculumAPI.getCurriculumByTutorId(tutorId);
+            setSubjects(subject.data.$values);
+        } catch (error) {
+            console.error("Error fetching tutors:", error);
+        }
     };
 
     useEffect(() => {
@@ -73,6 +85,38 @@ function TutorDetailTab({ tutorId, roleUser }) {
 
     }, [tutorId]);
 
+    const handleAddCurriculumnButton = async () => {
+        setShowForm(!showForm);
+    }
+
+    const handleDeleteCurriculumn = async (event, id) => {
+        const token = localStorage.getItem('token')
+        try {
+            const addCurriculumnnRes = await curriculumAPI.deleteCurriculumn(id, token);
+        } catch (error) {
+            console.error("Error fetching tutors:", error);
+        }
+        fetchSubject();
+        setSubject(subjects[0].curriculumDescription);
+    }
+
+    const handleAddCurriculumn = async () => {
+        const token = localStorage.getItem('token')
+        const requestData = {
+            tutorId: tutorId,
+            curriculumType: "ShortTerm",
+            totalSlot: 1,
+            curriculumDescription: curriculumDescription1,
+            pricePerSection: pricePerSection,
+        };
+        try {
+            const addCurriculumnnRes = await curriculumAPI.addNewCurriculumn(requestData, token);
+        } catch (error) {
+            console.error("Error fetching tutors:", error);
+        }
+        fetchSubject();
+        setShowForm(!showForm);
+    }
 
     return (
         <Container className="profile-card-detail">
@@ -167,23 +211,79 @@ function TutorDetailTab({ tutorId, roleUser }) {
                 <Tab eventKey="schedule" title={<span className="information-tab-text">Schedule</span>} className="information-tab">
                     <Row>
                         <Col md={6}>
-                            <Dropdown align="end" className="" style={{ width: '80%' }}>
-                                <div style={{ paddingLeft: '10px', marginBottom: '5px' }}>What do you want to learn</div>
-                                <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
-                                    <div className="dropdown-text">
-                                        <span className="dropdown-tittle">{subject}</span>
-                                    </div>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu className=" dropdown-menu">
-                                    {subjects.map((item) => {
-                                        return (
-                                            <Dropdown.Item key={item.$id} onClick={() => handleSelectSubject(item.curriculumDescription)}>
-                                                {item.curriculumDescription}
-                                            </Dropdown.Item>
-                                        );
-                                    })}
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <Row>
+                                <Col md={9}>
+                                    <Dropdown align="end" className="" style={{ width: '100%' }}>
+                                        <div style={{ paddingLeft: '10px', marginBottom: '5px' }}>What do you want to learn</div>
+                                        <Dropdown.Toggle variant="outline-secondary" id="dropdown-learn-language" className="w-100 text-left dropdown-toggle-multi-line rounded-2">
+                                            <div className="dropdown-text">
+                                                <span className="dropdown-tittle">{subject}</span>
+                                            </div>
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu className=" dropdown-menu">
+                                            {subjects.map((item) => {
+                                                console.log(item)
+                                                return (
+                                                    <Dropdown.Item key={item.$id} onClick={() => handleSelectSubject(item.curriculumDescription)}>
+                                                        {item.curriculumDescription}  {(roleUser === 'TUTOR') ? (
+                                                            <span style={{ marginLeft: '10px' }}>
+                                                                <Button
+                                                                    variant="outline-danger"
+                                                                    style={{ padding: '0 2px' }}
+                                                                    onClick={(event) => handleDeleteCurriculumn(event, item.curriculumId)}
+                                                                >
+                                                                    Delete
+                                                                </Button>
+                                                            </span>
+                                                        ) : (<></>)}
+                                                    </Dropdown.Item>
+                                                );
+                                            })}
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </Col>
+                                <Col md={3} className='d-flex justify-content-start align-items-end'>
+                                    <Button style={{ padding: '0' }} onClick={handleAddCurriculumnButton}><Plus style={{ fontSize: '2em' }} /></Button>
+                                </Col>
+                            </Row>
+                            {(roleUser === 'TUTOR') ? (
+                                <Row style={{ marginTop: '10px' }}>
+                                    <Col md={9}>
+                                        {showForm && (
+                                            <>
+                                                <Row>
+                                                    <Form.Group controlId="priceInput">
+                                                        <Form.Label style={{ paddingLeft: '10px', marginBottom: '5px' }}>Price per section</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            placeholder="Enter price..."
+                                                            onChange={(e) => setPricePerSection(e.target.value)} // Assuming you have a setPrice function to handle the state change
+                                                            className="rounded-2"
+                                                        />
+                                                    </Form.Group>
+                                                </Row>
+                                                <Row style={{ marginTop: '8px' }}>
+                                                    <Form.Group controlId="priceInput">
+                                                        <Form.Label style={{ paddingLeft: '10px', marginBottom: '5px' }}>Subject</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            placeholder="Enter subject..."
+                                                            onChange={(e) => setCurriculumDescription1(e.target.value)} // Assuming you have a setPrice function to handle the state change
+                                                            className="rounded-2"
+                                                        />
+                                                    </Form.Group>
+                                                </Row>
+                                                <Row style={{ margin: '12px 0' }}>
+                                                    <Button style={{ padding: '0', width: '30%' }} onClick={handleAddCurriculumn}>ADD</Button>
+                                                </Row>
+                                            </>
+                                        )}
+                                    </Col>
+                                </Row>
+                            ) : (
+                                <></>
+                            )}
+
                         </Col>
                         <Col md={6}>
                             <Dropdown align="end" className="" style={{ width: '80%' }}>
