@@ -9,7 +9,7 @@ import sectionAPI from "../../../../api/sectionAPI";
 
 
 
-function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject, availableC }) {
+function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject, availableC, roleUser }) {
 
     const Jtoken = localStorage.getItem('token');
     const navigate = useNavigate();
@@ -197,7 +197,7 @@ function ScheduleCell({ tutorId, day, selectedDate, formattedDate, subject, avai
                         return (
                             <></>
                         );
-                    } else if (!sections.some(section => section.sectionStart === sectionFree.sectionStart)) {
+                    } else if (!sections.some(section => section.sectionStart === sectionFree.sectionStart) && roleUser !== 'TUTOR') {
                         return (
                             <div key={free.$id} className="sectionFree" onClick={() => handleOnClick(sectionFree)}>{formatSection(new Date(sectionFree.sectionStart))}</div>
                         );

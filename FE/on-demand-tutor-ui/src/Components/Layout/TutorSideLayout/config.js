@@ -4,6 +4,7 @@ import ProfileCard from './components/profile-card.js'
 import NotificationCard from './components/notification-card.js'
 import OrderListCard from './components/order-list.js';
 import TutorRevenueCard from './components/tutor-revenue-card.js';
+import TutorProfilePageCard from './components/tutor-page-card.js';
 
 export const items = [
   {
@@ -38,6 +39,13 @@ export const items = [
     icon: (
       <TutorRevenueCard />
     ),
-    key: 'notification'
+    key: 'revenue'
+  },
+  {
+    href: '/tutor-profile-page',
+    icon: (
+      <TutorProfilePageCard />
+    ),
+    key: 'tutorProfilePage'
   }
 ];

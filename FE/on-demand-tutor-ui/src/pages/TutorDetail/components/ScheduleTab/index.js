@@ -17,7 +17,7 @@ import { ArrowLeftShort, ArrowRightShort } from 'react-bootstrap-icons'
 import sectionAPI from "../../../../api/sectionAPI";
 import ScheduleCell from "./ScheduleCell";
 
-function Calendar({ tutorId, subject, available }) {
+function ScheduleTab({ tutorId, subject, available, roleUser }) {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [currentWeek, setCurrentWeek] = useState(getWeek(currentMonth));
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -71,14 +71,6 @@ function Calendar({ tutorId, subject, available }) {
         return <div className="days row">{days}</div>;
     };
 
-    const fetchSections = async (tutorId, start, end) => {
-        try {
-            const sections = await sectionAPI.get(tutorId, start, end);
-
-        } catch (error) {
-            console.error("Error fetching tutors:", error);
-        }
-    };
 
     const renderCells = () => {
         const startDate = startOfWeek(currentMonth, { weekStartsOn: 1 });
@@ -100,6 +92,7 @@ function Calendar({ tutorId, subject, available }) {
                         formattedDate={formattedDate}
                         subject={subject}
                         availableC={available}
+                        roleUser={roleUser}
                     />
                 );
                 day = addDays(day, 1);
@@ -139,7 +132,7 @@ function Calendar({ tutorId, subject, available }) {
     );
 };
 
-export default Calendar;
+export default ScheduleTab;
 /**
  * Header:
  * icon for switching to the previous month,

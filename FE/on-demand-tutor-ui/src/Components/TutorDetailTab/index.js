@@ -17,7 +17,7 @@ import LearnerReview from './component/learnerReview/learnerReview';
 import curriculumAPI from '../../api/curriculumAPI';
 
 
-function TutorDetailTab({ tutorId }) {
+function TutorDetailTab({ tutorId, roleUser }) {
 
     const [key, setKey] = useState('about');
     const [tutor, setTutor] = useState({});
@@ -31,6 +31,7 @@ function TutorDetailTab({ tutorId }) {
     const [subject, setSubject] = useState('Choose...');
     const [subjects, setSubjects] = useState([]);
     const [available, setAvailable] = useState('morning');
+
 
 
     const handleSelectSubject = (Subject) => {
@@ -56,11 +57,12 @@ function TutorDetailTab({ tutorId }) {
                 setReviews(reviews.data.response.items.$values);
                 const majorID = tutor.data.majorId;
                 const major = await majorAPI.get(majorID);
-                setMajor(major.data);
+                setMajor(major.data.major);
                 setFirstName(tutor.data.tutorNavigation.firstName);
                 setLastName(tutor.data.tutorNavigation.lastName);
                 setSubjects(subject.data.$values);
-                console.log('>>>>', subject.data.$values)
+                setSubject(subject.data.$values[0].curriculumDescription)
+
 
             } catch (error) {
                 console.error("Error fetching tutors:", error);
@@ -69,7 +71,7 @@ function TutorDetailTab({ tutorId }) {
         fetchTutors();
 
 
-    }, []);
+    }, [tutorId]);
 
 
     return (
@@ -128,7 +130,9 @@ function TutorDetailTab({ tutorId }) {
                     <Row>
                         <Container className="button-container">
                             {/* <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail"}>Book trial lesson</Button> */}
-                            <Button variant="outline-secondary" className="book-btn">Send message</Button>
+                            {(roleUser === 'TUTOR') ? (<></>) : (
+                                <Button variant="outline-secondary" className="book-btn">Send message</Button>
+                            )}
                         </Container>
                     </Row>
                     <Row>
@@ -208,6 +212,7 @@ function TutorDetailTab({ tutorId }) {
                         tutorId={tutorId}
                         subject={subject}
                         available={available}
+                        roleUser={roleUser}
                     />
                 </Tab>
                 <Tab eventKey="review" title={<span className="information-tab-text">Review</span>} className="information-tab">

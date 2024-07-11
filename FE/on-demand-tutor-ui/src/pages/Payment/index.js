@@ -21,6 +21,7 @@ function Payment() {
     const tutorId = searchParam.get('tutorId');
     const curriculumnDescription = searchParam.get('course');
     const startTime = searchParam.get('time');
+    const [today, setToday] = useState();
     console.log(startTime)
 
     const [tutor, setTutor] = useState({});
@@ -28,6 +29,14 @@ function Payment() {
     const [rating, setRating] = useState();
     const [reviews, setReviews] = useState([]);
     const navigate = useNavigate();
+
+
+    const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `${year}-0${month}-${day}`;
+    };
 
     const handleCheckout = async () => {
 
@@ -69,13 +78,13 @@ function Payment() {
                 const tutor = await tutorAPI.get(tutorId);
                 const price = await sectionAPI.get(tutorId);
                 const rating = await reviewRatingAPI.getRating(tutorId);
-                //const reviews = await reviewRatingAPI.getReview(tutorId);
+                const reviews = await reviewRatingAPI.getReview(tutorId);
                 const user = await userAPI.getUserByEmail(email);
                 setUserId(user.data.id)
                 setTutor(tutor.data);
                 setPrice(price.data);
                 setRating(rating.data);
-                //setReviews(reviews.data.response.items.$values);
+                setReviews(reviews.data.response.items.$values);
             } catch (error) {
                 console.error("Error fetching tutors:", error);
             }
@@ -109,14 +118,14 @@ function Payment() {
                             <Row>
                                 <Col md={8}>
                                     <Button variant="outline-secondary" block>
-                                        50 mins - $90
+                                        50 mins - ${price}
                                     </Button>
                                 </Col>
                             </Row>
                             <ListGroup className="mt-3">
                                 <ListGroupItem>
                                     <div className="d-flex justify-content-between">
-                                        <span>{new Date()}</span>
+                                        <span>{formatDate(new Date())}</span>
                                         <span className="text-muted">Time is based on your location</span>
                                     </div>
                                 </ListGroupItem>

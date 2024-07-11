@@ -27,6 +27,7 @@ import TutorSchedule from "../pages/TutorHomePage/Components/pages/TutorSchedule
 import TutorProfile from "../pages/TutorHomePage/Components/pages/TutorProfile.js";
 import TutorNotification from "../pages/TutorHomePage/Components/pages/TutorNotification.js";
 import TutorRevenue from "../pages/TutorHomePage/Components/pages/TutorRevenue.js";
+import TutorProfilePage from "../pages/TutorHomePage/Components/pages/TutorProfilePage.js";
 
 const publicRoute = [
     { path: '/', component: Home },
@@ -54,9 +55,9 @@ const publicRoute = [
     { path: '/change-password', component: ChangePassword },
     { path: '/personal-schedule', component: PersonalSchedule },
     { path: '/tutor-page', component: TutorSchedule, layout: TutorSideLayout, role: 'TUTOR' },
-    { path: '/tutor-profile', component: TutorProfile, layout: TutorSideLayout, role: 'TUTOR' },
     { path: '/tutor-notificattion', component: TutorNotification, layout: TutorSideLayout, role: 'TUTOR' },
-    { path: '/tutor-revenue', component: TutorRevenue, layout: TutorSideLayout, role: 'TUTOR' }
+    { path: '/tutor-revenue', component: TutorRevenue, layout: TutorSideLayout, role: 'TUTOR' },
+    { path: '/tutor-profile-page', component: TutorProfilePage, layout: TutorSideLayout, role: 'TUTOR' }
 ];
 
 const privateRoute = [

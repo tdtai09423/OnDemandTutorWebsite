@@ -27,7 +27,7 @@ function Invoice({ order }) {
 
     return (
         <>
-            <Button variant="secondary" size="sm" onClick={handleShow}>
+            <Button variant="secondary" size="sm" onClick={handleShow} style={{ marginLeft: '10px' }}>
                 View Invoice
             </Button>
 

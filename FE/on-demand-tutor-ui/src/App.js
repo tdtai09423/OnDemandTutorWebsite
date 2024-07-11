@@ -29,7 +29,9 @@ function App() {
                 path={route.path}
                 element={
                   <Layout>
-                    <Page />
+                    <Page
+                      role={role}
+                    />
                   </Layout>
                 }
               />
