@@ -36,7 +36,7 @@ namespace ODTDemoAPI.Services
         private string Body(string subject, string name, string content, string senderName, string buttonUrl)
         {
             string body = $@"
-            <!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang=""en"">
 
 <head>
@@ -45,72 +45,53 @@ namespace ODTDemoAPI.Services
     <title>{subject}</title>
 </head>
 
-<body>
+<body style=""font-family: 'Poppins', Arial, sans-serif"">
     <div style=""display: flex; justify-content: center;"">
         <table class=""table"">
             <tr>
                 <td>
-                    <table>
-    
-                        <body style=""font-family: 'Poppins', Arial, sans-serif"">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <table class=""content""
-                                            style=""border-collapse: collapse; border: 1px solid #cccccc;"">
-                                            <!-- Header -->
-                                            <tr>
-                                                <td class=""header""
-                                                    style=""background-color: #ff7aac; padding: 40px; text-align: center; color: white; font-size: 24px;"">
-                                                    <img src=""/images/logo.png"" style=""width: auto; height: 100px;"" />
-                                                </td>
-                                            </tr>
-    
-                                            <!-- Body -->
-                                            <tr>
-                                                <td class=""body""
-                                                    style=""padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;"">
-                                                    Hello {name}<br>
-                                                    {content}
-                                                    email validation code
-                                                </td>
-                                            </tr>
-    
-                                            <!-- Call to action Button -->
-                                            <tr>
-                                                <td style=""padding: 0px 40px 0px 40px; text-align: center;"">
-                                                    <!-- CTA Button -->
-                                                    <table cellspacing=""0"" cellpadding=""0"" style=""margin: auto;"">
-                                                        <tr>
-                                                            <td
-                                                                style=""padding: 10px 20px; border-radius: 5px; border: 1px solid black;"">
-                                                                <a href=""{buttonUrl}"" target=""_blank""
-                                                                    style=""color: black; text-decoration: none; font-weight: bold;"">
-                                                                    Go back to website
-                                                                </a>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class=""body""
-                                                    style=""padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;"">
-                                                    Thanks you for using our website {senderName}
-                                                </td>
-                                            </tr>
-                                            <!-- Footer -->
-                                            <tr>
-                                                <td class=""footer""
-                                                    style=""background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;"">
-                                                    Copyright &copy; 2024 | On Demand Tutor Website
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </body>
+                    <table class=""content"" style=""border-collapse: collapse; border: 1px solid #cccccc;"">
+                        <!-- Header -->
+                        <tr>
+                            <td class=""header"" style=""background-color: #ff7aac; padding: 40px; text-align: center; color: white; font-size: 24px;"">
+                            </td>
+                        </tr>
+
+                        <!-- Body -->
+                        <tr>
+                            <td class=""body"" style=""padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;"">
+                                Hello {name}<br>
+                                {content}
+                                email validation code
+                            </td>
+                        </tr>
+
+                        <!-- Call to action Button -->
+                        <tr>
+                            <td style=""padding: 0px 40px 0px 40px; text-align: center;"">
+                                <!-- CTA Button -->
+                                <table cellspacing=""0"" cellpadding=""0"" style=""margin: auto;"">
+                                    <tr>
+                                        <td style=""padding: 10px 20px; border-radius: 5px; border: 1px solid black;"">
+                                            <a href=""{buttonUrl}"" target=""_blank"" style=""color: black; text-decoration: none; font-weight: bold;"">
+                                                Go back to website
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class=""body"" style=""padding: 40px; text-align: left; font-size: 16px; line-height: 1.6;"">
+                                Thanks you for using our website {senderName}
+                            </td>
+                        </tr>
+                        <!-- Footer -->
+                        <tr>
+                            <td class=""footer"" style=""background-color: #333333; padding: 40px; text-align: center; color: white; font-size: 14px;"">
+                                Copyright &copy; 2024 | {senderName} Website
+                            </td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -119,8 +100,9 @@ namespace ODTDemoAPI.Services
 </body>
 
 </html>
-            ";
+    ";
             return body;
         }
+
     }
 }
