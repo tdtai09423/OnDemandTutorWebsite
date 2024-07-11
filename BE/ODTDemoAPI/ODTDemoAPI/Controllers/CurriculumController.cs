@@ -279,9 +279,9 @@ namespace ODTDemoAPI.Controllers
             return Ok(new { Response = response, NumOfPages = numOfPages });
         }
 
-        [HttpPut("accept-curriculum")]
+        [HttpPut("accept-curriculum/{curriculumId}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> AcceptCurriculum([FromBody] int curriculumId)
+        public async Task<IActionResult> AcceptCurriculum([FromRoute] int curriculumId)
         {
             try
             {
@@ -305,9 +305,9 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPut("reject-curriculum")]
+        [HttpPut("reject-curriculum/{curriculumId}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> RejectCurriculum([FromBody] int curriculumId)
+        public async Task<IActionResult> RejectCurriculum([FromRoute] int curriculumId)
         {
             try
             {
@@ -331,9 +331,9 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPut("reset-curriculum-status")]
+        [HttpPut("reset-curriculum-status/{curriculumId}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> ResetCurriculumStatus([FromBody] int curriculumId)
+        public async Task<IActionResult> ResetCurriculumStatus([FromRoute] int curriculumId)
         {
             try
             {
