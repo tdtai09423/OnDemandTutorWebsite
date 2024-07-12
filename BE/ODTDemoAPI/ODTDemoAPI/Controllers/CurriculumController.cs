@@ -85,7 +85,8 @@ namespace ODTDemoAPI.Controllers
 
                 var findCurriculum = await _context.Curricula.FirstOrDefaultAsync(c => c.TutorId == curriculum.TutorId
                                                                     && c.CurriculumType == curriculum.CurriculumType
-                                                                    && c.CurriculumDescription == curriculum.CurriculumDescription);
+                                                                    && c.CurriculumDescription == curriculum.CurriculumDescription
+                                                                    && c.CurriculumStatus == "Accepted");
                 if (findCurriculum != null)
                 {
                     return BadRequest("Existed curriculum");
@@ -94,7 +95,7 @@ namespace ODTDemoAPI.Controllers
                 var newCurriculum = new Curriculum
                 {
                     CurriculumType = curriculum.CurriculumType,
-                    CurriculumStatus = "Pending",
+                    CurriculumStatus = "Accepted",
                     TotalSlot = curriculum.TotalSlot,
                     CurriculumDescription = curriculum.CurriculumDescription,
                     PricePerSection = curriculum.PricePerSection,
@@ -306,7 +307,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPut("reject-curriculum/{curriculumId}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "TUTOR")]
         public async Task<IActionResult> RejectCurriculum([FromRoute] int curriculumId)
         {
             try
@@ -320,8 +321,6 @@ namespace ODTDemoAPI.Controllers
                 curriculum.CurriculumStatus = "Rejected";
                 _context.Curricula.Update(curriculum);
                 await _context.SaveChangesAsync();
-
-                await NotifyTutorAboutCurriculumStatus(curriculum.Tutor!.TutorId, curriculumId, "rejected");
 
                 return Ok(new { message = "Update successfully", Curriculum = curriculum });
             }

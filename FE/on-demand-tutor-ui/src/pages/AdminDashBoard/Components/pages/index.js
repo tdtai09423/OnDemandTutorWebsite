@@ -26,6 +26,7 @@ function HomeAdmin() {
   const [orders, setOrders] = useState([]);
   const [tutors, setTutors] = useState([]);
   const [learners, setLearners] = useState([]);
+  const [orderRevenue, setOrderRevenue] = useState([])
 
   const [chartOptions, setChartOptions] = useState();
   function getMonthName(monthNumber) {
@@ -163,45 +164,7 @@ function HomeAdmin() {
                   />
                 </Grid>
                 <Grid xs={12}>
-                  {/* <Button
-                    color="primary"
-                    size="large"
-                    variant="contained"
-                  >
-                    Update
-                  </Button> */}
-                  {/* <OverviewKpi
-
-                    chartSeries={[
-                      {
-                        data: arr,
-                        name: 'Revenue'
-                      }
-                    ]}
-                  stats={[
-                    {
-                      label: 'Revenue',
-                      value: '$4,800.00'
-                    },
-                    {
-                      label: 'NET',
-                      value: '$4,900,24'
-                    },
-                    {
-                      label: 'Pending orders',
-                      value: '$1,600.50'
-                    },
-                    {
-                      label: 'Due',
-                      value: '$6,900.10'
-                    },
-                    {
-                      label: 'Overdue',
-                      value: '$6,500.80'
-                    }
-                  ]}
-                  /> */}
-
+                  
                 </Grid>
                 {/* <Grid xs={12}>
                   <OverviewLatestCustomers
