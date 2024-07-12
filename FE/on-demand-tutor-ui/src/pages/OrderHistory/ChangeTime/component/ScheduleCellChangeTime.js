@@ -35,7 +35,7 @@ function ScheduleCellChangeTime({ curriculum, day, selectedDate, formattedDate, 
     newDate.setDate(newDate.getDate() + 1);
 
     const formatDate = (date) => {
-        const day = date.getDate();
+        const day = date.getDate().toString().padStart(2, '0');
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
         return `${year}-0${month}-${day}`;

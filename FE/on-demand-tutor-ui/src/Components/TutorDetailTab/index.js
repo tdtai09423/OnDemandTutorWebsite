@@ -242,9 +242,11 @@ function TutorDetailTab({ tutorId, roleUser }) {
                                         </Dropdown.Menu>
                                     </Dropdown>
                                 </Col>
-                                <Col md={3} className='d-flex justify-content-start align-items-end'>
-                                    <Button style={{ padding: '0' }} onClick={handleAddCurriculumnButton}><Plus style={{ fontSize: '2em' }} /></Button>
-                                </Col>
+                                {(roleUser === 'TUTOR') ? (
+                                    <Col md={3} className='d-flex justify-content-start align-items-end'>
+                                        <Button style={{ padding: '0' }} onClick={handleAddCurriculumnButton}><Plus style={{ fontSize: '2em' }} /></Button>
+                                    </Col>
+                                ) : (<></>)}
                             </Row>
                             {(roleUser === 'TUTOR') ? (
                                 <Row style={{ marginTop: '10px' }}>

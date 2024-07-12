@@ -6,6 +6,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 const EditProfile = ({ userInformation }) => {
 
+    const token = localStorage.getItem('token')
     console.log("userInformation>>>>>>>>>>>>>>>>", userInformation);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -80,6 +81,7 @@ const EditProfile = ({ userInformation }) => {
                 let res = await axios.put(url, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
                     },
                 });
                 toast.success(res.message);
@@ -105,6 +107,7 @@ const EditProfile = ({ userInformation }) => {
                     let res = await axios.put(url, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
+                            'Authorization': 'Bearer ' + localStorage.getItem('token')
                         },
                     });
                 } catch (error) {

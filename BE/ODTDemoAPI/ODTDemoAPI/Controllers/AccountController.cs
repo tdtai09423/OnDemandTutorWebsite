@@ -716,13 +716,13 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             try
             {
                 Response.Cookies.Delete("jwtToken");
                 HttpContext.Session.Clear();
-                await HttpContext.SignOutAsync(GoogleDefaults.AuthenticationScheme);
+                //await HttpContext.SignOutAsync(GoogleDefaults.AuthenticationScheme);
                 return Ok(new { message = "Logged out successfully!" });
             }
             catch (Exception ex)
