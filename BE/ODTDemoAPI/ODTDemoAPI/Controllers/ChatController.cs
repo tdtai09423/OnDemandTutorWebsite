@@ -25,50 +25,34 @@ namespace ODTDemoAPI.Controllers
             _userStatusService = userStatusService;
         }
 
-        [HttpPost("send-message")]
+        [HttpPost("new-chatbox-{learnerId}-{tutorId}")]
         [Authorize]
-        public async Task<IActionResult> SendMessage(int learnerId, int tutorId, string message, string sender)
+        public async Task<IActionResult> CreateNewChatBox([FromRoute] int tutorId, [FromRoute] int learnerId)
         {
-            var chatBox = await _context.ChatBoxes.FirstOrDefaultAsync(cb => cb.LearnerId == learnerId && cb.TutorId == tutorId);
-
-            if (chatBox == null)
+            try
             {
-                chatBox = new ChatBox
+                var chatBox = await _context.ChatBoxes.FirstOrDefaultAsync(cb => cb.LearnerId == learnerId && cb.TutorId == tutorId);
+
+                if (chatBox == null)
                 {
-                    LearnerId = learnerId,
-                    TutorId = tutorId,
-                    SendDate = DateTime.Now,
-                };
-                _context.ChatBoxes.Add(chatBox);
-                await _context.SaveChangesAsync();
+                    chatBox = new ChatBox
+                    {
+                        LearnerId = learnerId,
+                        TutorId = tutorId,
+                        SendDate = DateTime.Now,
+                    };
+                    _context.ChatBoxes.Add(chatBox);
+                    await _context.SaveChangesAsync();
+                }
+
+                return Ok(new { box = chatBox });
             }
-
-            var chatMessage = new ChatMessage
+            catch (Exception ex)
             {
-                ChatBoxId = chatBox.Id,
-                Sender = sender,
-                Content = message,
-            };
-
-            _context.ChatMessages.Add(chatMessage);
-            await _context.SaveChangesAsync();
-
-            chatBox.LastMessageId = chatMessage.Id;
-            _context.ChatBoxes.Update(chatBox);
-            await _context.SaveChangesAsync();
-
-            await _hubContext.Clients.Group(chatBox.Id.ToString()).SendAsync("ReceiveMessage", sender, message);
-
-            var recipientId = sender == "learner" ? tutorId : learnerId;
-            var recipient = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == recipientId);
-
-            if (!_userStatusService.IsUserOnline(recipientId))
-            {
-                await _emailService.SendMailAsync(recipient!.Email, "New Inbox", $"You have received a new message from a {sender}");
+                return BadRequest(ex.Message);
             }
-
-            return Ok(new { chatBoxId = chatBox.Id, messageId = chatMessage.Id });
         }
+        
 
         [HttpGet("chatboxes/{userId}")]
 
