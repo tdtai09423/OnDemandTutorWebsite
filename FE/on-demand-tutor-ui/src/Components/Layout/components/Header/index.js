@@ -8,14 +8,29 @@ import logoutAPI from '../../../../api/logoutAPI';
 import { useEffect, useState } from 'react';
 import userAPI from '../../../../api/userAPI';
 import learnerAPI from '../../../../api/learnerAPI';
+import tutorAPI from '../../../../api/tutorAPI';
+import ChatListItem from '../../../ChatListItem/chat-list-item.';
 
 import NotificationAPI from '../../../../api/notificationAPI';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import NotificationCom from '../NotificationCom';
+import Modal from 'react-bootstrap/Modal';
+import walletAPI from '../../../../api/walletAPI';
+import chatAPI from '../../../../api/chatAPI';
+import { Card } from "@mui/material";
+import ChatWindow from '../../../ChatWindow/chat-window';
+
 function Header() {
     const [userRole, setUserRole] = useState();
     const [userId, setUserId] = useState();
     const [notifications, setNotifications] = useState([]);
+    const [chats, setChats] = useState([]);
+    const [showChatBox, setShowChatBox] = useState(false);
+
+    const [chatboxId, setChatboxId] = useState();
+
+
+
     const [membership, setMembership] = useState('None')
     const newNotifications = notifications.filter((notification) => notification.notiStatus === "NEW");
     const newNotificationsCount = newNotifications.length;
@@ -27,11 +42,14 @@ function Header() {
         HandleNotification();
     };
 
+    const [showTopUp, setShowTopUp] = useState(false);
+    const handleTopUpClose = () => setShowTopUp(false);
+    const handleTopUpShow = () => setShowTopUp(true);
+
     const [balance, setBalance] = useState();
 
     const Jtoken = localStorage.getItem('token');
     const email = localStorage.getItem('email');
-    console.log(Jtoken);
     const navigate = useNavigate();
 
     const HandleLogOut = async () => {
@@ -65,6 +83,9 @@ function Header() {
                 const balance = await userAPI.getBalance(user.data.id);
                 setUserId(user.data.id)
                 setBalance(balance.data.wallet.balance)
+                const chatBoxsRes = await chatAPI.loadChatBoxByOneId(user.data.id);
+                console.log(chatBoxsRes.data.$values);
+                setChats(chatBoxsRes.data.$values);
 
             } catch (error) {
                 console.error("Error fetching user:", error);
@@ -74,9 +95,39 @@ function Header() {
         fetchUser();
     }, [])
 
-    const handleClickWallet = () => {
+    const [amount, setAmount] = useState('');
 
+    const handleClickWallet = async () => {
+        try {
+            let user = await userAPI.getUserByEmail(email);
+            let res = await walletAPI.topUp(amount, user.data.id);
+            console.log('>>>', res.data.url);
+            window.location.href = res.data.url;
+        } catch (e) {
+            console.log(e);
+        }
     }
+
+    const [learnerChat, setLearnerChat] = useState();
+    const [tutorChat, setTutorChat] = useState();
+
+    const handleChatClick = async (chat) => {
+        try {
+            let chatboxRes = await chatAPI.loadChatBoxByTwoId(chat.learnerId, chat.tutorId);
+            let tutorChatRes = await learnerAPI.get(chat.learnerId);
+            let learnerChatRes = await tutorAPI.get(chat.tutorId);
+            setTutorChat(learnerChatRes.data)
+            setLearnerChat(tutorChatRes.data)
+            setChatboxId(chatboxRes.data.$values[0].id);
+        } catch (e) {
+            console.log(e);
+        }
+        setShowChatBox(true);
+    }
+
+    const handleCloseChatBox = () => {
+        setShowChatBox(false);
+    };
 
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
@@ -106,31 +157,70 @@ function Header() {
                         </NavDropdown>
                         {
                             Jtoken ? (
-                                <NavDropdown
-                                    title={
-                                        <ChatDots style={{ fontSize: '25px' }}>
-                                        </ChatDots>
-                                    }
-                                    style={{ padding: '0', display: 'flex', marginLeft: '15px' }}>
-                                    <NavDropdown.Item>
-                                        <Link as={Link} to={"/chat-learner"} style={{ textDecoration: 'none', color: 'black' }}>Send report</Link>
-                                    </NavDropdown.Item>
-                                </NavDropdown>
+                                <>
+                                    <NavDropdown
+                                        title={<ChatDots style={{ fontSize: '25px' }} />}
+                                        style={{ padding: '0', display: 'flex', marginLeft: '15px', width: '25em' }} // Adjust the width as needed
+                                    >
+                                        {chats.map((chat, index) => {
+                                            return (
+                                                <NavDropdown.Item key={index} style={{ padding: '0' }}>
+                                                    <li className="p-2 border-bottom" style={{ width: '100%' }} onClick={() => handleChatClick(chat)}>
+                                                        <ChatListItem
+                                                            tutorId={chat.tutorId}
+                                                            learnerId={chat.tutorId}
+                                                            lastMessageId={chat.lastMessageId}
+                                                            sendDate={chat.sendDate}
+                                                        />
+                                                    </li>
+                                                </NavDropdown.Item>
+                                            );
+                                        })}
+                                    </NavDropdown>
+                                    {showChatBox && (
+                                        <ChatWindow
+                                            chatBoxId={chatboxId}
+                                            userRole={userRole}
+                                            onClose={handleCloseChatBox}
+                                            me={learnerChat}
+                                            they={tutorChat}
+                                        />
+                                    )}
+                                </>
                             ) : (
                                 <></>
                             )
                         }
 
+
                     </Nav>
+                    <Modal
+                        style={{ marginTop: '90px' }}
+                        show={showTopUp}
+                        onHide={handleTopUpClose}
+                        backdrop="static"
+                        keyboard={false}
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>Topup</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className='body-add-new'>
+                                <div className='text'>Amount</div>
+                                <input type='text' placeholder='$...' className='form-control' value={amount} onChange={(event) => setAmount(event.target.value)} />
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="primary" onClick={handleClickWallet}>Confirm</Button>
+                        </Modal.Footer>
+                    </Modal>
                     {
                         Jtoken ? (
                             <>
                                 <div className='balance-box'>
-                                    <WalletFill className='balance-icon' onClick={handleClickWallet}></WalletFill> : ${balance}
-                                    <Link as={Link} to={"/top-up-wallet"}>
-                                        {/* <PlusCircle className='top-up-icon'>
-                                        </PlusCircle> */}
-                                    </Link>
+                                    <WalletFill className='balance-icon'></WalletFill> : ${balance}
+                                    <PlusCircle className='top-up-icon' onClick={handleTopUpShow}>
+                                    </PlusCircle>
                                 </div>
                                 <div>
 

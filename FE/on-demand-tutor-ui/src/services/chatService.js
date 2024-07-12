@@ -1,26 +1,42 @@
-// src/services/signalRService.js
+// src/services/chatService.js
 import * as signalR from '@microsoft/signalr';
 
 class SignalRService {
     constructor() {
         this.connection = null;
+        this.isConnected = false;
     }
 
     startConnection(chatBoxId) {
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(`https://localhost:7010/chatHub?chatBoxId=${chatBoxId}`, {
+            .withUrl(`http://localhost:7010/chatHub?chatBoxId=${chatBoxId}`, {
                 withCredentials: true
             })
             .withAutomaticReconnect()
             .build();
 
+        this.connection.onclose(() => {
+            this.isConnected = false;
+        });
+
         return this.connection.start()
-            .catch(err => console.error('SignalR Connection Error: ', err));
+            .then(() => {
+                this.isConnected = true;
+                console.log('SignalR Connected');
+            })
+            .catch(err => {
+                this.isConnected = false;
+                console.error('SignalR Connection Error: ', err);
+            });
     }
 
     stopConnection() {
         if (this.connection) {
-            return this.connection.stop();
+            return this.connection.stop()
+                .then(() => {
+                    this.isConnected = false;
+                    console.log('SignalR Disconnected');
+                });
         }
     }
 
@@ -31,9 +47,12 @@ class SignalRService {
     }
 
     sendMessage(chatBoxId, sender, message) {
-        if (this.connection) {
+        if (this.isConnected && this.connection) {
             return this.connection.invoke('SendMessage', chatBoxId, sender, message)
                 .catch(err => console.error('Send Message Error: ', err));
+        } else {
+            console.error('Cannot send message: SignalR connection is not established.');
+            return Promise.reject('SignalR connection is not established.');
         }
     }
 }

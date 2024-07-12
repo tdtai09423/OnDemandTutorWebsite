@@ -1505,7 +1505,7 @@ namespace ODTDemoAPI.Controllers
                     Description = "Top-up wallet",
                 },
                 Mode = "payment",
-                SuccessUrl = $"https://localhost:7010/api/LearnerOrder/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
+                SuccessUrl = $"https://localhost:3000",
                 CancelUrl = "https://localhost:7010/api/LearnerOrder/payment-failed",
                 UiMode = "hosted",
                 ClientReferenceId = learnerId.ToString(),
@@ -1517,7 +1517,7 @@ namespace ODTDemoAPI.Controllers
             {
                 session = await service.CreateAsync(options);
                 Response.Headers.Append("Location", session.Url);
-                return Ok(new { SessionId = session.Id });
+                return Ok(new { SessionId = session.Id, url = session.Url });
             }
             catch (StripeException e)
             {

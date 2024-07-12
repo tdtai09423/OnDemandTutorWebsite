@@ -14,3 +14,34 @@
     margin-left: 2.9rem;
     margin-top: -0.75rem;
 }
+
+.chat-item {
+    border: 2px solid #c2bec0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    padding: 5px 10px;
+
+    &:hover {
+        border: 2px solid black;
+    }
+}
+
+.chat-box {
+    position: fixed;
+    bottom: -41px;
+    right: 8px;
+    width: 30em;
+    /* Adjust as needed */
+    z-index: 1000;
+    /* Ensure it is above other elements */
+}
+
+.my-message {}
+
+.other-message {}
+
+.chat-content {
+    height: 40em;
+    overflow-y: scroll;
+}

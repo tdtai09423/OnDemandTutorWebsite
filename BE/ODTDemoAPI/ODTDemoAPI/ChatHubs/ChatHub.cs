@@ -1,42 +1,46 @@
 ﻿using Google;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.Services;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace ODTDemoAPI.ChatHubs
-{
-    public class ChatHub : Hub
-    {
+namespace ODTDemoAPI.ChatHubs {
+    public class ChatHub: Hub {
         private readonly OnDemandTutorContext _context;
 
-        public ChatHub(OnDemandTutorContext context) {
+        public ChatHub(OnDemandTutorContext context, ILogger<ChatHub> logger) {
             _context = context;
         }
 
         public async Task SendMessage(int chatBoxId, string sender, string message) {
-            var chatMessage = new ChatMessage {
-                ChatBoxId = chatBoxId,
-                Sender = sender,
-                Content = message,
-                SendDate = DateTime.UtcNow
-            };
+                var chatMessage = new ChatMessage {
+                    ChatBoxId = chatBoxId,
+                    Sender = sender,
+                    Content = message,
+                    SendDate = DateTime.UtcNow
+                };
 
-            _context.ChatMessages.Add(chatMessage);
-            await _context.SaveChangesAsync();
-
-            var chatBox = await _context.ChatBoxes.FindAsync(chatBoxId);
-            if (chatBox != null) {
-                chatBox.LastMessageId = chatMessage.Id;
-                chatBox.SendDate = chatMessage.SendDate;
-                _context.ChatBoxes.Update(chatBox);
+                _context.ChatMessages.Add(chatMessage);
                 await _context.SaveChangesAsync();
-            }
 
-            await Clients.Group(chatBoxId.ToString()).SendAsync("ReceiveMessage", sender, message);
+                var chatBox = await _context.ChatBoxes.FindAsync(chatBoxId);
+                if (chatBox != null) {
+                    chatBox.LastMessageId = chatMessage.Id;
+                    chatBox.SendDate = chatMessage.SendDate;
+                    _context.ChatBoxes.Update(chatBox);
+                    await _context.SaveChangesAsync();
+                }
+                Console.WriteLine(chatMessage.Content);
+
+                await Clients.Group(chatBoxId.ToString()).SendAsync("ReceiveMessage", new ChatMessage {
+                    ChatBoxId = chatBoxId,
+                    Sender = sender,
+                    Content = message,
+                    SendDate = DateTime.UtcNow
+                });
         }
-
         public override async Task OnConnectedAsync() {
             var chatBoxId = Context.GetHttpContext().Request.Query["chatBoxId"];
             await Groups.AddToGroupAsync(Context.ConnectionId, chatBoxId);
@@ -48,6 +52,7 @@ namespace ODTDemoAPI.ChatHubs
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatBoxId);
             await base.OnDisconnectedAsync(exception);
         }
+
         //public async Task JoinChatBox(int chatBoxId)
         //{
         //    await Groups.AddToGroupAsync(Context.ConnectionId, chatBoxId.ToString());

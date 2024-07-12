@@ -29,6 +29,7 @@ import TutorNotification from "../pages/TutorHomePage/Components/pages/TutorNoti
 import TutorRevenue from "../pages/TutorHomePage/Components/pages/TutorRevenue.js";
 import TutorProfilePage from "../pages/TutorHomePage/Components/pages/TutorProfilePage.js";
 import ChatWindow from "../Components/ChatWindow/chat-window.js";
+import TutorChatList from "../Components/TutorChatList/tutor-chat-list.js";
 
 const publicRoute = [
     { path: '/', component: Home },
@@ -59,8 +60,7 @@ const publicRoute = [
     { path: '/tutor-notificattion', component: TutorNotification, layout: TutorSideLayout, role: 'TUTOR' },
     { path: '/tutor-revenue', component: TutorRevenue, layout: TutorSideLayout, role: 'TUTOR' },
     { path: '/tutor-profile-page', component: TutorProfilePage, layout: TutorSideLayout, role: 'TUTOR' },
-    { path: '/chat-learner', component: ChatWindow },
-    { path: '/chat-tutor', component: ChatWindow, layout: TutorSideLayout, role: 'TUTOR' }
+    { path: '/chat-tutor', component: TutorChatList, layout: TutorSideLayout, role: 'TUTOR' }
 ];
 
 const privateRoute = [
