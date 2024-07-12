@@ -557,7 +557,8 @@ namespace ODTDemoAPI.Controllers
 
                         await transaction.CommitAsync();
 
-                        return Ok(new { Message = "Payment succeeded, wallet topped-up", SessionId = sessionId });
+                        //return Ok(new { Message = "Payment succeeded, wallet topped-up", SessionId = sessionId });
+                        return Redirect("https://localhost:3000");
 
                     }
                     catch (Exception ex)
