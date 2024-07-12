@@ -6,7 +6,7 @@ import SignUpStudent from "../pages/SignUpStudent";
 import SignUpTutor from "../pages/SignUpTutor";
 import SendReport from "../pages/SendReport";
 import Policy from "../pages/Policy";
-import AdminDashBoard from "../pages/AdminDashBoard";
+import AdminDashBoard from "../pages/AdminDashBoard/Components/pages/revenueReport.js";
 import UserProfile from "../pages/UserProfile";
 import DashboardLayout from '../Components/Layout/DashboardLayout/index.js'
 import AdminOrder from '../pages/AdminDashBoard/Components/pages/order.js'

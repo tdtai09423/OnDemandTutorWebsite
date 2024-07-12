@@ -19,10 +19,11 @@ namespace ODTDemoAPI.Controllers
         private readonly OnDemandTutorContext _context;
         private readonly ILogger<LearnerOrderController> _logger;
         private readonly string _stripeSK;
+        private readonly VNPayService _vNPayService;
         private readonly IMemoryCache _memoryCache;
         private readonly IEmailService _emailService;
 
-        public LearnerOrderController(OnDemandTutorContext context, IOptions<StripeSettings> stripeSettings, ILogger<LearnerOrderController> logger, IMemoryCache memoryCache, IEmailService emailService)
+        public LearnerOrderController(OnDemandTutorContext context, IOptions<StripeSettings> stripeSettings, ILogger<LearnerOrderController> logger, IMemoryCache memoryCache, IEmailService emailService, VNPayService vNPayService)
         {
             _context = context;
             _stripeSK = stripeSettings.Value.SecretKey;
@@ -30,6 +31,7 @@ namespace ODTDemoAPI.Controllers
             _logger = logger;
             _memoryCache = memoryCache;
             _emailService = emailService;
+            _vNPayService = vNPayService;
         }
 
         [HttpPost("short-term-booking")]
@@ -376,6 +378,114 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
+        [HttpPost("checking-out-vnpay")]
+        public async Task<IActionResult> CheckOutVNPay([FromForm] int orderId)
+        {
+            try
+            {
+                var order = await _context.LearnerOrders
+                    .Include(o => o.Curriculum!)
+                    .ThenInclude(c => c.Sections)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderId);
+                if (order == null)
+                {
+                    return NotFound("Order not found!");
+                }
+
+                var learner = await _context.Accounts
+                    .FirstOrDefaultAsync(a => a.Id == order.LearnerId);
+
+                if (learner == null)
+                {
+                    return NotFound("Learner not found!");
+                }
+
+                if (order.OrderStatus != "Pending")
+                {
+                    return BadRequest(new { message = "Order status is not at pending." });
+                }
+
+                var learnerWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.WalletId == learner.Id);
+                if (learnerWallet == null)
+                {
+                    return BadRequest(new { message = "Learner wallet not found." });
+                }
+
+                decimal total = order.Total;
+                decimal balance = learnerWallet.Balance;
+
+                if (balance < total)
+                {
+                    var paymentUrl = _vNPayService.CreatePaymentUrl(orderId, total - balance, "Thanh toán đơn hàng");
+                    return Ok(new { message = "Hết tiền rồi má ơi, nạp vô rồi hẳn đặt. Tui để link ở dưới cho má nạp nè mệt ghê. Trông chán thiệt sự!", url = paymentUrl });
+                }
+
+                balance -= total;
+                learnerWallet.Balance = balance;
+                _context.Wallets.Update(learnerWallet);
+
+                var transaction = new Transaction
+                {
+                    AccountId = learner.Id,
+                    Amount = total,
+                    TransactionDate = DateTime.Now,
+                    TransactionType = "Paid for order",
+                };
+
+                _context.Transactions.Add(transaction);
+
+                order.OrderStatus = "Paid";
+                _context.LearnerOrders.Update(order);
+
+                var saved = false;
+                while (!saved)
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        saved = true;
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        foreach (var entry in ex.Entries)
+                        {
+                            if (entry.Entity is LearnerOrder)
+                            {
+                                var proposedValues = entry.CurrentValues;
+                                var databaseValues = entry.GetDatabaseValues();
+
+                                foreach (var property in proposedValues.Properties)
+                                {
+                                    var proposedValue = proposedValues[property];
+                                    var databaseValue = databaseValues![property];
+                                }
+
+                                entry.OriginalValues.SetValues(databaseValues!);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(
+                                    "Don't know how to handle concurrency conflicts for "
+                                    + entry.Metadata.Name);
+                            }
+                        }
+                    }
+                }
+
+                await NotifyTutorAboutBooking(order.Curriculum!.TutorId!, order.OrderId);
+                await NotifyLearnerAboutBooking(order.LearnerId, order.OrderId);
+
+                return Ok(new { Order = order });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
         [HttpGet("payment-success")]
         public async Task<IActionResult> PaymentSuccess([FromQuery(Name = "session_id")] string sessionId)
         {
@@ -447,7 +557,8 @@ namespace ODTDemoAPI.Controllers
 
                         await transaction.CommitAsync();
 
-                        return Ok(new { Message = "Payment succeeded, wallet topped-up", SessionId = sessionId });
+                        //return Ok(new { Message = "Payment succeeded, wallet topped-up", SessionId = sessionId });
+                        return Redirect("https://localhost:3000");
 
                     }
                     catch (Exception ex)

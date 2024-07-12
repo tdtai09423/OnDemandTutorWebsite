@@ -3,6 +3,7 @@ import User from '@heroicons/react/24/solid/UserIcon';
 import Users from '@heroicons/react/24/solid/UserGroupIcon';
 import {
   Avatar,
+  Button,
   Box,
   Container,
   Stack,
@@ -17,6 +18,7 @@ import tutorAPI from '../../../../api/tutorAPI.js';
 import learnerAPI from '../../../../api/learnerAPI.js';
 import orderAPI from '../../../../api/orderAPI.js';
 
+
 const now = new Date();
 
 function HomeAdmin() {
@@ -26,6 +28,18 @@ function HomeAdmin() {
   const [learners, setLearners] = useState([]);
   const [orderRevenue, setOrderRevenue] = useState([])
 
+  const [chartOptions, setChartOptions] = useState();
+  function getMonthName(monthNumber) {
+    const months = [
+      "January", "February", "March", "April",
+      "May", "June", "July", "August",
+      "September", "October", "November", "December"
+    ];
+
+    const adjustedMonthNumber = monthNumber - 1;
+
+    return months[adjustedMonthNumber];
+  }
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,6 +51,7 @@ function HomeAdmin() {
         const rejectedResponse = await tutorAPI.getRejected(token, page, pageSize);
 
         const approvedTutors = approvedResponse.data.response.items.$values;
+
         const pendingTutors = pendingResponse.data.response.items.$values;
         const rejectedTutors = rejectedResponse.data.response.items.$values;
 
@@ -46,10 +61,11 @@ function HomeAdmin() {
 
         const orderList = await orderAPI.getAll();
         setOrders(orderList.data.$values);
-
+        //set order for revenue
         const learnerList = await learnerAPI.getAll(token);
         console.log(learnerList.data.response.items.$values)
         setLearners(learnerList.data.response.items.$values);
+
       } catch (error) {
         console.error("Error fetching tutors:", error);
       }
@@ -148,24 +164,7 @@ function HomeAdmin() {
                   />
                 </Grid>
                 <Grid xs={12}>
-                  <OverviewKpi
-                    chartSeries={[
-                      {
-                        data: [0, 20, 40, 30, 30, 44, 90, 60, 150],
-                        name: 'Revenue'
-                      }
-                    ]}
-                    stats={[
-                      {
-                        label: 'Membership',
-                        value: '$4,800.00'
-                      },
-                      {
-                        label: 'Order',
-                        value: '$4,900,24'
-                      }
-                    ]}
-                  />
+                  
                 </Grid>
                 {/* <Grid xs={12}>
                   <OverviewLatestCustomers

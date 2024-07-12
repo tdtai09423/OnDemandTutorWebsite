@@ -19,11 +19,10 @@ namespace ODTDemoAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            //builder.Services.AddScoped(Timer);
-            //builder.Services.AddHostedService<AutomaticCleanUpService>();
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("Jwt"));
             builder.Services.Configure<SmtpSetting>(builder.Configuration.GetSection("Smtp"));
+            builder.Services.Configure<VNPaySetting>(builder.Configuration.GetSection("VNPay"));
             builder.Services.AddScoped<SessionService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
@@ -90,9 +89,9 @@ namespace ODTDemoAPI
             });
 
             builder.Services.AddControllersWithViews();
-            builder.Services.AddRazorPages();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddSingleton<UserStatusService>();
+            builder.Services.AddScoped<VNPayService>();
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireLearnerRole", policy => policy.RequireRole("LEARNER"));
@@ -130,6 +129,9 @@ namespace ODTDemoAPI
                         .AllowAnyHeader()
                         .AllowCredentials());
             });
+            builder.Services.AddSingleton<Data>();
+            builder.Services.AddSingleton<BookingRejectedData>();
+            builder.Services.AddHostedService<AutomaticCleanUpService>();
 
 
             var app = builder.Build();
@@ -159,9 +161,10 @@ namespace ODTDemoAPI
             app.MapControllers();
             app.MapHub<ChatHub>("/chatHub");
 
+            app.MapGet("/messages", (Data data) => data.SampleData.Order());
+            app.MapGet("/booking-messages", (BookingRejectedData data) => data.Data.Order());
 
             app.Run();
-            app.MapRazorPages();
         }
     }
 }
