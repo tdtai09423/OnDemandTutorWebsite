@@ -24,6 +24,7 @@ namespace ODTDemoAPI
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
             builder.Services.Configure<JwtSetting>(builder.Configuration.GetSection("Jwt"));
             builder.Services.Configure<SmtpSetting>(builder.Configuration.GetSection("Smtp"));
+            builder.Services.Configure<VNPaySetting>(builder.Configuration.GetSection("VNPay"));
             builder.Services.AddScoped<SessionService>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>
@@ -93,6 +94,7 @@ namespace ODTDemoAPI
             builder.Services.AddRazorPages();
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddSingleton<UserStatusService>();
+            builder.Services.AddScoped<VNPayService>();
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireLearnerRole", policy => policy.RequireRole("LEARNER"));
