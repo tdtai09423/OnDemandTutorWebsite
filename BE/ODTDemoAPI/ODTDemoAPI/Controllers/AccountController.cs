@@ -30,7 +30,7 @@ namespace ODTDemoAPI.Controllers
             _memoryCache = memoryCache;
         }
 
-        [HttpPost("login-google")]
+        [HttpGet("login-google")]
         public IActionResult LoginByGoogle()
         {
             try
@@ -45,12 +45,12 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-        [HttpPost("signin-google")]
+        [HttpGet("signin-google")]
         public async Task<IActionResult> RespondWithGoogle()
         {
             try
             {
-                var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
                 if (!result.Succeeded)
                 {
                     return BadRequest();
@@ -716,12 +716,13 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             try
             {
                 Response.Cookies.Delete("jwtToken");
                 HttpContext.Session.Clear();
+                await HttpContext.SignOutAsync(GoogleDefaults.AuthenticationScheme);
                 return Ok(new { message = "Logged out successfully!" });
             }
             catch (Exception ex)
