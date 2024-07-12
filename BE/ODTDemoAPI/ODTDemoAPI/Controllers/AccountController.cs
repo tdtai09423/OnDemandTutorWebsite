@@ -722,7 +722,6 @@ namespace ODTDemoAPI.Controllers
             {
                 Response.Cookies.Delete("jwtToken");
                 HttpContext.Session.Clear();
-                await HttpContext.SignOutAsync(GoogleDefaults.AuthenticationScheme);
                 return Ok(new { message = "Logged out successfully!" });
             }
             catch (Exception ex)
