@@ -52,7 +52,7 @@ function UserProfileTab({ user }) {
                     setLastName(learner.data.learnerNavigation.lastName);
                     setAge(learner.data.learnerAge);
                     setEmail(learner.data.learnerEmail);
-                    setAvatar('https://localhost:7010//images/Screenshot 2024-05-10 003145.png');
+                    setAvatar(learner.data.learnerPicture);
                     setNationality(null);
                     setDescription(null);
                     setUserInformation((prevInfo) => ({
@@ -62,7 +62,7 @@ function UserProfileTab({ user }) {
                         lastName: learner.data.learnerNavigation.lastName,
                         age: learner.data.learnerAge,
                         email: learner.data.learnerEmail,
-                        avatar: 'https://localhost:7010//images/Screenshot 2024-05-10 003145.png',
+                        avatar: learner.data.learnerPicture,
                         nationality: nationality,
                         description: description,
 

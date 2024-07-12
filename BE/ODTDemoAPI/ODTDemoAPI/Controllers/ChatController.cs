@@ -71,7 +71,7 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("chatboxes/{userId}")]
-        [Authorize]
+
         public async Task<IActionResult> GetChatBoxes([FromRoute] int userId)
         {
             var chatBoxes = await _context.ChatBoxes.Where(cb => cb.TutorId == userId || cb.LearnerId == userId).ToListAsync();
@@ -79,15 +79,15 @@ namespace ODTDemoAPI.Controllers
         }
 
         [HttpGet("chatMessages/{chatBoxId}")]
-        [Authorize]
+
         public async Task<IActionResult> GetMessages([FromRoute] int chatBoxId)
         {
-            var chatMessages = await _context.ChatMessages.Where(cm => cm.ChatBoxId == chatBoxId).OrderBy(cm => cm.Id).ToListAsync();
+            var chatMessages = await _context.ChatMessages.Where(cm => cm.ChatBoxId == chatBoxId).OrderBy(cm => cm.SendDate).ToListAsync();
             return Ok(chatMessages);
         }
 
         [HttpGet("chatbox/{learnerId}/{tutorId}")]
-        [Authorize]
+
         public async Task<IActionResult> GetChatBox([FromRoute] int learnerId, [FromRoute] int tutorId)
         {
             var chatBox = await _context.ChatBoxes

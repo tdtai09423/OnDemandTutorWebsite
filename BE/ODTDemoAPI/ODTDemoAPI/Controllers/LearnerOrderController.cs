@@ -1616,7 +1616,7 @@ namespace ODTDemoAPI.Controllers
                     Description = "Top-up wallet",
                 },
                 Mode = "payment",
-                SuccessUrl = $"https://localhost:7010/api/LearnerOrder/payment-success?session_id={{CHECKOUT_SESSION_ID}}",
+                SuccessUrl = $"https://localhost:3000",
                 CancelUrl = "https://localhost:7010/api/LearnerOrder/payment-failed",
                 UiMode = "hosted",
                 ClientReferenceId = learnerId.ToString(),

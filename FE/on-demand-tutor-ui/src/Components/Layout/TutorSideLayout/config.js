@@ -5,6 +5,7 @@ import NotificationCard from './components/notification-card.js'
 import OrderListCard from './components/order-list.js';
 import TutorRevenueCard from './components/tutor-revenue-card.js';
 import TutorProfilePageCard from './components/tutor-page-card.js';
+import TutorChatListCard from './components/tutor-chat.js';
 
 export const items = [
   {
@@ -47,5 +48,12 @@ export const items = [
       <TutorProfilePageCard />
     ),
     key: 'tutorProfilePage'
+  },
+  {
+    href: '/chat-tutor',
+    icon: (
+      <TutorChatListCard />
+    ),
+    key: 'chat'
   }
 ];

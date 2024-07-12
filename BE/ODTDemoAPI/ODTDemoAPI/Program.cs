@@ -102,7 +102,10 @@ namespace ODTDemoAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
             builder.Services.AddDbContext<OnDemandTutorContext>(option =>
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("OnDemandTutor"));
@@ -110,16 +113,26 @@ namespace ODTDemoAPI
 
             builder.Services.AddLogging();
 
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAll", builder =>
+            //    {
+            //        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            //    });
+            //});
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", builder =>
-                {
-                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-                });
+                options.AddPolicy("CorsPolicy",
+                    builder => builder
+                        .WithOrigins("https://localhost:3000")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
             });
             builder.Services.AddSingleton<Data>();
             builder.Services.AddSingleton<BookingRejectedData>();
             builder.Services.AddHostedService<AutomaticCleanUpService>();
+
 
             var app = builder.Build();
 
@@ -143,7 +156,7 @@ namespace ODTDemoAPI
             app.UseHttpsRedirection();
 
             app.UseSession();
-            app.UseCors("AllowAll");
+            app.UseCors("CorsPolicy");
 
             app.MapControllers();
             app.MapHub<ChatHub>("/chatHub");

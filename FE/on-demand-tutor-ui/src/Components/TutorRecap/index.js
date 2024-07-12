@@ -15,6 +15,7 @@ function TutorRecap({ tutor, tutorFavouriteList }) {
 
     const firstName = tutor.tutorNavigation.firstName;
     const lastName = tutor.tutorNavigation.lastName;
+    const Jtoken = localStorage.getItem('token');
 
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
@@ -103,7 +104,16 @@ function TutorRecap({ tutor, tutorFavouriteList }) {
                                             padding: '1em 0',
                                         }}
                                     >
-                                        {show}
+                                        {
+                                            Jtoken ? (
+                                                <>
+                                                    {show}
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )
+                                        }
+
                                     </Col>
                                 </Row>
                                 <Card.Text>

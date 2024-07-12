@@ -49,6 +49,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:https": "cross-env HTTPS=true SSL_CRT_FILE=./localhost.pem SSL_KEY_FILE=./localhost-key.pem react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -72,6 +73,7 @@
     ]
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "sass": "^1.77.2"
   }
 }
