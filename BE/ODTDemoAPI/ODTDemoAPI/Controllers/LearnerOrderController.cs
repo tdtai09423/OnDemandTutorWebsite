@@ -664,7 +664,6 @@ namespace ODTDemoAPI.Controllers
             {
                 var order = await _context.LearnerOrders
                                             .Include(o => o.Curriculum)
-                                            .ThenInclude(c => c!.Sections)
                                             .FirstOrDefaultAsync(o => o.OrderId == orderId);
                 if (order == null)
                 {
