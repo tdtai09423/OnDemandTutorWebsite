@@ -25,7 +25,7 @@ namespace ODTDemoAPI.Controllers
             _userStatusService = userStatusService;
         }
 
-        [HttpPost("new-chatbox-{learnerId}-{tutorId}")]
+        [HttpPost("new-chatbox/{learnerId}/{tutorId}")]
         [Authorize]
         public async Task<IActionResult> CreateNewChatBox([FromRoute] int tutorId, [FromRoute] int learnerId)
         {

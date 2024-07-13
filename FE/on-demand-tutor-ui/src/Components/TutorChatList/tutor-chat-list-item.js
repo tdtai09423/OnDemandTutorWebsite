@@ -68,7 +68,7 @@ function TutorChatListItem({ chatBoxId, tutorId, learnerId, lastMessageId, sendD
                     <div className="pt-1">
                         <p className="fw-bold mb-0">{name}</p>
                         <p className="small text-muted">
-                            {lastMessageId}
+                            {/* {lastMessageId} */}
                         </p>
                     </div>
                 </div>

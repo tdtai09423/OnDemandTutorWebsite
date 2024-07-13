@@ -14,6 +14,14 @@ const chatAPI = {
         const url = 'Chat/chatbox/' + learnerId + '/' + tutorId;
         return apiClient.get(url);
     },
+    createChatBox(learnerId, tutorId, token) {
+        const url = 'Chat/new-chatbox/' + learnerId + '/' + tutorId;
+        return apiClient.post(url, null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    }
 }
 
 export default chatAPI;

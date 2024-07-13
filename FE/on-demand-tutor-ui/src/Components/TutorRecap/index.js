@@ -9,6 +9,8 @@ import reviewRatingAPI from '../../api/ReviewRatingAPI';
 import majorAPI from '../../api/majorAPI';
 import userAPI from '../../api/userAPI';
 import learnerAPI from '../../api/learnerAPI';
+import ChatWindow from '../ChatWindow/chat-window.js'
+import chatAPI from '../../api/chatAPI.js';
 
 
 function TutorRecap({ tutor, tutorFavouriteList }) {
@@ -20,6 +22,7 @@ function TutorRecap({ tutor, tutorFavouriteList }) {
     const [price, setPrice] = useState();
     const [rating, setRating] = useState();
     const [major, setMajor] = useState('');
+    const [showChatBox, setShowChatBox] = useState(false);
     //const [tutorFavourites, setTutorFavourites] = useState([]);
     //const [isFavourite, setIsFavourite] = useState();
     const [show, setShow] = useState();
@@ -64,6 +67,31 @@ function TutorRecap({ tutor, tutorFavouriteList }) {
         console.log(user.data.id)
         const removeFavour = await learnerAPI.removeFavourite(tutor.tutorId, user.data.id)
     }
+
+    const [chatboxId, setChatboxId] = useState();
+    const [userRole, setUserRole] = useState();
+    const [learnerChat, setLearnerChat] = useState();
+
+    const handleSendMess = async () => {
+        try {
+            const email = localStorage.getItem('email');
+            const user = await userAPI.getUserByEmail(email);
+            let res = await chatAPI.createChatBox(user.data.id, tutor.tutorId, Jtoken);
+            let learnerRes = await learnerAPI.get(user.data.id);
+            console.log(res.data.box.id)
+            setChatboxId(res.data.box.id)
+            setUserRole(user.data.roleId)
+            setLearnerChat(learnerRes.data)
+        } catch (e) {
+            console.log(e)
+
+        }
+        setShowChatBox(true);
+    }
+
+    const handleCloseChatBox = () => {
+        setShowChatBox(false);
+    };
 
     // const renderHeartIcon = () => {
     //     if (isFavourite) {
@@ -154,7 +182,7 @@ function TutorRecap({ tutor, tutorFavouriteList }) {
                                     <Col className="text-right" md={12}>
                                         <Container className="button-container">
                                             <Button variant="primary" className="book-btn" as={Link} to={"/tutor-detail?tutorId=" + tutor.tutorId + ""}>Book trial lesson</Button>
-                                            <Button variant="outline-secondary" className="message-btn">Send message</Button>
+                                            <Button variant="outline-secondary" className="message-btn" onClick={handleSendMess}>Send message</Button>
                                         </Container>
                                     </Col>
                                 </Row>
@@ -163,6 +191,15 @@ function TutorRecap({ tutor, tutorFavouriteList }) {
                     </Card.Body>
                 </Col>
             </Row>
+            {showChatBox && (
+                <ChatWindow
+                    chatBoxId={chatboxId}
+                    userRole={userRole}
+                    onClose={handleCloseChatBox}
+                    me={learnerChat}
+                    they={tutor}
+                />
+            )}
         </Card>
     );
 }

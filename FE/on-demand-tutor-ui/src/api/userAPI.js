@@ -17,6 +17,16 @@ const userAPI = {
     getBalance(id) {
         const url = '/Wallet/get-wallet?accountId=' + id;
         return apiClient.get(url);
+    },
+    upgradeMembership(id, token) {
+        const url = 'Membership/upgrade-membership?membershipLevel=SILVER';
+        return apiClient.post(url, {
+            learnerId: id
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
     }
 }
 

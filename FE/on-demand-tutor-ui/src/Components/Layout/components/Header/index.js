@@ -19,6 +19,7 @@ import walletAPI from '../../../../api/walletAPI';
 import chatAPI from '../../../../api/chatAPI';
 import { Card } from "@mui/material";
 import ChatWindow from '../../../ChatWindow/chat-window';
+import axios from 'axios';
 
 function Header() {
     const [userRole, setUserRole] = useState();
@@ -128,6 +129,15 @@ function Header() {
     const handleCloseChatBox = () => {
         setShowChatBox(false);
     };
+
+    const handleUpgradeMember = async () => {
+        try {
+            let res = await userAPI.upgradeMembership(userId, Jtoken);
+            window.location.reload();
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
@@ -273,6 +283,13 @@ function Header() {
                                     <Dropdown.Menu className="dropdown-menu" align="end">
                                         <Dropdown.Item>
                                             <div style={{ display: 'flex', textDecoration: 'none', color: 'black', fontSize: '0.7em' }}>MemberShip: {(membership === 'M001') ? (<><p style={{ marginLeft: '10px' }}> Silver</p><StarFill /></>) : (membership === 'M002') ? (<><p style={{ marginLeft: '10px' }}> Premium</p><Gem /></>) : (<><p style={{ marginLeft: '10px' }}> None</p></>)}
+
+                                            </div>
+                                        </Dropdown.Item>
+                                        <Dropdown.Item>
+                                            <div style={{ display: 'flex', textDecoration: 'none', color: 'black', fontSize: '0.7em' }}> {(membership === 'M001') ? (<></>) : (membership === 'M002') ? (<></>) : (<>
+                                                <p style={{ textDecoration: 'none', color: 'black', marginBottom: '0' }} onClick={handleUpgradeMember}>Upgrade membership ?</p>
+                                            </>)}
 
                                             </div>
                                         </Dropdown.Item>

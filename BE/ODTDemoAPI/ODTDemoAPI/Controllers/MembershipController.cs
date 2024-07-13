@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
+using ODTDemoAPI.OperationModel;
 using Stripe;
 using Stripe.Checkout;
 
@@ -20,7 +21,7 @@ namespace ODTDemoAPI.Controllers
 
         [HttpPost("upgrade-membership")]
         [Authorize(Roles = "LEARNER")]
-        public async Task<IActionResult> UpgradeMembership([FromBody] int learnerId, [FromQuery] string membershipLevel)
+        public async Task<IActionResult> UpgradeMembership([FromBody] UpgradeMembershipModel learnerIdIn, [FromQuery] string membershipLevel)
         {
             try
             {
@@ -28,7 +29,7 @@ namespace ODTDemoAPI.Controllers
                                     .Include(l => l.Membership)
                                     .Include(l => l.LearnerNavigation)
                                     .ThenInclude(a => a.Wallet)
-                                    .FirstOrDefaultAsync(l => l.LearnerId == learnerId);
+                                    .FirstOrDefaultAsync(l => l.LearnerId == learnerIdIn.LearnerId);
                 if(learner == null)
                 {
                     return NotFound("Not found learner");
@@ -66,7 +67,7 @@ namespace ODTDemoAPI.Controllers
 
                 var transaction = new Transaction
                 {
-                    AccountId = learnerId,
+                    AccountId = learnerIdIn.LearnerId,
                     Amount = cost,
                     TransactionDate = DateTime.Now,
                     TransactionType = $"Membership {membershipLevel}"
