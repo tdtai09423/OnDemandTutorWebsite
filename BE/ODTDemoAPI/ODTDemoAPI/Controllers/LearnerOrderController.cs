@@ -484,8 +484,6 @@ namespace ODTDemoAPI.Controllers
             }
         }
 
-
-
         [HttpGet("payment-success")]
         public async Task<IActionResult> PaymentSuccess([FromQuery(Name = "session_id")] string sessionId)
         {

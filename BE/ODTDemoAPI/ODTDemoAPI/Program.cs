@@ -25,6 +25,8 @@ namespace ODTDemoAPI
             builder.Services.Configure<VNPaySetting>(builder.Configuration.GetSection("VNPay"));
             builder.Services.AddScoped<SessionService>();
 
+            builder.Services.AddSingleton<IStripeClient>(new StripeClient(builder.Configuration.GetSection("Stripe:SecretKey").Get<string>()));
+
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
@@ -89,7 +91,7 @@ namespace ODTDemoAPI
             });
 
             builder.Services.AddControllersWithViews();
-            builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddSingleton<UserStatusService>();
             builder.Services.AddScoped<VNPayService>();
             builder.Services.AddAuthorization(options =>
@@ -129,10 +131,12 @@ namespace ODTDemoAPI
                         .AllowAnyHeader()
                         .AllowCredentials());
             });
-            builder.Services.AddSingleton<Data>();
-            builder.Services.AddSingleton<BookingRejectedData>();
+            builder.Services.AddSingleton<AccountData>();
+            builder.Services.AddSingleton<BookingData>();
+            builder.Services.AddSingleton<NotificationData>();
+            builder.Services.AddSingleton<SectionData>();
             builder.Services.AddHostedService<AutomaticCleanUpService>();
-
+            builder.Services.AddHostedService<AutomaticNotifyService>();
 
             var app = builder.Build();
 
@@ -161,8 +165,10 @@ namespace ODTDemoAPI
             app.MapControllers();
             app.MapHub<ChatHub>("/chatHub");
 
-            app.MapGet("/messages", (Data data) => data.SampleData.Order());
-            app.MapGet("/booking-messages", (BookingRejectedData data) => data.Data.Order());
+            app.MapGet("/accounts-messages", (AccountData data) => data.AccountsData.Order());
+            app.MapGet("/bookings-messages", (BookingData data) => data.BookingsData.Order());
+            app.MapGet("/notifications-messages", (NotificationData data) => data.NotificationsData.Order());
+            app.MapGet("/sections-messages", (SectionData data) => data.SectionsData.Order());
 
             app.Run();
         }
