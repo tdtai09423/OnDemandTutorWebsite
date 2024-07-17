@@ -7,11 +7,11 @@ namespace ODTDemoAPI.Services
     public class AutomaticCleanUpService : IHostedService, IDisposable
     {
         private Timer? _timer;
-        private readonly Data _data;
-        private readonly BookingRejectedData _bookingData;
+        private readonly AccountData _data;
+        private readonly BookingData _bookingData;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public AutomaticCleanUpService(Data data, IServiceScopeFactory scopeFactory, BookingRejectedData bookingData)
+        public AutomaticCleanUpService(AccountData data, IServiceScopeFactory scopeFactory, BookingData bookingData)
         {
             _data = data;
             _scopeFactory = scopeFactory;
@@ -39,7 +39,7 @@ namespace ODTDemoAPI.Services
                     {
                         account.Status = false;
                         context.Accounts.Update(account);
-                        _data.SampleData.Add($"The account was deleted at {DateTime.Now.ToShortTimeString()}");
+                        _data.AccountsData.Add($"The account was deleted at {DateTime.Now.ToShortTimeString()}");
                         context.SaveChanges();
                     }
                 }
@@ -50,7 +50,7 @@ namespace ODTDemoAPI.Services
                     {
                         booking.OrderStatus = "Rejected";
                         context.LearnerOrders.Update(booking);
-                        _bookingData.Data.Add($"The booking {booking.OrderId} has been automatically rejected.");
+                        _bookingData.BookingsData.Add($"The booking {booking.OrderId} has been automatically rejected.");
                         context.SaveChanges();
                     }
                 }

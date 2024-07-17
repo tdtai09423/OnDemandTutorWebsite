@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ODTDemoAPI.Entities;
 using ODTDemoAPI.EntityViewModels;
+using ODTDemoAPI.OperationModel;
+using ODTDemoAPI.Services;
 
 namespace ODTDemoAPI.Controllers
 {
@@ -11,12 +13,10 @@ namespace ODTDemoAPI.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly OnDemandTutorContext _context;
-        private readonly ILogger<TransactionController> _logger;
 
-        public TransactionController(OnDemandTutorContext context, ILogger<TransactionController> logger)
+        public TransactionController(OnDemandTutorContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         //all transaction
@@ -170,11 +170,11 @@ namespace ODTDemoAPI.Controllers
         public async Task<IActionResult> GetMonthlyRevenue(int year, int month)
         {
             var revenue = await _context.Transactions
-                .Where(t => t.TransactionDate.Year == year 
-                            && t.TransactionDate.Month == month 
-                            &&( t.TransactionType == "Membership SILVER" || t.TransactionType == "Membership PRENIUM"))
+                .Where(t => t.TransactionDate.Year == year
+                            && t.TransactionDate.Month == month
+                            && (t.TransactionType == "Membership SILVER" || t.TransactionType == "Membership PRENIUM"))
                 .SumAsync(t => t.Amount);
-            return Ok(new {Year = year, Month = month, Revenue = revenue});
+            return Ok(new { Year = year, Month = month, Revenue = revenue });
         }
 
         [HttpGet("revenue-yearly")]
