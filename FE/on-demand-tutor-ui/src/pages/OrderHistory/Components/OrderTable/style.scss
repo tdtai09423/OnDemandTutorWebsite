@@ -1,0 +1,36 @@
+.orderComplete {
+    border: 1px solid #059212;
+    text-align: center;
+    margin: 5px 10px;
+    border-radius: 20px;
+    color: #059212;
+    font-size: 14px;
+}
+
+.orderUnComplete {
+    border: 1px solid #FF1E00;
+    text-align: center;
+    margin: 5px 10px;
+    border-radius: 20px;
+    color: #FF1E00;
+    font-size: 14px;
+    padding: 1px 3px;
+}
+
+.custom-button-text-order-item {
+    color: white !important;
+    width: 100%;
+    padding: 3px 10px;
+}
+
+.parent-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center; // Optional: to center items vertically
+    // Ensure the container takes the full height of the parent
+}
+
+.button-container {
+    display: flex;
+    gap: 10px; // Optional: to add space between buttons
+}
