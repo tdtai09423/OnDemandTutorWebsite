@@ -16,7 +16,8 @@ import Combobox from "react-widgets/Combobox";
 import 'react-widgets/styles.css';
 import { Scrollbar } from '../../../../../Components/scrollbar.js';
 import { CheckCircleFill, XCircleFill } from 'react-bootstrap-icons'
-
+import { useState } from 'react';
+import ToggleStatusAPI from '../../../../../api/toggleStatusAPI.js';
 const statusMap = {
   1: {
     color: 'success.main',
@@ -47,6 +48,31 @@ let statuss = [
 
 
 export const AccountsTable = (props) => {
+  const [selectedStatus, setSelectedStatus] = useState();
+
+  const token = localStorage.getItem("token");
+  const handleStatusChange = (value) => {
+    setSelectedStatus(value);
+  };
+
+  const handleUpdateClick = async (email) => {
+    console.log(selectedStatus);
+    console.log(email)
+    let statusUp;
+    if (selectedStatus.name === 'Enable') {
+      statusUp = true;
+    } else if (selectedStatus.name === 'Disable') {
+      statusUp = false;
+    }
+    try {
+      let toggleStatus = await ToggleStatusAPI(email, statusUp, token);
+      window.location.reload();
+
+    } catch (error) {
+      console.log(error)
+    }
+  };
+  const [updateStatus, setUpdateStatus] = useState();
   const {
     count = 0,
     items = [],
@@ -91,6 +117,7 @@ export const AccountsTable = (props) => {
               const isEmailVerified = account.isEmailVerified;
               const status = account.status;
               const roleId = account.roleId;
+              const emailA = account.email;
               let accountStatus = '';
               status ? accountStatus = 'Enable' : accountStatus = 'Disable';
               let emailVerified = '';
@@ -120,31 +147,7 @@ export const AccountsTable = (props) => {
                     {account.fullName}
                   </TableCell>
                   <TableCell>
-                    {/* <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing
-                      ={1}
-                    >
-                       <Box
-                        sx={{
-                          backgroundColor: certiStatus.color,
-                          borderRadius: '50%',
-                          height: 8,
-                          width: 8
-                        }}
-                      /> 
-                       <Typography variant="body2">
-                        {certiStatus.label}
-                      </Typography> 
-                       <Combobox
-                        data={Certificate}
-                        dataKey='id'
-                        textField='name'
-                        defaultValue={certiStatus.label}
-                        style={{ width: '10em' }}
-                      /> 
-                    </Stack> */}
+
                     <Stack
                       alignItems="center"
                       direction="row"
@@ -189,6 +192,7 @@ export const AccountsTable = (props) => {
                         textField='name'
                         defaultValue={accountStatus}
                         style={{ width: '10em' }}
+                        onChange={handleStatusChange}
                       />
                     </Stack>
 
@@ -198,6 +202,7 @@ export const AccountsTable = (props) => {
                       color="primary"
                       size="large"
                       variant="contained"
+                      onClick={() => handleUpdateClick(emailA)}
                     >
                       Update
                     </Button>
