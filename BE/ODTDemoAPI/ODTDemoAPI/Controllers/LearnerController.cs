@@ -73,5 +73,23 @@ namespace ODTDemoAPI.Controllers
             }
             return Ok(new { Response = response, NumOfPages = numOfPages });
         }
+
+        // WARNING: Intentionally vulnerable endpoint for Snyk SQL Injection demo.
+        // Remove this endpoint after the demo.
+        [HttpGet("demo-sql-injection")]
+        [Authorize(Roles = "ADMIN")]
+        public IActionResult DemoSqlInjection([FromQuery] string email)
+        {
+            try
+            {
+                var rawSql = $"SELECT * FROM Learners WHERE LearnerEmail = '{email}'";
+                var learners = _context.Learners.FromSqlRaw(rawSql).ToList();
+                return Ok(new { Count = learners.Count, Items = learners });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
