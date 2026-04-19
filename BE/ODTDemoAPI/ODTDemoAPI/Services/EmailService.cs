@@ -45,6 +45,7 @@ namespace ODTDemoAPI.Services
                 Credentials = new NetworkCredential(_smtpSetting.UserName, _smtpSetting.Password),
                 EnableSsl = true
             };
+            //test commit
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(_smtpSetting.UserName, _smtpSetting.SenderName),
