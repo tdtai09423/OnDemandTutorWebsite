@@ -10,11 +10,13 @@ using Stripe;
 using Stripe.Checkout;
 using ODTDemoAPI.ChatHubs;
 
+using ODTDemoAPI.Data;
+
 namespace ODTDemoAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -126,7 +128,7 @@ namespace ODTDemoAPI
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder
-                        .WithOrigins("https://localhost:3000")
+                        .WithOrigins("https://localhost:3000", "http://localhost:3000")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());
@@ -170,7 +172,13 @@ namespace ODTDemoAPI
             app.MapGet("/notifications-messages", (NotificationData data) => data.NotificationsData.Order());
             app.MapGet("/sections-messages", (SectionData data) => data.SectionsData.Order());
 
-            app.Run();
+            // Seed data in Docker environment
+            if (Environment.GetEnvironmentVariable("DOCKER_ENVIRONMENT") == "true")
+            {
+                await SeedData.InitializeAsync(app.Services);
+            }
+
+            await app.RunAsync();
         }
     }
 }

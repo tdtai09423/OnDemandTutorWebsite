@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: odt-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SA_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "${SA_PASSWORD}" -C -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - odt-network
+
+  backend:
+    build:
+      context: ../BE/ODTDemoAPI
+      dockerfile: ../../docker/Dockerfile.backend
+    container_name: odt-backend
+    ports:
+      - "7010:443"
+      - "5182:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOCKER_ENVIRONMENT=true
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - ConnectionStrings__OnDemandTutor=Server=sqlserver,1433;Database=OnDemandTutor;User Id=sa;Password=${SA_PASSWORD};Encrypt=False;Trust Server Certificate=True
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    volumes:
+      - ./certs:/https:ro
+    networks:
+      - odt-network
+
+  frontend:
+    build:
+      context: ../FE/on-demand-tutor-ui
+      dockerfile: ../../docker/Dockerfile.frontend
+    container_name: odt-frontend
+    ports:
+      - "3000:443"
+      - "3080:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./certs:/etc/nginx/certs:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - odt-network
+
+volumes:
+  sqlserver-data:
+
+networks:
+  odt-network:
+    driver: bridge
